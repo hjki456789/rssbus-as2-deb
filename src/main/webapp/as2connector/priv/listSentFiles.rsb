@@ -1,0 +1,35 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="listSendFile" description="List send files">
+    <input  name="orgname"          desc="The partner identifier" required="true" />
+    <output name="file:fullname"    desc="The full path of the file or directory in the current entry."/>
+    <output name="file:name"        desc="The name of the file or directory in the current entry."/>
+    <output name="file:ctime"       desc="The time at which the file or directory in the current entry was created."/>
+    <output name="file:atime"       desc="The time at which the file or directory in the current entry was last read from or written to."/>
+    <output name="file:mtime"       desc="The time at which the file or directory in the current entry was written to."/>
+    <output name="file:attributes"  desc="A list of attributes of the file or directory in the current entry."/>
+    <output name="file:extension"   desc="The extension of the entry."/>
+    <output name="file:size"        desc="The size of the file in the current entry."/>
+    <output name="file:isdir"       desc="Whether the entry is a file or directory."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:check item="partner" attr="a2p:dirsent">
+    <rsb:set attr="path" value="[partner.a2p:dirsent]"/>
+    <rsb:set attr="fileordir" value="files"/>
+    <rsb:set attr="recurse" value="[partner.a2p:recursesubdirectories | def(false) | tolower]"/>
+    
+    <rsb:call op="fileListDir" output="out">
+      <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+    </rsb:call>
+  </rsb:check>
+
+</rsb:script>
+
+

@@ -1,0 +1,82 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2" >
+  
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="check rsb info" description="check the info of each file">
+    <input name="id"/>
+    <input name="type"/>
+    <input name="storage"/>
+    <input name="subfolder"/>
+    <output name="id" desc="id"/>
+    <output name="result" desc=""/>
+  </rsb:info>
+  <rsb:set attr="tmp.path" value="[site.servicePath]"/>
+  <rsb:check attr="subfolder">
+    <rsb:set attr="tmp.path" value="[tmp.path | pathcombine('[subfolder]')]"/>
+  </rsb:check>
+  <rsb:check attr="id">
+    <rsb:set item="out" attr="id" value="[id]"/>
+
+    <rsb:equals attr="storage" value="gae">
+      <rsb:equals attr="site.gae" value="true">
+        <rsb:set attr="kind" value="[site.gae:filekind]"/>
+        <rsb:set attr="prop:__key__" value="[id]"/>
+        <rsb:call op="gaeDsQuery">
+          <rsb:set attr="in.name" value=""/>
+          <rsb:set attr="in.info_xml" value="[gapds:data]"/>
+          <rsb:try>
+            <rsb:call op="rsbGetInfo" in="in">
+              <rsb:set item="out" attr="result" value="true"/>
+            </rsb:call>
+            <rsb:catch code="*">
+              <rsb:set item="out" attr="result" value="false"/>
+            </rsb:catch>
+          </rsb:try>
+          <rsb:push item="out"/>
+        </rsb:call>
+      </rsb:equals>
+      
+      <rsb:else>
+        <rsb:try>
+          <rsb:set attr="in.name" value="[id]" />
+          <rsb:call op="rsbGetInfo" in="in">
+            <rsb:set item="out" attr="result" value="true"/>
+          </rsb:call>
+          <rsb:catch code="*">
+            <rsb:set item="out" attr="result" value="false"/>
+          </rsb:catch>
+        </rsb:try>
+        <rsb:push item="out"/>
+      </rsb:else>
+    </rsb:equals>
+    
+    <rsb:else>
+      <rsb:set attr="in2.path" value="[tmp.path]"/>
+      <rsb:set attr="in2.mask" value="*.[type | def('rs?')]"/>
+      <rsb:call op="fileListDir" input="in2">
+        <rsb:set item="out" attr="id" value="[tmp.path]/[file:name]"/>
+
+        <rsb:try>
+          <rsb:set attr="in.name" value="[file:fullname ]" />
+          <rsb:call op="rsbGetInfo" in="in">
+            <rsb:set item="out" attr="result" value="true"/>
+          </rsb:call>
+          <rsb:catch code="*">
+            <rsb:set item="out" attr="result" value="false"/>
+          </rsb:catch>
+        </rsb:try>
+        <rsb:push item="out"/>
+      </rsb:call>
+    </rsb:else>
+  </rsb:check>
+
+  <!--mock-->
+  <!--<rsb:enum list="1,2,3,4,5,6,7,8,9" separator=",">
+    <rsb:set item="temp" attr="id" value="rsb_[_value]"/>
+    <rsb:set item="temp" attr="result" value="true"/>
+    <rsb:equals attr="_value" value="3">
+      <rsb:set item="temp" attr="result" value="false"/>
+    </rsb:equals>
+    <rsb:push item="temp"/>
+  </rsb:enum>-->
+</rsb:script>

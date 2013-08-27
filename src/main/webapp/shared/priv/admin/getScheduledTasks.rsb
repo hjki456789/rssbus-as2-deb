@@ -1,0 +1,39 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getScheduledTasks" description="Get the scheduled tasks.">
+    <input name="Name" description="A task's name." />
+    <input name="OrderBy" description="The order to retrieve the tasks." />
+    <output name="Name" description="A task's name." />
+    <output name="URL" description="A task's URL." />
+    <output name="Cron" description="The cron schedule." />
+    <output name="RunCount" description="The run count." />
+    <output name="LogFile" description="The log file." />
+    <output name="Description" description="The description of the task." />
+    <output name="User" description="The user who created the task." />
+  </rsb:info>
+  
+  <rsb:check value="[site.profiledb | fileexists()]">
+    <rsb:set item="tasks" attr="database" value="[site.profiledb]"/>
+    <rsb:set item="tasks" attr="query" value="SELECT * FROM scheduled_tasks"/>
+    <rsb:check attr="Name">
+      <rsb:set item="tasks" attr="query" value="[tasks.query] WHERE Name='[Name]'"/>
+    </rsb:check>
+    <rsb:check attr="OrderBy">
+      <rsb:set item="tasks" attr="query" value="[tasks.query] ORDER BY [OrderBy]"/>
+    </rsb:check>
+    <rsb:call op="sqliteQuery" in="tasks">
+      <rsb:set attr="return.Name" value="[sqlite:name]"/>
+      <rsb:set attr="return.URL" value="[sqlite:url]"/>
+      <rsb:set attr="return.Cron" value="[sqlite:minutes] [sqlite:hours] [sqlite:daysofmonth] [sqlite:months] [sqlite:daysofweek]"/>
+      <rsb:set attr="return.Cron" value="[return.Cron | trim]"/>
+      <rsb:set attr="return.RunCount" value="[sqlite:runcount]"/>
+      <rsb:set attr="return.LogFile" value="[sqlite:logfile]"/>
+      <rsb:set attr="return.Description" value="[sqlite:description]"/>
+      <rsb:set attr="return.User" value="[sqlite:user]"/>
+      <rsb:push item="return"/>
+    </rsb:call>
+  </rsb:check>
+</rsb:script>

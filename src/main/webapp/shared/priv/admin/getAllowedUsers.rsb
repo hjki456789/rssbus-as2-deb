@@ -1,0 +1,31 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getAllowedUsers" description="Get the users that are allowed to access the specified script.">
+    <input name="script" description="The script name." required="true"/>
+    <output name="user" description="A user which has access." />
+    <output name="authtoken" description="The user's authtoken." />
+    <output name="method" description="The allowed method." />
+  </rsb:info>
+  
+  <rsb:check value="[script | startswith('~/')]">
+    <rsb:set attr="script" value="[script | substring('2')]"/>
+  </rsb:check>
+  
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="users" attr="database" value="[site.userdb]"/>
+    <rsb:set item="users" attr="paramname#1" value="script"/>
+    <rsb:set item="users" attr="paramvalue#1" value="[script]"/>
+    <rsb:set item="users" attr="query" value="SELECT * FROM user_scripts,users WHERE user_scripts.\[script\]=@script AND user_scripts.\[user_id\]=users.\[id\]"/> 
+    <rsb:call op="sqliteQuery" in="users">
+      <rsb:set attr="return.user" value="[sqlite:user_name]"/>
+      <rsb:set attr="return.authtoken" value="[sqlite:user_token]"/>
+      <rsb:check attr="sqlite:method">
+        <rsb:set attr="return.method" value="[sqlite:method]"/>
+      </rsb:check>
+      <rsb:push item="return"/>
+    </rsb:call>
+  </rsb:check>
+</rsb:script>

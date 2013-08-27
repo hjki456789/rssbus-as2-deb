@@ -1,0 +1,16 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="sendAllLock" description="Get or release send all locker.">
+    <input name="action" description="The action." values="GET,RELEASE" required="true" />
+    <output name="fa:result" desc="The result."/>
+  </rsb:info>
+
+  <rsb:set attr="name" value="[site.supportPartnerType | tolower]SendAll"/>
+
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAppLock" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+
+</rsb:script>

@@ -1,0 +1,61 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getAllowedApps" description="Gets the allowed apps for the specified user.">
+    <input name="user" description="The user's name." required="true"/>
+    <output name="app" description="The app name." />
+  </rsb:info>
+  
+  <rsb:set attr="user.roles" value=""/>
+  <rsb:set attr="user.isadmin" value=""/>
+  <rsb:set attr="tmp.comma" value=""/>
+
+  <rsb:set attr="in.username" value="[user]" />
+  <rsb:call op="~/shared/priv/admin/getRoles.rsb" input="in">
+    <rsb:set attr="user.roles" value="[user.roles][tmp.comma][role]"/>
+    <rsb:set attr="tmp.comma" value=","/>
+    <rsb:equals attr="role" value="admin">
+      <rsb:set attr="user.isadmin" value="true"/>
+    </rsb:equals>
+    <rsb:equals attr="role" value="rssbus_admin">
+      <rsb:set attr="user.isadmin" value="true"/>
+    </rsb:equals>
+  </rsb:call>
+  
+  <rsb:call op="fileListDir?path=../../..&fileordir=dirs">
+    <rsb:try>
+
+      <rsb:call op="../../../[file:name]/about.rsb" out="out">
+
+        <rsb:equals attr="name" value="Shared Services">
+          <rsb:continue/>
+        </rsb:equals>
+        
+        <rsb:equals attr="user.isadmin" value="true">
+          <rsb:set attr="result.app" value="[out.name]"/>
+          <rsb:set attr="result.appLocation" value="../[file:name]"/>
+          <rsb:push item="result"/>
+        
+          <rsb:else>
+          
+            <rsb:check attr="rolename#">
+              <rsb:enum attr="rolename" expand="true">
+                <rsb:match pattern="*,[rolename#[_index]]*" value="[user.roles]" type="glob">
+                  <rsb:set attr="result.app" value="[out.name]"/>
+                  <rsb:set attr="result.appLocation" value="../[file:name]"/>
+                  <rsb:push item="result"/>
+                </rsb:match>
+              </rsb:enum>
+            </rsb:check>
+
+          </rsb:else>
+        </rsb:equals>
+        
+      </rsb:call>
+
+      <rsb:catch code="*"/>
+    </rsb:try>
+  </rsb:call>
+</rsb:script>

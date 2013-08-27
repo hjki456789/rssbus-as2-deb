@@ -1,0 +1,16 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:info title="ClearLogs" description="Clear Logs. (Clear select logs from cache datebase.)">
+    <input  name="lastrun"          desc="TBD" required="true"/>
+    <input  name="fileage"          desc="TBD" required="true"/>
+  </rsb:info>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:set attr="dbinfo.database" value="[site.statusdb]"/>
+  <rsb:call op="sqliteListTables" in="dbinfo">
+    <rsb:set attr="dbinfo.datefilter" value="[lastrun | dateadd('Millisecond',-[fileage]) | todate('yyyy/MM/dd hh:mm:ss')]"/>
+    <rsb:set attr="dbinfo.query" value="DELETE FROM \[[sqlite:name]\] WHERE timestamp < '[dbinfo.datefilter]'"/>
+    <rsb:call op="sqliteQuery" in="dbinfo"/>
+  </rsb:call>
+</rsb:script>

@@ -1,0 +1,44 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Create Partner" desc="Create a new AS2 trading partner for the application.  Once created, the SetAS2Partner service can be used for more advanced configuration of the newly created trading partner.">
+    <input  name="AS2Identifier"  desc="The AS2 Identifier of the trading partner." required="true" />    
+    <input  name="Organization"   desc="The name of the trading partner, to be used for display purposes." required="true" />
+    <input  name="URL"            desc="The trading partner's receiving URL." required="true" />
+    <input  name="Certificate"    desc="The trading partner's certificate." values="Cetificate Filename, Certificate Base64 Encoded String" default="Cetificate Filename" />
+    
+    <output name="Warning#"       desc="Any warning messages during an update." />
+    <output name="CertExpiration" desc="Any Certificate expiration messages." />
+    <output name="CertWarning"    desc="Any Certificate warnings." />
+  </rsb:info>
+  
+	<rsb:check attr="AS2Identifier">
+	  <rsb:else>
+	    <rsb:throw code="rsb:info_check" desc="The attribute 'AS2Identifier' is required" />
+		</rsb:else>
+	</rsb:check>
+
+  <rsb:set item="input" attr="neworgname" value="[AS2Identifier]" />
+  <rsb:set item="input" attr="friendlyname" value="[Organization]" />
+  <rsb:set item="input" attr="url" value="[URL]" />
+  <rsb:set item="input" attr="encryptcert" value="[Certificate]" />
+  <rsb:set item="input" attr="type" value="AS2" />
+  <rsb:call op="[service.createPartner]" in="input" output="out">
+    <rsb:set item="out1" />
+    <rsb:check attr="a2p:warning#">
+      <rsb:set item="out1" attr="Warning#" value="[a2p:warning#]" />
+    </rsb:check>
+    <rsb:check attr="a2p:certExpMsg">
+      <rsb:set item="out1" attr="CertExpiration" value="[a2p:certExpMsg]" />
+    </rsb:check>
+    <rsb:check attr="a2p:certWarning">
+      <rsb:set item="out1" attr="CertWarning" value="[a2p:certWarning]" />
+    </rsb:check>
+    <rsb:push title="[input.neworgname]" item="out1" />
+  </rsb:call>
+
+</rsb:script>

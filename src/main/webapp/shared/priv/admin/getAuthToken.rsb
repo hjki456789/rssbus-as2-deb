@@ -1,0 +1,19 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getAuthToken" description="Gets the user's authtoken.">
+    <input name="username" description="The username."/>
+    <output name="authtoken" description="The authtoken of the user." />
+  </rsb:info>
+  
+  <rsb:set item="users" attr="database" value="[site.userdb]"/>
+  <rsb:set item="users" attr="paramname#1" value="username"/>
+  <rsb:set item="users" attr="paramvalue#1" value="[username]"/>
+  <rsb:set item="users" attr="query" value="SELECT user_token FROM users WHERE user_name=@username"/>
+  <rsb:call op="sqliteQuery" in="users">
+    <rsb:set attr="user.authtoken" value="[sqlite:user_token]"/>
+    <rsb:push item="user"/>
+  </rsb:call>
+</rsb:script>

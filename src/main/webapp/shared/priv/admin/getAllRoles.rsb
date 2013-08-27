@@ -1,0 +1,35 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getAllRoles" description="Get all user roles.">
+    <output name="username" description="The username."/>
+    <output name="roles" description="A user roles." />
+  </rsb:info>
+  
+  <rsb:set item="return"/>
+  
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="roles" attr="database" value="[site.userdb]"/>
+    <rsb:set item="roles" attr="query" value="SELECT user_name,role_name FROM user_roles,roles,users WHERE user_roles.\[user_id\]=users.\[id\] AND roles.\[id\]=user_roles.\[role_id\] ORDER BY user_name"/>
+    <rsb:call op="sqliteQuery" in="roles">
+      <rsb:first>
+        <rsb:set attr="return.username" value="[sqlite:user_name]"/>
+        <rsb:set attr="return.roles" value=""/>
+      </rsb:first>
+      
+      <rsb:notequals attr="sqlite:user_name" value="[return.username]">
+        <rsb:push item="return"/>
+        <rsb:unset item="return"/>
+        <rsb:set attr="return.username" value="[sqlite:user_name]"/>
+        <rsb:set attr="return.roles" value=""/>
+      </rsb:notequals>
+
+      <rsb:set attr="return.roles" value="[return.roles | equals('','[sqlite:role_name]','[return.roles],[sqlite:role_name]')]"/>
+    </rsb:call>
+    <rsb:push item="return"/>
+  </rsb:check>
+</rsb:script>
+
+

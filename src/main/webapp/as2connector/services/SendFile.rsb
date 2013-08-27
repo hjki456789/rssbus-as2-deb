@@ -1,0 +1,51 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Send File" description="Send an outgoing file.">
+    <input  name="Name"          desc="The organization name." required="true" />
+    <input  name="FileName"      desc="The name of the file to be sent." required="true" />
+    <input  name="Attachment#"   desc="The attachments file."/>
+    <output name="Result"        desc="The result of the transmission." />
+    <output name="ErrorCode"     desc="The error code that was encountered by the application, in the event of a failure." />
+    <output name="ErrorCategory" desc="The category of error that was encountered by the application, in the event of a failure." />
+    <output name="ErrorMessage"  desc="The error message that was encountered by the application, in the event of a failure." />
+    <output name="ErrorDetails"  desc="Additional details of the error message that was encountered by the application, in the event of a failure." />
+    <output name="ErrorTip"      desc="A tip for resolving the error, in the event of a failure." />
+  </rsb:info>
+  
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  <rsb:set item="input" attr="file" value="[FileName]" />
+  <rsb:set item="input" attr="isauto" value="FALSE" />
+  <rsb:enum attr="attachment">
+    <rsb:set attr="input.attachment#" value="[_value]" />
+  </rsb:enum>
+  
+  <rsb:call op="[service.sendFile]" in="input">
+  	<rsb:set item="output" />
+  	<rsb:check attr="result">
+      <rsb:set item="output" attr="Result" value="[result]" />
+  	</rsb:check>
+  	<rsb:check attr="ex:ecode">
+      <rsb:set item="output" attr="ErrorCode" value="[ex:ecode]" />
+  	</rsb:check>
+  	<rsb:check attr="ex:category">
+      <rsb:set item="output" attr="ErrorCategory" value="[ex:category]" />
+  	</rsb:check>
+  	<rsb:check attr="ex:generalmsg">
+      <rsb:set item="output" attr="ErrorMessage" value="[ex:generalmsg]" />
+  	</rsb:check>
+  	<rsb:check attr="ex:specificmsg">
+      <rsb:set item="output" attr="ErrorDetails" value="[ex:specificmsg]" />
+  	</rsb:check>
+  	<rsb:check attr="ex:tip">
+      <rsb:set item="output" attr="ErrorTip" value="[ex:tip]" />
+  	</rsb:check>
+  	
+	<rsb:push item="output" title="Transmission Status" />
+  </rsb:call>
+</rsb:script>
+

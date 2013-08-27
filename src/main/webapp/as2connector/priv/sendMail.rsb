@@ -1,0 +1,42 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="sendMail" description="Send mail via stmp server.">
+    <input name="subject" desc="The subject of the mail message." required="true"/>
+    <input name="message" desc="The text part of the message to be sent (automatically set if html input is specified)."/>
+  </rsb:info>
+  
+  <rsb:set attr="smtp.smtpserver" value="[_profile.smtpserver_global | def('')]"/>
+  <rsb:set attr="smtp.smtpport" value="[_profile.smtpport_global | def('')]"/>
+  <rsb:set attr="smtp.user" value="[_profile.smtpuser_global | def('')]"/>
+  <rsb:set attr="smtp.password" value="[_profile.smtppassword_global | def('')]"/>
+  <rsb:set attr="smtp.sslmode" value="[_profile.smtpsslstartmode_global | def('')]"/>
+  <rsb:set attr="smtp.sslcert" value="*"/>
+  
+  <rsb:set attr="smtp.from" value="[_profile.[site.root]_emailfrom_global]"/>
+  <rsb:set attr="smtp.to" value="[_profile.[site.root]_emailto_global]"/>
+  <rsb:set attr="smtp.subject" value="[subject]"/>
+  <rsb:set attr="smtp.text" value="[message | def('')]"/>
+  
+  <rsb:check attr="smtp.to">
+    <rsb:else>
+      <rsb:throw code="sendMail" desc="No email address was configured" />
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="smtp.server">
+    <rsb:else>
+      <rsb:throw code="sendMail" desc="No mail server has been configured" />
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:call op="smtpSendMessage" in="smtp">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[_.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+
+

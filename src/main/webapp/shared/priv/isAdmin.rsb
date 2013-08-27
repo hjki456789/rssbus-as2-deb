@@ -1,0 +1,16 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="isAdmin" description="Is the current user an admin.">
+    <output name="isadmin" description="True if the current user is an admin." />
+  </rsb:info>
+  
+  <rsb:set attr="return.isadmin" value="[user | isuserinrole('admin') | tolower]"/>
+  <rsb:equals attr="return.isadmin" value="false">
+    <rsb:set attr="return.isadmin" value="[user | isuserinrole('rssbus_admin') | tolower]"/>
+  </rsb:equals>
+  <rsb:push item="return"/>
+  
+</rsb:script>

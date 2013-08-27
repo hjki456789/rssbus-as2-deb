@@ -1,0 +1,125 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="list app files" description="list all app info">
+    <input name="type" values="rst,rsb"/>
+    <input name="app"/>
+    <output name="id"/>
+    <output name="name"/>
+    <output name="type"/>
+    <output name="storage"/>
+    <output name="author"/>
+    <output name="mtime"/>
+    <output name="permalink"/>
+    <output name="category"/>
+  </rsb:info>
+
+  <rsb:check attr="type">
+    <rsb:else>      
+      <rsb:set attr="type" value="rsb"/>
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:equals attr="type" value="rsb">
+    <rsb:set attr="tmp.subtype#1" value="rsb"/>
+    <rsb:set attr="tmp.subtype#2" value="rsd"/>
+    <rsb:set attr="tmp.subtype#3" value="rsc"/>
+    <rsb:set attr="tmp.type" value="rsb"/>
+    <rsb:else>
+      <rsb:set attr="tmp.subtype#1" value="rst"/>
+      <rsb:set attr="tmp.type" value="rst"/>
+    </rsb:else>
+  </rsb:equals>
+
+  <rsb:equals attr="site.gae" value="true">
+    <rsb:set attr="kind" value="[site.gae:filekind]"/>
+    <rsb:set attr="props" value="name,type"/>
+    <rsb:enum attr="tmp.subtype">
+      <rsb:set attr="prop:type" value="[_value]"/>
+
+      <rsb:call op="gaeDsQuery">
+        <rsb:set attr="tmp.isshort" value="[gapds:name | getlength() | isless(39)]" />
+        <rsb:equals attr="tmp.isshort" value="true">
+          <rsb:set attr="tmp.finalname" value="[gapds:name]" />
+          <rsb:else>
+            <rsb:set attr="tmp.finalname" value="[gapds:name | truncate(38)]..." />
+          </rsb:else>
+          <rsb:set item="out" attr="id" value="[gapds:keyid]"/>
+          <rsb:set item="out" attr="name" value="[tmp.finalname].[gapds:type]"/>
+          <rsb:set item="out" attr="fname" value="[gapds:name]"/>
+          <rsb:set item="out" attr="subtype" value="[_value]"/>
+          <rsb:set item="out" attr="type" value="[type]"/>
+          <rsb:set item="out" attr="author" value="user1"/>
+          <rsb:set item="out" attr="mtime" value="null"/>
+          <rsb:set item="out" attr="storage" value="gae"/>
+          <rsb:set item="out" attr="permalink" value="[out.id | urlresolve()]"/>
+          <rsb:set item="out" attr="category" value="gae"/>
+          <rsb:push item="out"/>
+        </rsb:equals>
+      </rsb:call>
+    </rsb:enum>
+  </rsb:equals>
+  
+  <rsb:set attr="tmp.pathR" value="[site.root]"/>
+  <rsb:set attr="tmp.path" value="[tmp.pathR]"/>
+  <rsb:check attr="app">
+    <rsb:set attr="servicedir" value="[tmp.path | pathcombine('[app]') | pathcombine('services')]"/>
+    <rsb:check value="[servicedir | toabsolutepath | fileexists]">
+      <rsb:call op="[tmp.path | pathcombine('[app]') | pathcombine('about.rsb')]">
+        <rsb:set attr="tmp.category#1" value="[name]"/>
+        <rsb:set attr="tmp.path#1" value="[servicedir]"/>
+      </rsb:call>
+    </rsb:check>
+    <rsb:else>
+      <rsb:set attr="tmp.fileordir" value="dirs"/>
+      <rsb:set attr="tmp.count" value="0"/>
+      <rsb:call op="fileListDir" in="tmp" output="out">
+        <rsb:set attr="servicedir" value="[out.fullname | pathcombine('services')]"/>
+        <rsb:check value="[servicedir | fileexists]">
+          <rsb:call op="[out.fullname | pathcombine('about.rsb')]">
+            <rsb:set attr="tmp.count" value="[tmp.count | add('1')]"/>
+            <rsb:set attr="tmp.category#[tmp.count]" value="[name]"/>
+            <rsb:set attr="tmp.path#[tmp.count]" value="[tmp.pathR][out.name]/services"/>
+          </rsb:call>
+        </rsb:check>
+      </rsb:call>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check value="[servicedir | toabsolutepath | fileexists]">
+    <rsb:enum attr="tmp.path">
+      <rsb:set attr="in.path" value="[_value]"/>
+      <rsb:set attr="in.abspath" value="[in.path | toabsolutepath]/"/>
+      <rsb:set attr="in.category" value="[tmp.category#[_index]]"/>
+      
+      <rsb:enum attr="tmp.subtype">
+        <rsb:set attr="in.mask" value="*?.[_value]"/>
+        <rsb:set attr="in.subtype" value="[_value]"/>
+        
+        <rsb:call op="fileListDir" input="in">
+          <rsb:set attr="tmp.isshort" value="[name | getlength() | isless(39)]" />
+          <rsb:equals attr="tmp.isshort" value="true">
+            <rsb:set attr="tmp.finalname" value="[name]" />
+            <rsb:else>
+              <rsb:set attr="tmp.finalname" value="[name | truncate(38)]..." />
+            </rsb:else>
+          </rsb:equals>
+          <rsb:set item="out" attr="id" value="[path]/[file:name]"/>
+          <rsb:set item="out" attr="name" value="[tmp.finalname]"/>
+          <rsb:set item="out" attr="fname" value="[file:name|split('.',1)]"/>
+          <rsb:set item="out" attr="path" value="[in.abspath]"/>
+          <rsb:set item="out" attr="type" value="[tmp.type]"/>
+          <rsb:set item="out" attr="subtype" value="[in.subtype]"/>
+          <rsb:set item="out" attr="author" value="user1"/>
+          <rsb:set item="out" attr="mtime" value="[file:mtime]"/>
+          <rsb:set item="out" attr="storage" value="file"/>
+          <rsb:set item="out" attr="permalink" value="[out.id | urlresolve()]"/>
+          <rsb:set item="out" attr="category" value="[in.category]"/>
+          <rsb:push item="out"/>
+        </rsb:call>
+      </rsb:enum>
+    </rsb:enum>
+  </rsb:check>
+
+</rsb:script>

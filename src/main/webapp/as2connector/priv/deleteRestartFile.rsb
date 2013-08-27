@@ -1,0 +1,31 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="deleteRestartFile" description="Delete restart files for a partner.">
+    <input  name="orgname"    desc="The partner identifier" requird="true"/>    
+    <input  name="etag"       desc="The etag"               requird="true" />
+    <output name="file:file"  desc="The name of the file or directory that got deleted."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:check item="partner" attr="a2p:dirrestart">
+    <rsb:set attr="path" value="[partner.a2p:dirrestart]"/>
+    <rsb:set attr="mask" value="[etag]*"/>
+    <rsb:set attr="fileordir" value="files"/>
+
+    <rsb:call op="fileListDir" output="out">
+      <rsb:set attr="file" value="[out.file:fullname]"/>
+      <rsb:call op="fileDelete" output="out2">
+        <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+      </rsb:call>
+    </rsb:call>
+  </rsb:check>
+
+</rsb:script>
+
+

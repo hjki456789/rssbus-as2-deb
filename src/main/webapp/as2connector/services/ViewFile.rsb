@@ -1,0 +1,29 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="View File" description="View the contents of a file. This service can be used to view the contents of a log, received file, sent file, or certificate.">
+    <input  name="File"  desc="The file name." required="true" />
+    
+    <output name="Data"  desc="The file data." /> 
+  </rsb:info>
+  
+  <rsb:match pattern="true" value="[File | ischild('[site.profilesPath]') | tolower]">
+    <rsb:set item="input" attr="file" value="[File]" />
+    <rsb:call op="fileRead" in="input" output="out">
+      <rsb:set item="out1" />
+      <rsb:check attr="file:data">
+        <rsb:set item="out1" attr="Data" value="[file:data]" />
+      </rsb:check>
+      <rsb:push title="[File]" item="out1" />
+    </rsb:call>
+    
+    <rsb:else>
+      <rsb:throw code="path" description="Invalid file path."/>
+    </rsb:else>
+  </rsb:match>
+
+</rsb:script>

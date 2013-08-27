@@ -1,0 +1,116 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Import Profile" description="Import a profile including all partners and certificates from a specified location on disk. This service should be used to import profiles from a previous version of the application.">
+    <input name="Directory" desc="The directory where the application can find the old profile information. An example is the '%INSTALL_DIR%\as2data\' directory." required="true" />
+    
+    <output name="Status"   desc="The status of importing the profile." />
+  </rsb:info>
+  
+  <rsb:try>
+    <rsb:check value="[site.java]">
+      <rsb:set attr="tmp.new_data_dir" value="WEB-INF"/>
+      <rsb:else>
+        <rsb:set attr="tmp.new_data_dir" value="app_data"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:set item="input" attr="datadir" value="[Directory]" />
+
+    <rsb:set item="listdir" attr="recurse" value="false" />
+    <rsb:set item="listdir" attr="path" value="[input.datadir]" />
+    <rsb:call op="fileListDir" in="listdir" out="outlistdir">
+      <rsb:equals attr="outlistdir.file:isdir" value="true">
+        <!-- Copy partner files -->
+        <rsb:set item="input1" attr="source" value="[file:fullname | pathcombine('partner.cfg')]" />
+        <rsb:set item="input1" attr="destination" value="[site.profilesPath | pathcombine('[file:name]/partner.cfg')]" />
+        <rsb:set item="input1" attr="recurse" value="false" />
+        <rsb:set item="input1" attr="force" value="true" />
+        <rsb:match pattern="true" value="[input1.source | fileexists | tolower]">
+          <rsb:call op="fileCopy" in="input1" />
+        </rsb:match>
+        
+        <!-- Create log directories -->
+        <rsb:set attr="mkdir1.path" value="[site.profilesPath | pathcombine('[file:name]/Incoming/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir1"/>
+
+        <rsb:set attr="mkdir2.path" value="[site.profilesPath | pathcombine('[file:name]/Logs/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir2"/>
+
+        <rsb:set attr="mkdir3.path" value="[site.profilesPath | pathcombine('[file:name]/Outgoing/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir3"/>
+
+        <rsb:set attr="mkdir4.path" value="[site.profilesPath | pathcombine('[file:name]/Pending/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir4"/>
+
+        <rsb:set attr="mkdir5.path" value="[site.profilesPath | pathcombine('[file:name]/PendingInfo/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir5"/>
+
+        <rsb:set attr="mkdir6.path" value="[site.profilesPath | pathcombine('[file:name]/Sent/')]" />
+        <rsb:call op="fileMakeDir" in="mkdir6"/>
+
+        <rsb:else>
+          <!-- Copy other files -->
+          <rsb:match pattern="\w*\.(bat|cer|cfg|pfx|xml)" type="regex" value="[file:name]">
+            <rsb:match pattern="true" type="exact" value="[site.profilesPath | pathcombine('[file:name]') | fileexists | tolower]">
+              <rsb:call op="fileDelete?file=[site.profilesPath | pathcombine('[file:name]')]" />
+            </rsb:match>
+
+            <rsb:set item="input2" attr="source" value="[file:fullname]" />
+            <rsb:set item="input2" attr="destination" value="[site.profilesPath | pathcombine('[file:name]')]" />
+            <rsb:set item="input2" attr="recurse" value="false" />
+            <rsb:call op="fileCopy" in="input2" />
+          </rsb:match>
+        </rsb:else>
+      </rsb:equals>
+    </rsb:call>
+
+    <rsb:call op="[service.getSelf]" output="out1">
+      <rsb:map from="out1" to="input3" map="* = a2p:*" />
+      <rsb:enum item="input3">
+        <rsb:equals attr="_attr" value="asyncmdnurl">
+          <rsb:set attr="_value" value="[site.rootUrl | pathcombine('pub/ReceiveMDN.rsb') | tourl | urldecode]"/>
+        </rsb:equals>
+
+        <rsb:equals attr="_count" value="1">
+          <rsb:set item="tmp" attr="tmp1" value="[_value | regexreplace('\.\.\\\\as2Data\\\\', 'app_data/as2connector/profiles/')]" />
+          <rsb:set item="tmp" attr="tmp1" value="[tmp.tmp1 | regexreplace('\.\.\\\\as2data\\\\', 'app_data/as2connector/profiles/')]" />
+          <rsb:set item="input3" attr="[_attr]" value="[tmp.tmp1]" />
+        </rsb:equals>
+      </rsb:enum>
+
+      <rsb:call op="[service.setSelf]" in="input3" />
+    </rsb:call>
+    
+    <rsb:set attr="updatecache" value="true" />
+    <rsb:call op="[service.listPartners]">
+      <rsb:set attr="orgname" value="[a2p:orgname]" />
+      <rsb:call op="[service.getPartner]" output="out3">
+        <rsb:map from="out3" to="input4" map="* = a2p:*" />
+      
+        <rsb:enum item="input4">
+          <rsb:set item="tmp" attr="tmp2" value="[_value | regexreplace('\.\.\\\\as2Data\\\\', 'app_data/as2connector/profiles/')]" />
+          <rsb:set item="tmp" attr="tmp2" value="[tmp.tmp2 | regexreplace('\.\.\\\\as2data\\\\', 'app_data/as2connector/profiles/')]" />
+          <rsb:set item="input4" attr="[_attr]" value="[tmp.tmp2]" />
+        </rsb:enum>
+        
+        <rsb:set item="input4" attr="neworgname" value="[input4.orgname]" />
+
+        <rsb:call op="[service.setPartner]" in="input4" />
+      </rsb:call>
+    </rsb:call>
+    
+    <rsb:set item="out1" attr="Status" value="Success" />
+    <rsb:push item="out1" />
+	
+    <rsb:catch code="*">
+      <rsb:set item="out2" attr="Status" value="[_code|def('-1')]: [_description]" />
+      <rsb:push item="out2" />
+    </rsb:catch>
+  </rsb:try>
+  
+</rsb:script>

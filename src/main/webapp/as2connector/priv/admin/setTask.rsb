@@ -1,0 +1,28 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst" />
+
+  <rsb:info title="Set Task" description="Sets the specified task.">
+    <input  name="TaskName"          desc="The name of the task." required="true" />
+    <input  name="RunInterval"       desc="The interval to run the task." />
+    <input  name="LastRun"           desc="When the task was last run." />
+    <input  name="Script"            desc="The script to execute." />
+    <input  name="ScriptInput:*"       desc="The inputs for the script." />
+  </rsb:info>
+  
+  <rsb:set attr="set.filename" value="[site.tasksfile]"/>
+  <rsb:set attr="set.xmlroot" value="[site.tasksroot]"/>
+  <rsb:set attr="set.taskname" value="[_input.TaskName]"/>
+  <rsb:check attr="_input.RunInterval">
+    <rsb:set attr="set.runinterval" value="[_input.RunInterval]"/>
+  </rsb:check>
+  <rsb:check attr="_input.LastRun">
+    <rsb:set attr="set.lastrun" value="[_input.LastRun]"/>
+  </rsb:check>
+  <rsb:set attr="set.script" value="[_input.Script]"/>
+  <rsb:map from="_input" to="set" map="param:* = ScriptInput:*"/>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAppSetTask" in="set">
+  [_.*]
+  </rsb:call>
+</rsb:script>

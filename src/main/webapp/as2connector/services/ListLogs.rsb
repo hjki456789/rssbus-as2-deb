@@ -1,0 +1,78 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="List Logs" description="List all of a specified type of logs for a trading partner. By default, all logs will be listed by this service.">
+    <input  name="Name"             desc="The organization name." required="true" />
+    <input  name="LogType"          desc="The type of log." values="Sent, Received, Async, All" default="All" />
+    
+    <output name="LogFile"          desc="The full path of the log file." />
+    <output name="LogSize"          desc="The size of the log file." />
+    <output name="ModifiedTime"     desc="The time at which the log file was written." />
+    <output name="HasAsyncLog"      desc="Whether the entry has async log or not. Only for as2 partner." />
+  </rsb:info>
+
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  <rsb:set item="input" attr="logType" value="[LogType]" />
+  
+	<rsb:call op="[service.getPartner]" in="input">
+  	
+    <rsb:set item='partner' copyfrom='_out1'/>
+    <rsb:try>
+      <rsb:check item="partner" attr="a2p:dirlogs">
+        <rsb:equals attr="logType" value="All">
+          <rsb:set attr="recurse" value="true" />
+          <rsb:set attr="fileordir" value="files" />
+          <rsb:set attr="path" value="[partner.a2p:dirlogs]" />
+          <rsb:call op="fileListDir" output="out">
+					  <rsb:set item="out1" attr="LogFile" value="[file:fullname]" />
+					  <rsb:set item="out1" attr="LogSize" value="[file:size]" />
+					  <rsb:set item="out1" attr="ModifiedTime" value="[file:mtime]" />
+					  <rsb:check attr="isasync">
+  						<rsb:set item="out1" attr="HasAsyncLog" value="[isasync]" />
+            </rsb:check>
+						<rsb:push title="[rss:title | def('untitled item')]" item="out1" />
+          </rsb:call>
+        
+          <rsb:else>
+            <rsb:set attr="path" value="[partner.a2p:dirlogs | pathcombine('[logType]')]" />
+						
+						<rsb:equals attr="partner.a2p:type" value="as2" case="ignore">
+							<rsb:set attr="recurse" value="true" />
+							<rsb:set attr="fileordir" value="files" />
+							<rsb:call op="fileListDir" output="out">
+								<rsb:set item="out1" attr="HasAsyncLog" value="[file:name | match('\[^\\{\\}\]+')]" />
+								<rsb:set item="out1" attr="HasAsyncLog" value="[partner.a2p:dirpendinginfo | pathcombine('[out1.HasAsyncLog]') | fileexists]" />
+								<rsb:set item="out1" attr="LogFile" value="[file:fullname]" />
+								<rsb:set item="out1" attr="LogSize" value="[file:size]" />
+								<rsb:set item="out1" attr="ModifiedTime" value="[file:mtime]" />
+								<rsb:push title="[rss:title | def('untitled item')]" item="out1" />
+							</rsb:call>
+
+							<rsb:else>
+								<rsb:set attr="mask" value="*.log" />
+								<rsb:set attr="fileordir" value="files" />
+								<rsb:call op="fileListDir" output="out">
+									<rsb:set item="out1" attr="LogFile" value="[file:fullname]" />
+									<rsb:set item="out1" attr="LogSize" value="[file:size]" />
+									<rsb:set item="out1" attr="ModifiedTime" value="[file:mtime]" />
+									<rsb:push title="[rss:title | def('untitled item')]" item="out1" />	
+								</rsb:call>
+							</rsb:else>
+
+						</rsb:equals>
+          </rsb:else>
+        </rsb:equals>
+          
+      </rsb:check>
+
+      <!--rsb:catch code="*">
+      </rsb:catch-->
+    </rsb:try>
+  </rsb:call>
+
+
+</rsb:script>

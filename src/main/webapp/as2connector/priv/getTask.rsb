@@ -1,0 +1,22 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Get Task" description="Gets the specified task.">
+    <input  name="TaskName"           desc="The name of the task." required="true" />
+    <output name="RunInterval"       desc="The interval to run the task." />
+    <output name="LastRun"           desc="When the task was last run." />
+    <output name="Script"            desc="The script to execute." />
+    <output name="ScriptInputName#"   desc="The input names for the script." />
+    <output name="ScriptInputValue#"  desc="The input values for the script." />
+  </rsb:info>
+  
+  <rsb:set attr="get.filename" value="[site.tasksfile]"/>
+  <rsb:set attr="get.xmlroot" value="[site.tasksroot]"/>
+  <rsb:set attr="get.taskname" value="[_input.TaskName]"/>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAppGetTask" in="get">
+    <rsb:push/>
+  </rsb:call>
+  
+</rsb:script>

@@ -1,0 +1,30 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="setWinUser" description="Set Windows User to admin">
+    <input name="username" description="The Windows user name." required="true"/>
+  </rsb:info>
+
+  <rsb:try>
+    <rsb:call op="dbSetup.rsb"/>
+    <rsb:catch code="*"/>
+  </rsb:try>
+
+  <rsb:try>
+    <rsb:set item="createuser" attr="username" value="[_input.username]"/>
+    <rsb:set item="createuser" attr="password" value=""/>
+    <rsb:set item="createuser" attr="winuseronly" value="true"/>
+    <rsb:call op="[service.createUser]" in="createuser" />
+    <rsb:catch code="*"/>
+  </rsb:try>
+  
+  <rsb:try>
+    <rsb:set item="addrole" attr="username" value="[_input.username]"/>
+    <rsb:set item="addrole" attr="role" value="rssbus_admin"/>
+    <rsb:call op="[service.addRole]" in="addrole" />
+    <rsb:catch code="*"/>
+  </rsb:try>
+  
+</rsb:script>

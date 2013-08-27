@@ -1,0 +1,27 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="isWinUserOnly" description="Is Windows user only.">
+    <input name="username" description="The username." required="true"/>
+    <output name="winuseronly" description="True if the current user is Windows user only." />
+  </rsb:info>
+  
+  <rsb:set attr="return.winuseronly" value="false"/>
+
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="user" attr="database" value="[site.userdb]"/>
+    <rsb:set item="user" attr="paramname#1" value="username"/>
+    <rsb:set item="user" attr="paramvalue#1" value="[_input.username]"/>
+    <rsb:set item="user" attr="query" value="SELECT user_password FROM users WHERE lower(users.user_name)=lower(@username)"/>
+    <rsb:call op="sqliteQuery" in="user">
+      <rsb:equals attr="sqlite:user_password" value="">
+        <rsb:set attr="return.winuseronly" value="true"/>
+      </rsb:equals>
+    </rsb:call>
+  </rsb:check>
+  
+  <rsb:push item="return"/>
+  
+</rsb:script>

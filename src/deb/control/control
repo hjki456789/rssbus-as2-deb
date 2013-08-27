@@ -1,0 +1,8 @@
+Package: [[artifactId]]
+Version: [[version]]
+Section: misc
+Priority: optional
+Architecture: all
+Description: [[description]]
+Depends: [[debian.dependencies]]
+Maintainer: Piticas Alexandru Catalin <piticas.alexandru@gmail.com>

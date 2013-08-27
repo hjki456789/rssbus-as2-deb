@@ -1,0 +1,72 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="createUser" description="Creates a new user.">
+    <input name="username" description="The username." required="true"/>
+    <input name="role" description="The role of a user." required="true"/>
+  </rsb:info>
+  
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:role" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="role">
+    <rsb:else>
+      <rsb:throw code="rsb:role" description="No role specified."/>
+    </rsb:else>
+  </rsb:check>
+  
+  <!-- make sure the role is defined -->
+  <rsb:try>
+    <rsb:set item="checkroleexists" attr="database" value="[site.userdb]"/>
+    <rsb:set item="checkroleexists" attr="paramname#1" value="role"/>
+    <rsb:set item="checkroleexists" attr="paramvalue#1" value="[_input.role]"/>
+    <rsb:set item="checkroleexists" attr="query">SELECT role_name FROM roles WHERE role_name=@role</rsb:set>
+    <rsb:call op="sqliteQuery" in="checkroleexists">
+      <rsb:check attr="sqlite:role_name">
+        <rsb:set attr="found.foundrole" value="true"/>
+      </rsb:check>
+    </rsb:call>
+
+    <rsb:check attr="found.foundrole">
+      <rsb:else>
+        <rsb:set item="addrole" attr="database" value="[site.userdb]"/>
+        <rsb:set item="addrole" attr="paramname#1" value="role"/>
+        <rsb:set item="addrole" attr="paramvalue#1" value="[_input.role]"/>
+        <rsb:set item="addrole" attr="query">INSERT INTO roles (role_name) VALUES (@role)</rsb:set>
+        <rsb:call op="sqliteQuery" in="addrole">
+          <rsb:equals attr="sqlite:affectedrows" value="0">
+            <rsb:throw code="rsb:role" description="Invalid username or role."/>
+          </rsb:equals>
+        </rsb:call>
+        </rsb:else>
+    </rsb:check>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:role" description="Invalid username or role."/>
+    </rsb:catch>
+  </rsb:try>
+  
+  <!-- add the role -->
+  <rsb:try>
+    <rsb:set item="add" attr="database" value="[site.userdb]"/>
+    <rsb:set item="add" attr="paramname#1" value="username"/>
+    <rsb:set item="add" attr="paramvalue#1" value="[_input.username]"/>
+    <rsb:set item="add" attr="paramname#2" value="role"/>
+    <rsb:set item="add" attr="paramvalue#2" value="[_input.role]"/>
+    <rsb:set item="add" attr="query">INSERT INTO user_roles (user_id, role_id) VALUES ((SELECT id FROM users WHERE user_name=@username), (SELECT id FROM roles WHERE role_name=@role))</rsb:set>
+    <rsb:call op="sqliteQuery" in="add">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:role" description="Invalid username or role."/>
+      </rsb:equals>
+    </rsb:call>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:role" description="Invalid username or role."/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

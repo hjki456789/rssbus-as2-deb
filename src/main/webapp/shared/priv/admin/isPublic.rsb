@@ -1,0 +1,31 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="IsPublic" desc="Returns whether or not the endpoint is public.">
+    <input name="Script" desc="The script name." required="true"/>
+    <output name='Public' desc='Whether or not the service is public.'/>
+  </rsb:info>
+  
+  <rsb:check value="[_input.script | startswith('~/')]">
+    <rsb:set attr="_input.script" value="[_input.script | substring('2')]"/>
+  </rsb:check>
+  
+  <rsb:set attr="return.Public" value="false"/>
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="users" attr="database" value="[site.userdb]"/>
+    <rsb:set item="users" attr="paramname#1" value="script"/>
+    <rsb:set item="users" attr="paramvalue#1" value="[_input.script]"/>
+    <rsb:set item="users" attr="query" value="SELECT script FROM public_scripts WHERE script=@script"/> 
+    <rsb:call op="sqliteQuery" in="users" out="out">
+      <rsb:check attr="out.script">
+        <rsb:set attr="return.Public" value="true"/>
+      </rsb:check>
+    </rsb:call>
+  </rsb:check>
+
+  <rsb:push item="return"/>
+  
+</rsb:script>
+

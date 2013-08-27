@@ -1,0 +1,28 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="List all tasks" description="List all tasks.">
+    <output name="url"/>
+    <output name="cron"/>
+    <output name="description"/>
+    <output name="status"/>
+    <output name="running"/>
+    <output name="delete"/>
+  </rsb:info>
+
+  <rsb:call op="schedulerListTasks" save="tasksfeed" />
+
+  <rsb:call op="[service.getScheduledTasks]" out="tasks">
+    <rsb:set attr="tasks.running" value="Off"/>
+    <rsb:call op="[_feeds.tasksfeed]" out="curr">
+      <rsb:equals attr="curr.scheduler:url" value="[tasks.url]">
+        <rsb:set attr="tasks.Status" value="[curr.scheduler:status]"/>
+        <rsb:set attr="tasks.running" value="[tasks.runcount | equals('0','Off','On')]"/>
+      </rsb:equals>
+    </rsb:call>
+    
+    <rsb:push item="tasks"/>
+  </rsb:call>
+
+</rsb:script>

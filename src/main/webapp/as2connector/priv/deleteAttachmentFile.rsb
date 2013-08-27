@@ -1,0 +1,48 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="deleteAttachmentFile" description="Delete attachment files for an as2 partner">
+    <input  name="orgname"    desc="The partner identifier" requird="true"/>
+    <input  name="fileName"   desc="The log folder name."   requird="true" />
+    <input  name="logType"    desc="the type of log" values="Sent,Received" requird="true"/>
+    <output name="file:file"  desc="The name of the file or directory that got deleted."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:set attr="path" value="[partner.a2p:dirlogs | pathcombine('[logType]') | pathcombine('[fileName]')]"/>
+  <rsb:set attr="direxists" value="[path | direxists]"/>
+  <rsb:equals attr="direxists" value="true">
+  	<rsb:set attr="tmp.deleted" value="0"/>
+    <rsb:set attr="mask" value="*.attachment"/>
+    <rsb:call op="fileListDir" output="out1">
+      <rsb:set attr="tmp.file" value="[out1.file:name | rsubstring(11)]"/>
+      <rsb:equals attr="_input.logType" value="Sent">
+      	<rsb:check item="partner" attr="a2p:dirsent">
+      		<rsb:set attr="file" value="[partner.a2p:dirsent | pathcombine('[tmp.file]')]" />
+          <rsb:call op="fileDelete" output="out2">
+            <rsb:set attr="tmp.deleted" value="[tmp.deleted | add('1')]"/>
+            <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+          </rsb:call>
+      	</rsb:check>
+      </rsb:equals>
+      <rsb:equals attr="_input.logType" value="Received">
+				<rsb:check item="partner" attr="a2p:dirincoming">
+      		<rsb:set attr="file" value="[partner.a2p:dirincoming | pathcombine('[tmp.file]')]" />
+      		<rsb:call op="fileDelete" output="out2">
+            <rsb:set attr="tmp.deleted" value="[tmp.deleted | add('1')]"/>
+            <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+          </rsb:call>
+      	</rsb:check>
+      </rsb:equals>
+    </rsb:call>
+    <rsb:equals attr="tmp.deleted" value="0">
+      <rsb:push title="[rss:title | def('untitled item')]" description="File not found."/>
+    </rsb:equals>
+  </rsb:equals>
+
+</rsb:script>

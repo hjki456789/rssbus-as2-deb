@@ -1,0 +1,74 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="get info" description="get info of file">
+    <input name="id" required="true"/>
+    <output name="name" description="The name of the input or output attribute."/>
+    <output name="type" description="The type of the attribute - input or output."/>
+    <output name="description" description="Brief text describing the attribute."/>
+    <output name="source" description="An optional profile element from which the input value may be read."/>
+    <output name="req" description="If the attribute is required or not - only for input attributes."/>
+    <output name="def" description="The default for an input attribute if specified."/>
+  </rsb:info>
+
+  <rsb:match value="[id]" pattern="^\d+" type="regex">
+    <rsb:equals attr="site.gae" value="true">
+      <rsb:set attr="kind" value="[site.gae:filekind]"/>
+      <rsb:set attr="prop:__key__" value="[id]"/>
+      <rsb:call op="gaeDsQuery">
+        <rsb:set attr="in.name" value=""/>
+        <rsb:set attr="in.info_xml" value="[gapds:data]"/>
+        <rsb:call op="rsbGetInfo" in="in">
+          <rsb:map from="_out2" to="out" map="* = info:*"/>
+          <rsb:set attr="out.sourcedesc" value=""/>
+          <rsb:check attr="out.source">
+            <rsb:check attr="_profile.[out.source]">
+              <rsb:set attr="out.default" value="[_profile.[out.source]]"/>
+            </rsb:check>
+            <rsb:set attr="out.sourcedesc" value="(profile source: [out.source])"/>
+          </rsb:check>
+          <rsb:set attr="out.defaultdesc" value=""/>
+          <rsb:check attr="out.default">
+            <rsb:set attr="out.defaultdesc" value="(default: [out.default])"/>
+          </rsb:check>
+          <rsb:push item="out"/>
+          <rsb:unset item="out" attr="*"/>
+        </rsb:call>
+        <rsb:catch code="*">
+          <rsb:set attr="out.rsb:ecode" value="[_code]"/>
+          <rsb:set attr="out.rsb:emessage" value="No info..."/>
+          <rsb:push item="out"/>
+        </rsb:catch>
+      </rsb:call>
+    </rsb:equals>
+    <rsb:else>
+      <rsb:set item="_input" attr="name" value="[id]"/>
+
+      <rsb:try>
+        <rsb:call op="rsbGetInfo">
+          <rsb:map from="_out1" to="out" map="* = info:*"/>
+          <rsb:set attr="out.sourcedesc" value=""/>
+          <rsb:check attr="out.source">
+            <rsb:check attr="_profile.[out.source]">
+              <rsb:set attr="out.default" value="[_profile.[out.source]]"/>
+            </rsb:check>
+            <rsb:set attr="out.sourcedesc" value="(profile source: [out.source])"/>
+          </rsb:check>
+          <rsb:set attr="out.defaultdesc" value=""/>
+          <rsb:check attr="out.default">
+            <rsb:set attr="out.defaultdesc" value="(default: [out.default])"/>
+          </rsb:check>
+          <rsb:push item="out"/>
+          <rsb:unset item="out" attr="*"/>
+        </rsb:call>
+        <rsb:catch code="*">
+          <rsb:set attr="out.rsb:ecode" value="[_code]"/>
+          <rsb:set attr="out.rsb:emessage" value="No info..."/>
+          <rsb:push item="out"/>
+        </rsb:catch>
+      </rsb:try>
+    </rsb:else>
+  </rsb:match>
+
+</rsb:script>

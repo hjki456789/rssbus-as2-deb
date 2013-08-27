@@ -1,0 +1,57 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="List Received Files" description="List all received files which have not been deleted on disk for a specified organization. If received files are processed automatically and removed from the outgoing directory for a particular trading partner, the files that have been processed will not be listed by this service.">
+    <input  name="Name"          desc="The organization." required="true" />
+    
+    <output name="FullPath"      desc="The full path of the file or directory in the current entry." />
+    <output name="Filename"      desc="The name of the file or directory in the current entry." />
+    <output name="Created"       desc="The time at which the file or directory in the current entry was created." />
+    <output name="LastAccessed"  desc="The time at which the file or directory in the current entry was last read or written." />
+    <output name="Modified"      desc="The time at which the file or directory in the current entry was written." />
+    <output name="Attributes"    desc="A list of attributes of the file or directory in the current entry." />
+    <output name="FileExtension" desc="The extension of the entry." />
+    <output name="Size"          desc="The size of the file in the current entry." />
+    <output name="IsDirectory"   desc="Whether the entry is a file or directory." />
+  </rsb:info>
+
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  <rsb:call op="[service.listReceivedFiles]" in="input">
+    <rsb:set item="out1" />
+    <rsb:check attr="file:fullname">
+      <rsb:set item="out1" attr="FullPath" value="[file:fullname]" />
+    </rsb:check>
+    <rsb:check attr="file:name">
+      <rsb:set item="out1" attr="Filename" value="[file:name]" />
+    </rsb:check>
+    <rsb:check attr="file:ctime">
+      <rsb:set item="out1" attr="Created" value="[file:ctime]" />
+    </rsb:check>
+    <rsb:check attr="file:atime">
+      <rsb:set item="out1" attr="LastAccessed" value="[file:atime]" />
+    </rsb:check>
+    <rsb:check attr="file:mtime">
+      <rsb:set item="out1" attr="Modified" value="[file:mtime]" />
+    </rsb:check>
+    <rsb:check attr="file:attributes">
+      <rsb:set item="out1" attr="Attributes" value="[file:attributes]" />
+    </rsb:check>
+    <rsb:check attr="file:extension">
+      <rsb:set item="out1" attr="FileExtension" value="[file:extension]" />
+    </rsb:check>
+    <rsb:check attr="file:size">
+      <rsb:set item="out1" attr="Size" value="[file:size]" />
+    </rsb:check>
+    <rsb:check attr="file:isdir">
+      <rsb:set item="out1" attr="IsDirectory" value="[file:isdir]" />
+    </rsb:check>
+    <rsb:push title="[rss:title]" item="out1" />
+  </rsb:call>
+
+</rsb:script>
+
+

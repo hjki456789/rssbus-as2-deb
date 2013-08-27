@@ -1,0 +1,53 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="createUser" description="Creates a new user.">
+    <input name="username" description="The username." required="true"/>
+    <input name="password" description="The password of a user." required="true"/>
+    <input name="email" description="The users email address."/>
+    <input name="winuseronly" description="True if the current user is Windows user only." values="true,false" default="false"/>
+  </rsb:info>
+
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:user" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check value="[winuseronly]">
+    <rsb:set attr="_input.password" value=""/>
+    <rsb:else>
+      <rsb:check attr="password">
+        <rsb:else>
+          <rsb:throw code="rsb:user" description="No password specified."/>
+        </rsb:else>
+      </rsb:check>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:try>
+    <rsb:set item="adduser" attr="database" value="[site.userdb]"/>
+    <rsb:set item="adduser" attr="paramname#1" value="username"/>
+    <rsb:set item="adduser" attr="paramvalue#1" value="[_input.username]"/>
+    <rsb:set item="adduser" attr="paramname#2" value="password"/>
+    <rsb:set item="adduser" attr="paramvalue#2" value="[_input.password]"/>
+    <rsb:set item="adduser" attr="paramname#3" value="email"/>
+    <rsb:set item="adduser" attr="paramvalue#3" value="[_input.email | def('')]"/>
+    <rsb:set item="adduser" attr="query">INSERT INTO users (user_name, user_password, user_email, user_token) VALUES (@username, @password, @email, '[nothing | randomtext('20')]')</rsb:set>
+    <rsb:call op="sqliteQuery" in="adduser">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:user" description="Invalid username or password."/>
+      </rsb:equals>
+    </rsb:call>
+    
+    <rsb:set attr="in.username" value="[_input.username]" />
+    <rsb:set attr="in.role" value="rssbus_appuser" />
+    <rsb:call op="[service.addRole]" input="in"/>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:user" description="Invalid username or password."/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

@@ -1,0 +1,97 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Get Personal Profile" description="Get all configuration information for the personal profile. Subsequent calls may be used to view the my profile&amp;apos;s certificates, received files, etc.">
+    <output name="AS2Identifier"               desc="Your AS2 Identifier. This is often the company or organization name." />
+    <output name="Email"                       desc="The email address of the application administrator." />
+    <output name="PrivateKeyPath"              desc="The path to your private key certificate (.PFX file)." />
+    <output name="PrivateKeyPassword"          desc="The password for your private key certificate." />
+    <output name="PrivateKeySubject"           desc="The subject of your private key certificate." />
+    <output name="AsynchronousMDNURL"          desc="If requesting Asynchronous MDN delivery, the URL where asynchronous MDN's should be delivered." />
+    <output name="EnablePublicProfile"         desc="Use this settings to determine whether or not to publish your public profile settings at a Public.rst page." />
+    <output name="PublicKeyPath"               desc="The path to your public key certificate (.CER file)." />
+    <output name="WelcomeBanner"               desc="When publishing your public profile, the welcome banner to display." />
+    <output name="SMTPServer"                  desc="The hostname or IP address of your SMTP server." />
+    <output name="SMTPUser"                    desc="The username to authenticate to your SMTP server." />
+    <output name="SMTPPassword"                desc="The password to authenticate to your SMTP server." />
+    <output name="FirewallType"                desc="The type of firewall to connect through." />
+    <output name="FirewallHost"                desc="The host name or IP address of the firewall." />
+    <output name="FirewallPort"                desc="The port of your firewall." />
+    <output name="FirewallUser"                desc="The username to use when authenticating to your firewall." />
+    <output name="FirewallPassword"            desc="The password to use when authenticating to your firewall." />
+    <output name="AllowNonFIPSCompliantAlgorithms" desc="Allows the application to use algorithms that are not FIPS compliant, such as MD5 and AES." />
+    <output name="ExtensionMap"                desc="A name-value map used to determine the content-type to use for outgoing files." />
+    <output name="CustomHeaderName#"           desc="The names of any custom headers to send out with your request." />
+    <output name="CustomHeaderValue#"          desc="The values of any custom headers to send out with your request." />
+  </rsb:info>
+
+	<rsb:call op="[service.getSelf]">
+		<rsb:set item="output" />
+		<rsb:check attr="a2p:orgname">
+			<rsb:set item="output" attr="AS2Identifier" value="[a2p:orgname]" />
+		</rsb:check>
+		<rsb:check attr="a2p:email">
+			<rsb:set item="output" attr="Email" value="[a2p:email]" />
+		</rsb:check>
+		<rsb:check attr="a2p:certpfx">
+			<rsb:set item="output" attr="PrivateKeyPath" value="[a2p:certpfx]" />
+		</rsb:check>
+		<rsb:check attr="a2p:certpassword">
+			<rsb:set item="output" attr="PrivateKeyPassword" value="[a2p:certpassword]" />
+		</rsb:check>
+		<rsb:check attr="a2p:encryptioncertsubject">
+			<rsb:set item="output" attr="PrivateKeySubject" value="[a2p:encryptioncertsubject]" />
+		</rsb:check>
+		<rsb:check attr="a2p:enablepublicprofile">
+			<rsb:set item="output" attr="EnablePublicProfile" value="[a2p:enablepublicprofile]" />
+		</rsb:check>
+		<rsb:check attr="a2p:publiccert">
+			<rsb:set item="output" attr="PublicKeyPath" value="[a2p:publiccert]" />
+		</rsb:check>
+		<rsb:check attr="a2p:publicprofilebanner">
+			<rsb:set item="output" attr="WelcomeBanner" value="[a2p:publicprofilebanner]" />
+		</rsb:check>
+		<rsb:check attr="a2p:smtpserver">
+			<rsb:set item="output" attr="SMTPServer" value="[a2p:smtpserver]" />
+		</rsb:check>
+		<rsb:check attr="a2p:smtpuser">
+			<rsb:set item="output" attr="SMTPUser" value="[a2p:smtpuser]" />
+		</rsb:check>
+		<rsb:check attr="a2p:smtppassword">
+			<rsb:set item="output" attr="SMTPPassword" value="[a2p:smtppassword]" />
+		</rsb:check>
+		<rsb:check attr="a2p:asyncmdnurl">
+			<rsb:set item="output" attr="AsynchronousMDNURL" value="[a2p:asyncmdnurl]" />
+		</rsb:check>
+		<rsb:check attr="a2p:fwtype">
+			<rsb:set item="output" attr="FirewallType" value="[a2p:fwtype]" />
+		</rsb:check>
+		<rsb:check attr="a2p:fwhost">
+			<rsb:set item="output" attr="FirewallHost" value="[a2p:fwhost]" />
+		</rsb:check>
+		<rsb:check attr="a2p:fwport">
+			<rsb:set item="output" attr="FirewallPort" value="[a2p:fwport]" />
+		</rsb:check>
+		<rsb:check attr="a2p:fwuser">
+			<rsb:set item="output" attr="FirewallUser" value="[a2p:fwuser]" />
+		</rsb:check>
+		<rsb:check attr="a2p:fwpassword">
+			<rsb:set item="output" attr="FirewallPassword" value="[a2p:fwpassword]" />
+		</rsb:check>
+		<rsb:check attr="a2p:allownonfipscompliantalgorithms">
+			<rsb:set item="output" attr="AllowNonFIPSCompliantAlgorithms" value="[a2p:allownonfipscompliantalgorithms]" />
+		</rsb:check>
+		<rsb:check attr="a2p:extensionmap">
+			<rsb:set item="output" attr="ExtensionMap" value="[a2p:extensionmap]" />
+		</rsb:check>
+		<rsb:push item="output" title="Personal Profile" />
+	</rsb:call>
+</rsb:script>
+
+
+
+

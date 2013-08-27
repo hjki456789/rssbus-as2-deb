@@ -1,0 +1,170 @@
+/* wijmo grid header*/
+.wijmo-wijgrid {
+  font-size: 12px;
+}
+
+.wijmo-wijgrid a {
+  color: #505050 !important;
+}
+
+.wijmo-wijgrid table
+{
+  margin: 0px;
+}
+
+.wijmo-wijgrid-table 
+{
+  border: 1px solid #D0D0D0;
+}
+
+.wijmo-wijpager {
+  float: right !important;
+}
+
+.wijmo-wijgrid-split-area .wijmo-wijgrid-table
+{
+  border-right: none;
+  border-bottom: none;
+}
+
+.wijgridth
+{
+  background-color: whiteSmoke !important;
+  border-right: 1px solid #D0D0D0;
+}
+
+.wijmo-wijgrid-headertext {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 0px !important;
+}
+
+/* wijmo grid data area*/
+.wijmo-wijgrid-content-area .wijmo-wijgrid-table
+{
+  border-top: none;
+  border-right: none;
+}
+
+.wijmo-wijgrid-row
+{
+  border-color: #D0D0D0;
+  white-space: nowrap;
+  vertical-align: middle;
+  height:auto;
+}
+
+.wijmo-wijgrid-innercell {
+  padding: 5px !important;
+  background-image: none !important;
+}
+
+.wijmo-wijgrid-content-area .wijmo-wijgrid-alternatingrow
+{
+  background-color: #FAFAFB;
+}
+
+/* wijmo grid scrollbar*/
+.wijmo-wijsuperpanel-hbarcontainer
+{
+  -moz-box-shadow: inset 0 3px 10px rgba(0,0,0,0.10);
+  -webkit-box-shadow: inset 0 3px 10px rgba(0,0,0,0.10);
+  box-shadow: inset 0 3px 10px rgba(0,0,0,0.10);
+}
+
+.ui-icon-triangle-1-w
+{
+  background-position:-96px 0!important;
+  width:16px!important;
+  height:17px!important;
+}
+
+.ui-icon-triangle-1-e
+{
+  background-position:-32px 0!important;
+  width:16px!important;
+  height:17px!important;
+}
+
+.ui-icon-grip-solid-vertical
+{
+  background-position:0 0!important;
+  width:0px!important;
+  height:0px!important;
+}
+
+.wijmo-wijsuperpanel-hbarcontainer .ui-state-default
+{
+  background: #E6E6E6; 
+  border: 1px solid #D0D0D0;
+}
+.wijmo-wijsuperpanel-hbarcontainer .ui-state-hover
+{
+  background: #D0D0D0; 
+  border: 1px solid #E6E6E6;
+}
+
+/* wijmo grid pager*/
+.wijmo-wijpager
+{
+  height:30px;
+}
+
+.wijmo-wijgrid-footer.ui-state-default 
+{
+  background: none;
+}
+
+.wijmo-wijgrid-footer .ui-state-default, .wijmo-wijgrid-footer .ui-state-hover
+{
+  border: 1px solid #a0a0a0;
+  background: none;
+  display: inline-block;
+}
+
+.wijmo-wijgrid-footer .ui-state-hover, .wijmo-wijgrid-footer .ui-state-active
+{
+  background-color: #DDDDDD;
+}
+
+.wijmo-wijgrid-footer .ui-state-active
+{
+  border: 1px solid #707070;
+}
+
+.wijmo-wijgrid-datarow:hover td {
+background-color: #EEF5FF;
+}
+
+/*Overlays*/
+.wijmo-wijgrid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: gray;
+  opacity: .30;
+  filter: Alpha(Opacity=30);
+}
+
+.wijmo-wijgrid-loadingtext {
+  position: absolute;
+  opacity: 1 !important;
+  z-index: 100 !important;
+  padding: 0.4em !important;
+  font-size: 18px !important;
+  box-shadow: 0 0 10px rgba(0,0,0,0.25) !important;
+  background: white  !important;
+}
+
+.wijmo-wijgrid-loadingtext .ui-icon {
+  background: url(../img/loading2_20px.gif) no-repeat 0 0;
+  height: 20px;
+  width: 20px;
+} 
+
+/* wijinput */
+.wijmo-wijinput-wrapper {
+  padding: 0;
+}

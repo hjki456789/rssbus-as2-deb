@@ -1,0 +1,9 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <rsb:check attr="_profile.as2_heartbeaturl_global">
+    <rsb:set attr="input.url" value="[_profile.as2_heartbeaturl_global]?[method | def('@schedule')]" />
+    <rsb:set attr="input.interval" value="[_profile.as2connector_heartbeat_interval | def('1')]" />
+    <rsb:call op="timerStart" in="input"/>
+  </rsb:check>
+  
+</rsb:script>

@@ -1,0 +1,10 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:info title="about" description="Returns information about the application.">
+    <output name='name' desc='The name of the application.' />
+    <output name='rolename#' desc='The role name.' />
+    <output name='roledesc#' desc='The role description.' />
+  </rsb:info>
+
+  <rsb:set attr="tmp.name" value="Shared Services" />
+  <rsb:push item="tmp"/>
+</rsb:script>

@@ -1,0 +1,31 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Upload File" description="Upload an outgoing file.">
+    <input  name="Name"            desc="The organization name." required="true" />
+    <input  name="FileName"        desc="The name of the file to be uploaded." required="true" />
+    <input  name="Data"            desc="The file contents." />
+    <input  name="Encoding"        desc="The transfer encoding of the data." values="None,Base64"/>
+    <input  name="ReadFromRequest" desc="When set to true, the file contents will be read directly from the body contents of the HTTP Post." values="true,false" def="false" />
+    <output name="FullPath"        desc="The full path of the file."/>
+  </rsb:info>
+  
+  <rsb:set attr="orgname" value="[Name]" />
+  <rsb:call op="[service.getPartner]">
+    <rsb:set attr="input.file" value="[a2p:diroutgoing | pathcombine('[FileName]')]"/>
+  </rsb:call>
+  
+  <rsb:set item="input" attr="data" value="[Data | def('')]" />
+  <rsb:set item="input" attr="encoding" value="[Encoding | def('')]" />
+  <rsb:set item="input" attr="ReadFromRequest" value="[ReadFromRequest]" />
+  
+  <rsb:call op="fileReceive" in="input" out="output">
+  	<rsb:set attr="output.FullPath" value="[file]"/>
+	  <rsb:push item="output" title="Upload Status" />
+  </rsb:call>
+</rsb:script>
+

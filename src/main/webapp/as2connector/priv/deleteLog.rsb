@@ -1,0 +1,138 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="deleteLog" description="Delete log files for a partner">
+    <input  name="orgname"    desc="The partner identifier"                             requird="true"/>
+    <input  name="fileName"   desc="The file name. If as2 partner, is subfolder name."  requird="true" />
+    <input  name="logType"    desc="the type of log" />
+    <input  name="logType2"   desc="the type of log" />
+    <output name="file:file"  desc="The name of the file or directory that got deleted."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:set item="database" attr="database" value="[site.statusdb]"/>
+
+  <rsb:check item="partner" attr="a2p:dirlogs">
+    <rsb:equals attr="fileName" value="*">
+      <rsb:set attr="path" value="[partner.a2p:dirlogs]"/>
+      <rsb:set attr="fileordir" value="dirs"/>
+
+      <rsb:call op="fileListDir" output="out1">
+        <rsb:set attr="file" value="[out1.file:fullname]"/>
+        <rsb:set attr="tmp.delete" value="false"/>
+        <rsb:equals attr="out1.file:name" value="sent" case="ignore">
+          <rsb:set attr="tmp.delete" value="true"/>
+          <!-- Delete partner table -->
+          <rsb:select value="[site.statusdb | fileexists | tolower]">
+            <rsb:case match="exact" value="true">
+              <rsb:set item="database" attr="query" value="DROP TABLE IF EXISTS \[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_SENT\]"/>
+              <rsb:call op="sqliteQuery" in="database"/>
+            </rsb:case>
+            <rsb:default/>
+          </rsb:select>
+        </rsb:equals>
+        <rsb:equals attr="out1.file:name" value="received" case="ignore">
+          <rsb:set attr="tmp.delete" value="true"/>
+          <!-- Delete partner table -->
+          <rsb:select value="[site.statusdb | fileexists | tolower]">
+            <rsb:case match="exact" value="true">
+              <rsb:set item="database" attr="query" value="DROP TABLE IF EXISTS \[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_RECEIVED\]"/>
+              <rsb:call op="sqliteQuery" in="database"/>
+            </rsb:case>
+            <rsb:default/>
+          </rsb:select>
+        </rsb:equals>
+        <rsb:equals attr="out1.file:name" value="asyncmdn" case="ignore">
+          <rsb:set attr="tmp.delete" value="true"/>
+        </rsb:equals>
+        <rsb:check value="[tmp.delete]">
+          <rsb:call op="fileDelete" output="out2">
+            <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+          </rsb:call>
+        </rsb:check>
+      </rsb:call>
+      <rsb:else>
+        <rsb:try>
+          <!-- Delete from partner table -->
+          <rsb:select value="[site.statusdb | fileexists | tolower]">
+            <rsb:case match="exact" value="true">
+              <rsb:set attr="tmp.tablename" value="\[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_[logType | toupper]\]"/>
+              <rsb:set item="database" attr="query" value="DELETE FROM [tmp.tablename] WHERE ID='[fileName]'"/>
+              <rsb:call op="sqliteQuery" in="database"/>
+            </rsb:case>
+            <rsb:default/>
+          </rsb:select>
+          <rsb:catch code="*"/>
+        </rsb:try>
+
+        <rsb:select value="[partner.a2p:type | tolower]">
+          <rsb:case match="exact" value="oftp">
+            <rsb:set attr="tmp.logprefix" value="[filename | lsplit('_', 1)]"/>
+            <rsb:set item="database" attr="query" value="SELECT COUNT(ID) AS COUNT FROM [tmp.tablename] WHERE ID LIKE '%[tmp.logprefix]%'"/>
+            <rsb:call op="sqliteQuery" in="database">
+              <rsb:equals attr="sqlite:count" value="0">
+                <rsb:set attr="path" value="[partner.a2p:dirlogs | pathcombine('[_input.logtype]') | pathcombine('[_input.filename]')]"/>
+                <rsb:call op="fileListDir" output="out1">
+                  <rsb:set attr="tmp.islogpointer" value="[out1.file:name | endswith('.log')]"/>
+                  <rsb:equals attr="tmp.islogpointer" value="true">
+                    <rsb:set attr="tmp.reallogfile" value="[partner.a2p:dirlogs | pathcombine('[_input.logtype]') | pathcombine('[out1.file:name]')]"/>
+                  </rsb:equals>
+                  <rsb:set attr="tmp.islogpointer" value="[out1.file:name | endswith('.err')]"/>
+                  <rsb:equals attr="tmp.islogpointer" value="true">
+                    <rsb:set attr="tmp.logfilename" value="[out1.file:name | replace('.err', '.log')]"/>
+                    <rsb:set attr="tmp.reallogfile" value="[partner.a2p:dirlogs | pathcombine('[_input.logtype]') | pathcombine('[tmp.logfilename]')]"/>
+                  </rsb:equals>
+                  <rsb:set attr="fileexsits" value="[tmp.reallogfile | fileexists]"/>
+                  <rsb:equals attr="fileexsits" value="true">
+                    <rsb:set attr="file" value="[tmp.reallogfile]"/>
+                    <rsb:call op="fileDelete"/>
+                  </rsb:equals>
+                </rsb:call>
+              </rsb:equals>
+            </rsb:call>
+          </rsb:case>
+        </rsb:select>
+        
+        <rsb:set attr="types#1" value="[logType]"/>
+        <rsb:check attr="logType2">
+          <rsb:set attr="types#2" value="[logType2]"/>
+        </rsb:check>
+        <rsb:enum attr="types#">
+          <rsb:set attr="path" value="[partner.a2p:dirlogs | pathcombine('[_value]')]"/>
+          <rsb:set attr="direxists" value="[path | direxists]"/>
+          <rsb:equals attr="direxists" value="true">
+            <rsb:set attr="mask" value="[fileName]"/>
+            <rsb:call op="fileListDir" output="out1">
+              <rsb:set attr="file" value="[out1.file:fullname]"/>
+              <rsb:call op="fileDelete" output="out2">
+                <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+              </rsb:call>
+            </rsb:call>
+            
+            <rsb:set attr="tmp.index" value="[fileName | find('.') | add('1')]"/>
+            <rsb:set attr="tmp.actuallogfullname" value="[fileName | substring(0, [tmp.index])]actuallog"/>
+            <rsb:set attr="tmp.checkexist" value="[path | pathcombine('[tmp.actuallogfullname]') | fileexists]"/>
+            <rsb:equals attr="tmp.checkexist" value="true">
+              <rsb:set attr="tmp.count" value="0"/>
+              <rsb:set attr="mask" value="[fileName | substring(0, [tmp.index])]*"/>
+              <rsb:call op="fileListDir" output="out1">
+                <rsb:set attr="tmp.count" value="[tmp.count | add(1)]"/>
+              </rsb:call>
+              <rsb:equals attr="tmp.count" value="1">
+                <rsb:set attr="file" value="[path | pathcombine('[tmp.actuallogfullname]')]"/>
+                <rsb:call op="fileDelete" output="out2"/>
+              </rsb:equals>
+            </rsb:equals>
+          </rsb:equals>
+        </rsb:enum>
+      </rsb:else>
+    </rsb:equals>
+  </rsb:check>
+
+</rsb:script>
+

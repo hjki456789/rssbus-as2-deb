@@ -1,0 +1,54 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+    
+  <rsb:info title="Set Local Settings" description="Set local settings.">
+    <input name="AutomationURL"                 desc="The URL that is used for automation cycles." />
+    <input name="NotifyOfCertificateExpiration" desc="Notify the application administrator via email 30 days before the private key certificate expires." values="True, False" />
+    <input name="AutomationCert"                desc="The public key certificate that the SSL server uses, if the server is only hosting SSL connections." />
+    <input name="PublicDomain"                  desc="The domain name or IP address to be used for URL's on the Public.rst page." />
+    <input name="NotifyStopStart"               desc="Log when the application starts and stops in the event log." values="True, False" />
+    <input name="Localhost"                     desc="Local interface to bind to for outgoing connections."/>
+    <input name="LogDebug"                      desc="Enables enhanced logging for the application." values="True, False" />
+    <input name="MaxFilesPerPartner"            desc="Controls how many files a sending thread will attempt to send for each partner. Limited to prevent the application from sending so many files that the request to start sending files times out.  Increaase this configuration with caution." />
+    <input name="MaxThreads"                    desc="Governs how many sending threads to use at once.  Increase this value with caution." />
+  </rsb:info>
+  
+  <rsb:set item="input"/>
+  <rsb:check attr="AutomationURL" >
+    <rsb:set item="_profile" attr="as2_heartbeaturl_global" value="[AutomationURL]" />
+  </rsb:check>
+  <rsb:check attr="NotifyOfCertificateExpiration">
+    <rsb:set item="input" attr="prop:notifycertexpiry" value="[NotifyOfCertificateExpiration]" />
+  </rsb:check>
+  <rsb:check attr="LogDebug">
+    <rsb:set item="input" attr="prop:logdebug" value="[LogDebug]" />
+  </rsb:check>
+  <rsb:check attr="AutomationCert">
+    <rsb:set item="input" attr="prop:automationcert" value="[AutomationCert]" />
+  </rsb:check>
+  <rsb:check attr="PublicDomain">
+    <rsb:set item="input" attr="prop:publicdomain" value="[PublicDomain]" />
+  </rsb:check>
+  <rsb:check attr="NotifyStopStart">
+    <rsb:set item="input" attr="prop:notifystopstart" value="[NotifyStopStart]" />
+  </rsb:check>
+  <rsb:check attr="Localhost">
+    <rsb:set item="input" attr="prop:localhost" value="[Localhost]" />
+  </rsb:check>
+  <rsb:check attr="MaxFilesPerPartner">
+    <rsb:set item="input" attr="prop:maxfilesperpartnerperthread" value="[MaxFilesPerPartner]" />
+  </rsb:check>
+  <rsb:check attr="MaxThreads">
+    <rsb:set item="input" attr="prop:maxconcurrentthreads" value="[MaxThreads]" />
+  </rsb:check>
+  
+  <rsb:call op="as2connectorLocalSettings" in="input">
+    <rsb:push/>
+  </rsb:call>
+</rsb:script>
+
+

@@ -1,0 +1,610 @@
+<html>
+	<head>
+		<title>RSSBus Apps  - Readme File</title>
+		<style>
+		
+#highlight 	{ background-image:url(spotlights.png);}
+#header 	{ background-image:url(header.png);}
+#header .pipelist li { border-left: 1px solid #1A72B9; }
+#header .pipelist a { color: #1A72B9;}
+#header .logo {	
+	background: url(logo.png);
+	width:150px; height:50px; top:18px;
+}
+
+html, body {
+	height: 100%;
+}
+
+body, p, h1, h2, h3, li, td {
+	font-family: 'Segoe UI', Verdana, Arial;
+}
+
+body {
+	color: #000000; 
+	margin:0; padding:0;
+	font-size : .8em;	
+	width:100%;
+}
+
+#wrapper {
+	min-height: 100%;
+	height: auto !important;
+	height: 100%;
+	margin: 0 auto -30px; /* the bottom margin is the negative value of the footer's height */
+}
+
+#footer, .push {
+	height: 30px; /* .push must be the same height as .footer */
+}
+
+#highlight {
+	background-repeat:no-repeat;
+	background-position:top left;
+	width:100%;
+	height:60px;
+}
+
+#header {
+	width:100%;
+	height:60px;
+	background-repeat:repeat-x;
+	background-position:top left;	
+	position:relative;
+}
+#header .logo {	
+	background-repeat:no-repeat;
+	background-position:top left;
+	text-indent:-9999px;
+	overflow:hidden;
+	left:15px;
+	position:absolute;
+	-ms-interpolation-mode:bicubic;
+}
+
+#header .pipelist {    
+    overflow: hidden;
+    margin-right:-5px;
+    padding-right:-5px;
+	position:absolute;
+	bottom:5px; 
+	right:10px;
+	font-size:.85em;
+}
+
+#header .pipelist ul {
+    list-style-type: none;
+    list-style-image: none;
+    margin: 0;
+    padding: 0;
+}
+
+#header .pipelist li {
+    float: left;
+    line-height: 1.1em;
+    margin: 0 .7em 2px -.7em;
+    padding: 0 .7em 0 .7em;
+}
+
+#header .pipelist a {
+	text-decoration:none;
+}
+#header .pipelist a:hover {
+	text-decoration:underline;
+}
+
+#content {
+	text-align:left;
+	padding:0 15px 0 15px;
+	padding-bottom:40px;
+}
+
+#footer {
+	width:100%;
+	background-color:whitesmoke;
+	border-top:1px solid gainsboro;	
+	font-size:.8em;
+	padding-top:8px;
+	padding-bottom:0px;
+	color:dimgray;
+	white-space:nowrap;
+}
+
+img {
+	-ms-interpolation-mode:bicubic;
+}
+
+h1 {
+	font-weight : bold;
+	font-size : 1.3em;
+	margin-top:.7em;
+	margin-bottom: 1em;
+	border-bottom: 1px silver solid;
+	padding-bottom: 8px;
+	padding-top:0px;
+	color: #1A72B9;
+}
+h2 {
+	font-weight : bold;
+	font-size : 1.05em;
+	margin-bottom: 0.25em;
+	color: #1A72B9;
+}
+h3 {
+	font-weight : bold;
+	font-size : 1em;
+	margin-bottom: 0.25em;
+	color: #125095;
+}
+
+p {
+	margin:0px 0em 1em 0em;
+	line-height:1.5em;
+}
+		   
+li {
+	margin-bottom: 4pt;
+}
+		   
+a:active, a:link, a:visited {
+	text-decoration:underline;
+}
+
+a:hover		{
+	text-decoration:none;
+}
+
+
+table {
+	font-size: 1em; 
+	margin-top: 1em 0 1em 0;		
+	border-collapse:collapse;
+  width:90%;
+}
+
+tr {
+	vertical-align: top;	
+}
+
+th {
+  background-color: #EDF6FF; 
+  vertical-align: bottom;  
+  color:#215A8F;
+  padding:5px;
+  border-bottom:1px solid #90ADBC;
+}
+
+td {
+	vertical-align: top; 
+	margin-top: .25em;	
+	padding:10px;
+	border-bottom:1px solid #EDF6FF;
+}
+
+td, th {
+	text-align: left; 
+	padding-left:1em;  
+	border-right:2px solid white;
+}
+
+small {
+	font-size: .85em;
+}
+
+tt {
+	font-family: monospace;
+	font-size:1.1em;
+}
+
+pre {
+	font-family: Consolas, Monaco, 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace;
+	font-size: 1.02em;
+	background-color:#F7F7F7;
+	padding:1px 5px;
+	/* Wrap content in pre tags if too long */
+	overflow-x: auto; /* Use horizontal scroller if needed; for Firefox 2, not needed in Firefox 3 */
+	white-space: pre-wrap; /* css-3 */
+	white-space: -moz-pre-wrap !important; /* Mozilla, since 1999 */
+	white-space: -pre-wrap; /* Opera 4-6 */
+	white-space: -o-pre-wrap; /* Opera 7 */
+	word-wrap: break-word; /* Internet Explorer 5.5+ */
+}
+
+.syntax {
+	margin-top: 0em;
+	margin-left: 1em;
+	margin-right: 1em;
+	background-color: whitesmoke;
+}
+
+
+hr {
+	color: silver;
+	background-color: silver;
+  height: 1px;
+  border:none;
+}
+
+#toc a {
+	font-family: 'Segoe UI', Verdana, Arial !important;
+	text-decoration:none !important;
+}
+
+#toc a:hover {	
+	text-decoration:underline !important;
+}
+
+/* Style for RSBScript */
+.source .rsbkey { color: #047; font-weight: normal; } /* RSSBus Keyword */
+.source .nt { color: #000; font-weight: bold; } /* This is the close tag make it */
+.source .rsbattr { color: maroon; font-weight: bold; } /* RSSBus Attr name attr= and item= also in [ attr ] */
+.source .rsbattrf { color: maroon; font-weight: bold;} /* RSSBus Attr name in a formatter */
+.source .rsbbrace { color: #0000FF; font-weight: bold; } /* Color for the brace [ ] */
+.source .rsbform { color: green;}  /* RSSBus Formatter [ attr |.. ] */
+.source .rsbop { color: blue; font-weight: bold; } /* RSSBus Operation name */
+.source .s { color: dimgray; } /* Literal.String */
+.source .na { color: #333; font-weight: bold; } /* All the attribute name*/
+
+.source .hll { background-color: #ffffcc }
+.source .c { color: #408080; font-style: italic } /* Comment */
+.source .err { border: 1px solid #FF0000 } /* Error */
+.source .k { color: #008000; font-weight: bold } /* Keyword */
+.source .o { color: #666666 } /* Operator */
+.source .cm { color: #408080; font-style: italic } /* Comment.Multiline */
+.source .cp { color: #BC7A00 } /* Comment.Preproc */
+.source .c1 { color: #408080; font-style: italic } /* Comment.Single */
+.source .cs { color: #408080; font-style: italic } /* Comment.Special */
+.source .gd { color: #A00000 } /* Generic.Deleted */
+.source .ge { font-style: italic } /* Generic.Emph */
+.source .gr { color: #FF0000 } /* Generic.Error */
+.source .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.source .gi { color: #00A000 } /* Generic.Inserted */
+.source .go { color: #808080 } /* Generic.Output */
+.source .gp { color: #000080; font-weight: bold } /* Generic.Prompt */
+.source .gs { font-weight: bold } /* Generic.Strong */
+.source .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.source .gt { color: #0040D0 } /* Generic.Traceback */
+.source .kc { color: #008000; font-weight: bold } /* Keyword.Constant */
+.source .kd { color: #008000; font-weight: bold } /* Keyword.Declaration */
+.source .kn { color: #008000; font-weight: bold } /* Keyword.Namespace */
+.source .kp { color: #008000 } /* Keyword.Pseudo */
+.source .kr { color: #008000; font-weight: bold } /* Keyword.Reserved */
+.source .kt { color: #B00040 } /* Keyword.Type */
+.source .m { color: #666666 } /* Literal.Number */
+
+.source .nb { color: #008000 } /* Name.Builtin */
+.source .nc { color: #0000FF; font-weight: bold } /* Name.Class */
+.source .no { color: #880000 } /* Name.Constant */
+.source .nd { color: #AA22FF } /* Name.Decorator */
+.source .ni { color: #999999; font-weight: bold } /* Name.Entity */
+.source .ne { color: #D2413A; font-weight: bold } /* Name.Exception */
+.source .nf { color: #0000FF } /* Name.Function */
+.source .nl { color: #A0A000 } /* Name.Label */
+.source .nn { color: #0000FF; font-weight: bold } /* Name.Namespace */
+.source .nt { color: #333; font-weight: normal } /* Name.Tag */
+.source .nv { color: #19177C } /* Name.Variable */
+.source .ow { color: #AA22FF; font-weight: bold } /* Operator.Word */
+.source .w { color: #bbbbbb } /* Text.Whitespace */
+.source .mf { color: #666666 } /* Literal.Number.Float */
+.source .mh { color: #666666 } /* Literal.Number.Hex */
+.source .mi { color: #666666 } /* Literal.Number.Integer */
+.source .mo { color: #666666 } /* Literal.Number.Oct */
+.source .sb { color: #BA2121 } /* Literal.String.Backtick */
+.source .sc { color: #BA2121 } /* Literal.String.Char */
+.source .sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
+.source .s2 { color: #BA2121 } /* Literal.String.Double */
+.source .se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
+.source .sh { color: #BA2121 } /* Literal.String.Heredoc */
+.source .si { color: #BB6688; font-weight: bold } /* Literal.String.Interpol */
+.source .sx { color: #008000 } /* Literal.String.Other */
+.source .sr { color: #BB6688 } /* Literal.String.Regex */
+.source .s1 { color: #BA2121 } /* Literal.String.Single */
+.source .ss { color: #19177C } /* Literal.String.Symbol */
+.source .bp { color: #008000 } /* Name.Builtin.Pseudo */
+.source .vc { color: #19177C } /* Name.Variable.Class */
+.source .vg { color: #19177C } /* Name.Variable.Global */
+.source .vi { color: #19177C } /* Name.Variable.Instance */
+.source .il { color: #666666 } /* Literal.Number.Integer.Long */
+
+
+		</style>
+  </head>
+	<body>
+		<div id="wrapper">
+			<div id="content">
+				<h1>RSSBus Apps  - Readme File</h1>
+				
+				<h2>Welcome to RSSBus Apps</h2>
+				
+        <p>
+          This readme will provide instructions for installing the RSSBus Service-Enabled Apps on Java 
+          web servers. RSSBus Apps can be hosted in any Java servlet container. The installation package includes 
+          a .war file, which can be deployed to the Java web server. This document provides instructions for 5 
+          of the most common Java servers (Tomcat, Jboss, WebSphere, WebLogic, and Jetty), but if you need 
+          assistance installing to a server not discussed here, please email 
+          <a href="mailto:support@rssbus.com">support@rssbus.com</a> and we will be happy to assist you.
+        </p>
+        
+        <ul>
+          <li><a href='#tomcat'>Installing to Tomcat</a></li>
+          <li><a href='#jboss'>Installing to JBoss</a></li>
+          <li><a href='#websphere'>Installing to WebSphere</a></li>
+          <li><a href='#weblogic'>Installing to WebLogic</a></li>
+          <li><a href='#jetty'>Installing to Jetty</a></li>
+        </ul>
+        
+        <h2 id="tomcat">Installing to Tomcat</h2>
+        <ul>
+          <li>
+            <p>
+              There are multiple ways you can deploy a war to Tomcat. You can explode the rssbus.war file 
+              and copy the expanded rssbus directory into the webapps folder, or you can deploy the war 
+              from within the management console in Tomcat. You can find more information about deploying 
+              war's through the management console in the <a href="http://tomcat.apache.org/">Tomcat documentation</a> 
+              for the version of Tomcat that you are using.
+            </p>
+          </li>
+          <li>
+            <p>
+              <b>Note:</b> Before installing to Tomcat, please make sure your Tomcat server has the option 
+              set to unpack wars (this option is enabled by default).
+            </p>
+          </li>
+          <li>
+            <p>
+              Next, you will need to grant your Tomcat user access to the RSSBus application(s) you are deploying.  
+              You can do this by assigning the roles of "rssbus_appuser" and "rssbus_admin" to the user you want as
+              the application administrator of the RSSBus application.  If you're using the default user realm for Tomcat, 
+              you can add these roles by editing the tomcat-users.xml file located in 
+              <i>$CATALINA_BASE/conf/tomcat-users.xml</i>.  In this example, the "admin" user has been given the 
+              necessary roles for administrative access to RSSBus applications:
+            </p>
+            <p>
+              &lt;user name="admin" password="admin" roles="<b>rssbus_appuser,rssbus_admin,</b>admin-gui,manager-gui,manager-status,manager-script,manager-jmx" /&gt;
+            </p>
+            <p>For more information about roles, please see the inline documentation for security in the RSSBus administration 
+            	console.</p>
+          </li>
+          <li>
+            <p>
+              After configuring the user roles, you will need to restart your Tomcat server in order for the changes to take effect.
+            </p>
+          </li>
+          <li>
+            <p>
+              You are now ready to login to the RSSBus application. By default, all application data will be managed in a data directory 
+              created for the RSSBus applications in the <i>WEB-INF</i> folder of the web application. If you would like to use a different 
+              directory, the first thing you will want to do after logging in is set the data directory for the RSSBus applications
+              by clicking on the <b>Welcome!</b> link on the top right of the page and selecting the option "Admin Settings".  You will 
+              then be redirected to a page where you can configure various administrator settings for your RSSBus applications, including 
+              the Data Directory. Choose a location outside of the web application where the RSSBus applications can store sensitive 
+              information relating to profile configuration.
+            </p>
+          </li>
+        </ul>
+        
+				<h2 id="jboss">Installing to JBoss</h2>
+        <ul>
+          <li>
+            <p>
+              There are multiple ways you can deploy a war to JBoss. You can manually unpack the rssbus.war to a directory  
+              named <i>rssbus.war</i> in the <i>/server/default/deploy/</i> directory of JBoss, or you can use the 
+              JBoss Administration Console to install the war (be sure to select the Deploy Exploded option). 
+            </p>
+            <p>
+              <b>Note:</b> Explode the rssbus.war before deploying it, or the RSSBus AppServer will not be able to 
+              save your settings. In version 6, JBoss will not automatically deploy exploded war files. You must 
+              set an option or manually create an empty file named <i>rssbus.war.dodeploy</i> in the deploy 
+              directory for JBoss to deploy the web application.
+            </p>
+          </li>
+          <li>
+            <p>
+              Next, you will need to grant your JBoss user access to the RSSBus application(s) you are deploying.  
+              You can do this by assigning the roles of "rssbus_appuser" and "rssbus_admin" to the user you want as
+              the application administrator of the RSSBus application.  If you're using the default user realm for JBoss, 
+              you can add these roles using the add-user.bat file which comes with the JBoss server.
+            </p>
+          </li>
+          <li>
+            <p>
+              You are now ready to login to the RSSBus application. By default, all application data will be managed in a data directory 
+              created for the RSSBus applications in the <i>WEB-INF</i> folder of the web application. If you would like to use a different 
+              directory, the first thing you will want to do after logging in is set the data directory for the RSSBus applications
+              by clicking on the <b>Welcome!</b> link on the top right of the page and selecting the option "Admin Settings".  You will 
+              then be redirected to a page where you can configure various administrator settings for your RSSBus applications, including 
+              the Data Directory. Choose a location outside of the web application where the RSSBus applications can store sensitive 
+              information relating to profile configuration.
+            </p>
+          </li>
+        </ul>
+        
+        <h2 id="websphere">Installing to WebSphere</h2>
+        <ul>
+          <li>
+            <p>
+              In order to deploy the rssbus.war to WebSphere, you must first create a plan, because the RSSBus application(s) 
+              require specific user roles to be enabled in order to access the application. Create a plan 
+              which assigns the roles "rssbus_appuser" and "rssbus_admin" to the user or group that you would like to 
+              set up as the administrator of your RSSBus applications.  WebSphere has a wizard which helps you create 
+              a plan for a war located at <b>Applications-&gt;Plan Creator</b>.  Here's an example of a plan created 
+              for the rssbus.war application:
+            </p>
+            <p>
+<pre>
+&lt;web-app xmlns="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1"&gt;
+  &lt;dep:environment xmlns:dep="http://geronimo.apache.org/xml/ns/deployment-1.2"&gt;
+    &lt;dep:moduleId&gt;
+      &lt;dep:groupId&gt;default&lt;/dep:groupId&gt;
+      &lt;dep:artifactId&gt;rssbus&lt;/dep:artifactId&gt;
+      &lt;dep:version&gt;1371673558693&lt;/dep:version&gt;
+      &lt;dep:type&gt;war&lt;/dep:type&gt;
+    &lt;/dep:moduleId&gt;
+    &lt;dep:dependencies/&gt;
+  &lt;/dep:environment&gt;
+  &lt;context-root&gt;rssbus&lt;/context-root&gt;
+  &lt;security-realm-name&gt;geronimo-admin&lt;/security-realm-name&gt;
+  &lt;app:security xsi:type="sec:securityType" xmlns:sec="http://geronimo.apache.org/xml/ns/security-2.0" xmlns:app="http://geronimo.apache.org/xml/ns/j2ee/application-2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+    &lt;sec:role-mappings&gt;
+      &lt;sec:role role-name="rssbus_admin"&gt;
+        &lt;sec:principal name="system" class="org.apache.geronimo.security.realm.providers.GeronimoUserPrincipal"/&gt;
+      &lt;/sec:role&gt;
+      &lt;sec:role role-name="admin"/&gt;
+      &lt;sec:role role-name="rssbus_appuser"&gt;
+        &lt;sec:principal name="system" class="org.apache.geronimo.security.realm.providers.GeronimoUserPrincipal"/&gt;
+      &lt;/sec:role&gt;
+      &lt;sec:role role-name="appuser"/&gt;
+    &lt;/sec:role-mappings&gt;
+  &lt;/app:security&gt;
+&lt;/web-app&gt;
+</pre>
+            </p>
+          </li>
+          <li>
+            <p>
+              Once your plan is created, you can deploy the war along with the plan using the 
+              <b>Applications-&gt;Deployer</b> utility in WebSphere.
+            </p>
+          </li>
+          <li>
+            <p>
+              You are now ready to login to the RSSBus application. By default, all application data will be managed in a data directory 
+              created for the RSSBus applications in the <i>WEB-INF</i> folder of the web application. If you would like to use a different 
+              directory, the first thing you will want to do after logging in is set the data directory for the RSSBus applications
+              by clicking on the <b>Welcome!</b> link on the top right of the page and selecting the option "Admin Settings".  You will 
+              then be redirected to a page where you can configure various administrator settings for your RSSBus applications, including 
+              the Data Directory. Choose a location outside of the web application where the RSSBus applications can store sensitive 
+              information relating to profile configuration.
+            </p>
+          </li>
+        </ul>
+        
+        <h2 id="weblogic">Installing to WebLogic</h2>
+        <ul>
+          <li>
+            <p>
+              Unpack the rssbus.war to a directory named <i>rssbus</i> to deploy the RSSBus 
+              AppServer to WebLogic. If you do not explode the war before deploying it to WebLogic, the RSSBus 
+              application will not function properly.
+            </p>
+          </li>
+          <li>
+            <p>
+              Once you have unpacked the rssbus.war, you are ready to deploy the application 
+              to your WebLogic server using the Deployment wizard in WebLogic.  The wizard will 
+              prompt you to configure the security model for the application and  
+              to determine how you want to manage the RSSBus application's roles and policies.  
+              The roles and policies are defined in the RSSBus application, but you must map the roles to 
+              a user in your WebLogic server.  The recommended selection here is: <i>Custom Roles: Use roles 
+              that are defined in the Administration Console; use policies that are defined in the deployment
+              descriptor.</i>  Selecting this option will allow you to manage the roles and users in 
+              WebLogic's administration console, while the policies definitions are found in the RSSBus AppServer 
+              application.
+            </p>
+          </li>
+          <li>
+            <p>
+              When the deployment is complete, you will need to configure the Administrator for your 
+              RSSBus application(s). The administrator will need to be given the roles 
+              "rssbus_appuser" and "rssbus_admin".  You can configure these roles by clicking on 
+              the <b>Security->Application Scope->Roles</b> tab for the rssbus application in the 
+              administration console of WebLogic. Here, you will need to add the two Web Application 
+              Scoped Roles and assign them to a user or group who will administer the RSSBus application(s).  
+              For more information about roles, please see the inline help documentation on security
+              in the RSSBus administration console. 
+            </p>
+          </li>
+          <li>
+            <p>
+              You are now ready to login to the RSSBus application. By default, all application data will be managed in a data directory 
+              created for the RSSBus applications in the <i>WEB-INF</i> folder of the web application. If you would like to use a different 
+              directory, the first thing you will want to do after logging in is set the data directory for the RSSBus applications
+              by clicking on the <b>Welcome!</b> link on the top right of the page and selecting the option "Admin Settings".  You will 
+              then be redirected to a page where you can configure various administrator settings for your RSSBus applications, including 
+              the Data Directory. Choose a location outside of the web application where the RSSBus applications can store sensitive 
+              information relating to profile configuration.
+            </p>
+          </li>
+        </ul>
+        
+        <h2 id="jetty">Installing to Jetty</h2>
+        <ul>
+          <li>
+            <p>
+              Unpack the rssbus.war to a directory named <i>rssbus</i> to deploy the RSSBus application(s) to Jetty. 
+              If you do not explode the war before deploying to Jetty, the application will not function properly.
+            </p>
+          </li>
+          <li>
+            <p>
+              Configure the RSSBus application administrator before starting Jetty. To do this, you will need to 
+              give your admin user(s) the roles "rssbus_admin" and "rssbus_appuser".  If you have not changed any 
+              of the default settings for your Jetty server, you can add these roles to the admin user by opening the 
+              file <i>%JETTY_HOME%/etc/realm.properties</i>.  Here you can edit the user roles.  You will 
+              want to change the password for the admin user as well as add the roles "rssbus_admin" and "rssbus_appuser".  
+              When you edit the admin user it should look something like this:
+            </p>
+<pre>
+admin: <b>test</b>,server-administrator,content-administrator,admin,user<b>,rssbus_admin,rssbus_appuser</b>
+</pre>
+            <p>
+              In the above example, "test" has been configured as the password for the admin user and all of the values 
+              separated by commas after that are the admin user's roles.
+            </p>
+          </li>
+          <li>
+            <p>
+              A login service must be configured for the Java realm used by the RSSBus AppServer (<i>RSSBusRealm</i>).  See
+              Jetty's documentation on configuring realms or you can edit the existing <i>%JETTY_HOME%/etc/test-realm.xml</i> configuration 
+              file that comes with Jetty if you have not changed the default settings of the Jetty server. To configure the LoginService 
+              for the <i>RSSBusRealm</i>, simply add the following to the <i>Configure</i> section of the test-realm.xml file:
+            </p>
+<pre>
+&lt;Call name="addBean"&gt;
+  &lt;Arg&gt;
+    &lt;New class="org.eclipse.jetty.security.HashLoginService"&gt;
+      &lt;Set name="name">RSSBusRealm&lt;/Set&gt;
+      &lt;Set name="config"&gt;&lt;Property name="jetty.home" default="."/&gt;/etc/realm.properties&lt;/Set&gt;
+      &lt;Set name="refreshInterval"&gt;0&lt;/Set&gt;
+    &lt;/New&gt;
+  &lt;/Arg&gt;
+&lt;/Call&gt;
+</pre>
+          </li>
+          <li>
+            <p>
+              Once you have exploded the war, configured your admin user, and configured the login service for the <i>RSSBusRealm</i>, 
+              you can start the Jetty server. You can then deploy the war by copying the exploded war directory into Jetty's <i>webapps</i> folder.
+            </p>
+          </li>
+          <li>
+            <p>
+              You are now ready to login to the RSSBus application. By default, all application data will be managed in a data directory 
+              created for the RSSBus applications in the <i>WEB-INF</i> folder of the web application. If you would like to use a different 
+              directory, the first thing you will want to do after logging in is set the data directory for the RSSBus applications
+              by clicking on the <b>Welcome!</b> link on the top right of the page and selecting the option "Admin Settings".  You will 
+              then be redirected to a page where you can configure various administrator settings for your RSSBus applications, including 
+              the Data Directory. Choose a location outside of the web application where the RSSBus applications can store sensitive 
+              information relating to profile configuration.
+            </p>
+          </li>
+        </ul>
+        
+				<h2>Thank You!</h2>
+				<P>
+          If you have any further questions, please check the inline help files for additional information, or contact 
+          us at <a href="mailto:support@rssbus.com">support@rssbus.com</a>. Your feedback is appreciated, and customer 
+          comments and suggestions are the most important drivers behind new features and improvements in our products.
+				</p>
+			</div>
+			<div class="push"></div>
+		</div>
+		<div id="footer">
+			<center>
+				RSSBus Apps - Copyright (c) 2013 RSSBus Inc. - All rights reserved. - For more information, please visit our website at <a href="http://www.rssbus.com/?src=readme&bld=4716">www.rssbus.com</a>.
+			</center>
+		</div>
+
+	</body>
+</html>
+

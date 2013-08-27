@@ -1,0 +1,231 @@
+/* Public Page */
+#content {
+  margin: 50px auto;
+  max-width: 780px;
+  min-width: 660px;
+  width: 80%;
+}
+
+#content .publicInfo {
+  margin: 0 10px;
+}
+
+#content .ca-params {
+  width: 80%;
+}
+
+#content .ca-params td {
+  border: none;
+}
+
+#content .ca-params tr th {
+  border-bottom: 1px solid gainsboro;
+  color: rgb(72, 116, 151);
+}
+
+/* List Partner */
+#serviceList form {
+  display:inline;
+}
+
+/* Table Paging */
+a.paging {
+  border: 1px solid #a0a0a0;
+  color: #505050 !important;
+  display: inline-block;
+  margin: 0 2px;
+  padding: 1px 2px;
+}
+
+a.paging:hover {
+  background-color: #ddd;
+}
+
+a.paging-selected {
+  background-color: #ddd;
+  border: 1px solid #707070;
+  padding: 1px 2px;
+  cursor: default;
+}
+
+/* Table */
+#tblAttrReq {
+  font-size:9pt;
+}
+
+#poutgoing {
+  margin: 10px 0px;
+}
+
+span.tb-refresh, span.tb-refresh:hover {
+  background:url(../../shared/img/refresh-white.png) no-repeat 0px 1px !important;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  text-indent: -4999px;
+  width: 20px;
+}
+
+/* Upload Files */
+#uploadFiles {
+  width:400px;
+}
+
+#uploadFiles table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+}
+
+#uploadFiles table a {
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {/* Chrome CSS hack */
+  #uploadFiles table input {
+    width: 192px;
+  }
+}
+
+/* Choose Partner Type */
+#partnerTypeChooser {
+  height:160px; 
+  width:400px; 
+}
+
+#partnerTypeChooser table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+}
+
+/* Cert Manager */
+#addCertificate {
+  height:220px; 
+  width:400px; 
+}
+
+#addCertificate table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+}
+
+#addCertificate table tr td .right {
+  text-align:right;
+}
+
+#certBlob {
+  height: 120px;
+  resize: none;
+  width:96%;
+}
+
+/* Cert Creator */
+#createCertificate {
+  height:670px;
+  width:400px;
+  margin:-335px -200px;
+}
+
+#createCertificate table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+}
+
+/* Exchange Certificate */
+#exchangeCert {
+  height:240px; 
+  width:400px; 
+}
+
+#exchangeCert table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+}
+
+#exchangeCert table tr td .right {
+  text-align:right;
+}
+
+/* Could not acquire CSP Tip */
+#cspTip {
+  height:300px;
+  width:360px;
+  margin:-150px -180px;
+}
+
+/* Send/Restart/Delete Status */
+#actionStatus {
+  height:120px;
+  width:320px;
+  margin:-60px -160px;
+}
+
+#actionStatus img {
+  float: left;
+  margin: 16px 12px 16px 5px;
+}
+
+span.partnerType {
+  position: absolute;
+  top: 35px;
+}
+
+/* Partner Selector */
+#selectPartner {
+  margin: -110px -110px;
+  width:240px; 
+}
+
+#selectPartner table {
+  border-collapse:separate; 
+  border-spacing:5px; 
+  width:100%;
+}
+
+#selectPartner table tr {
+  height: 26px;
+}
+
+#selectPartner div {
+  margin:0 15px 5px; 
+}
+
+/* Unsave */
+.unsave {
+  outline: 2px solid gold;
+  *border: 2px solid gold !important; /*For IE 6&7*/
+}
+
+/* Export Excel */
+a.expExcel {
+  float: right;
+  margin-right: 3%;
+}
+
+#infoForm {
+  padding-bottom: 22px;
+}
+
+.app-icon-partner {
+  background: url(../img/partner.png) no-repeat top left!important;
+  width: 17px !important; 
+  height: 17px !important;
+}
+
+/* Action Status Msg */
+#actionStatusMsg {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 240px;
+}
+
+#import-tsl-loading.updating {
+  background: url(../../shared/img/loading_20px.gif) no-repeat 0 0;
+  display: inline-block;
+  height: 20px;
+  line-height: 20px;
+  padding-left: 25px;
+}

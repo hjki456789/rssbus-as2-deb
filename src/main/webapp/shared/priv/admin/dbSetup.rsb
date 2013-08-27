@@ -1,0 +1,60 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!-- Intialize all databases -->
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('app_data')]"/>
+    <rsb:else>
+      <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('WEB-INF')]"/>
+    </rsb:else>
+  </rsb:equals>
+
+  <!-- Users database -->
+  <rsb:set item="db" attr="database" value="[tmp.appdatadir | pathcombine('Users.db')]"/>
+  <rsb:select value="[db.database | fileexists | tolower]">
+    <rsb:case match="exact" value="false">
+      <rsb:set item="filecreate" attr="file" value="[db.database]"/>
+      <rsb:call op="fileCreate" in="filecreate" />
+    </rsb:case>
+    <rsb:default />
+  </rsb:select>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS public_scripts (script TEXT NOT NULL PRIMARY KEY, UNIQUE (script))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS users(id INTEGER PRIMARY KEY, user_name TEXT NOT NULL, user_password TEXT NOT NULL, user_email TEXT, user_token TEXT NOT NULL, UNIQUE (user_name))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS roles(id INTEGER PRIMARY KEY, role_name TEXT NOT NULL, UNIQUE (role_name))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS user_roles(user_id INTEGER NOT NULL, role_id INTEGER NOT NULL, UNIQUE (user_id, role_id), FOREIGN KEY(user_id) REFERENCES users(id), FOREIGN KEY(role_id) REFERENCES roles(id))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS user_scripts(user_id INTEGER NOT NULL, script TEXT NOT NULL, method TEXT NOT NULL DEFAULT '*', UNIQUE (user_id, script), FOREIGN KEY(user_id) REFERENCES users(id))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE VIEW IF NOT EXISTS tomcat_roles AS SELECT \[users\].\[user_name\],\[roles\].\[role_name\] FROM users,user_roles,roles WHERE \[user_roles\].\[user_id\]=\[users\].\[id\] AND \[user_roles\].\[role_id\]=\[roles\].\[id\]"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  
+  <!-- Profile database -->
+  <rsb:set item="db" attr="database" value="[tmp.appdatadir | pathcombine('Profile.db')]"/>
+  <rsb:select value="[db.database | fileexists | tolower]">
+    <rsb:case match="exact" value="false">
+      <rsb:set item="filecreate" attr="file" value="[db.database]"/>
+      <rsb:call op="fileCreate" in="filecreate" />
+    </rsb:case>
+    <rsb:default />
+  </rsb:select>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS profile (puser VARCHAR(50), pname VARCHAR(50), pvalue varchar(100), PRIMARY KEY (puser,pname))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS scheduled_tasks (name TEXT NOT NULL PRIMARY KEY, url TEXT NOT NULL, minutes VARCHAR(30), hours VARCHAR(30), daysofmonth VARCHAR(30), months VARCHAR(30), daysofweek VARCHAR(30), special VARCHAR(30), runcount INTEGER, logfile TEXT, description TEXT, user TEXT)"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  
+  <!-- Logs database -->
+  <rsb:set item="db" attr="database" value="[tmp.appdatadir | pathcombine('Logs.db')]"/>
+  <rsb:select value="[db.database | fileexists | tolower]">
+    <rsb:case match="exact" value="false">
+      <rsb:set item="filecreate" attr="file" value="[db.database]"/>
+      <rsb:call op="fileCreate" in="filecreate" />
+    </rsb:case>
+    <rsb:default />
+  </rsb:select>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS access (id INTEGER NOT NULL PRIMARY KEY, datetime DATETIME NOT NULL, remoteip TEXT NOT NULL, method TEXT NOT NULL, url TEXT, user TEXT NOT NULL, bytes INTEGER NOT NULL, appfolder TEXT, other TEXT, UNIQUE (id))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+  <rsb:set item="db" attr="query" value="CREATE TABLE IF NOT EXISTS logs (id INTEGER NOT NULL PRIMARY KEY, datetime DATETIME NOT NULL, logtype TEXT NOT NULL, resource TEXT NOT NULL, message TEXT NOT NULL, appfolder TEXT, other TEXT, UNIQUE (id))"/>
+  <rsb:call op="sqliteQuery" in="db"/>
+
+</rsb:script>

@@ -1,0 +1,57 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="InstallLicense" description="Installs the specified license.">
+    <input name="licfile" description="The license file to install." />
+    <input name="prod" description="The product code." />
+    <input name="sno" description="The user's product key." />
+    <input name="nodeid" description="The user's node id." />
+    <input name="name" description="The user's name." />
+    <input name="email" description="The user's email address." />
+    <output name="status" description="The status of installing the license (Success/Failure)." />
+    <output name="errormessage" description="A description of the error message." />
+  </rsb:info>
+  
+  <rsb:set attr="result.status" value="Failure"/>
+  <rsb:set attr="result.errormessage" value="The license was not installed. Please check your Product Key or contact support at <a href='mailto:support@rssbus.com'>support@rssbus.com</a>."/>
+  
+  <rsb:try>
+
+    <rsb:check attr="sno">
+      <rsb:set attr="http.url" value="http://www.rssbus.com/download/lic.aspx?prod=[prod]&a=vset&sno=[sno]&nodeid=[nodeid]&canemail=1&c=2&name=[name | def('') | urlencode]&email=[email | def('') | urlencode]&setup=true"/>
+    
+      <rsb:else>
+        <rsb:set attr="tmp.profileprop" value="demolic_[prod | replace('-','') | tolower]_global"/>
+        <rsb:check attr="_profile.[tmp.profileprop]">
+          <rsb:throw code="license" description="The trial license has already been installed for this application. Please contact support at <a href='mailto:support@rssbus.com'>support@rssbus.com</a> for other licensing options."/>
+          <rsb:else>
+            <rsb:set attr="http.url" value="http://www.rssbus.com/download/lic.aspx?prod=[prod]&a=itrial&nodeid=[nodeid]&canemail=1&c=2&name=[name | def('') | urlencode]&email=[email | def('') | urlencode]&setup=true"/>
+            <rsb:set attr="_profile.[tmp.profileprop]" value="[now | now]"/>
+          </rsb:else>
+        </rsb:check>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:call op="httpGet" in="http" out="out">
+      <rsb:match pattern="*REGEDIT*" type="glob" value="[http:content | def('')]">
+        <rsb:set attr="file.file" value="[site.java | equals('true','[_input.licfile | tolower]','[_input.licfile]')]"/>
+        <rsb:set attr="file.file" value="[site.appdatadir | pathcombine('[file.file]')]"/>
+        <rsb:set attr="file.data" value="[http:content]"/>
+        <rsb:call op="fileWrite" in="file">
+          <rsb:set attr="result.status" value="Success"/>
+          <rsb:unset attr="result.errormessage"/>
+        </rsb:call>
+      </rsb:match>
+    </rsb:call>
+
+    <rsb:push item="result"/>
+    <rsb:catch code="*">
+      <rsb:set attr="result.status" value="Failure"/>
+      <rsb:set attr="result.errormessage">The license was not installed: "[_code]: [_description]".</rsb:set>
+      <rsb:push item="result"/>
+    </rsb:catch>
+
+  </rsb:try>
+</rsb:script>

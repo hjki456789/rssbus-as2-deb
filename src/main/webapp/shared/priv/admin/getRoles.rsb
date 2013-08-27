@@ -1,0 +1,21 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getRoles" description="Get the roles for a user.">
+    <input name="username" description="The username." required="true"/>
+    <output name="role" description="A user's role." />
+  </rsb:info>
+  
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="roles" attr="database" value="[site.userdb]"/>
+    <rsb:set item="roles" attr="paramname#1" value="username"/>
+    <rsb:set item="roles" attr="paramvalue#1" value="[_input.username]"/>
+    <rsb:set item="roles" attr="query" value="SELECT role_name FROM user_roles,roles,users WHERE users.user_name=@username AND user_roles.\[user_id\]=users.\[id\] AND roles.\[id\]=user_roles.\[role_id\]"/>
+    <rsb:call op="sqliteQuery" in="roles">
+      <rsb:set attr="return.role" value="[sqlite:role_name]"/>
+      <rsb:push item="return"/>
+    </rsb:call>
+  </rsb:check>
+</rsb:script>

@@ -1,0 +1,78 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:include file='../config.rst'/>
+
+  <rsb:set item="tmpIn" attr="root" value="[site.rootPath]"/>
+  <rsb:set attr="page.flg" value="false"/>
+
+  <rsb:set attr="tmp.action" value="GET"/>
+  <rsb:call op="[service.sendAllLock]" input="tmp">
+    <rsb:equals attr="fa:result" case="ignore" value="true">
+      <rsb:set attr="page.flg" value="true"/>
+    </rsb:equals>
+  </rsb:call>
+
+  <rsb:equals attr="page.flg" case="ignore" value="true">
+    <rsb:call op="[service.listPartners]">
+      <rsb:try>
+        <rsb:check attr="a2p:automationenabled">
+          <rsb:else>
+            <rsb:set attr="a2p:automationenabled" value="false"/>
+          </rsb:else>
+        </rsb:check>
+        
+        <rsb:equals attr="a2p:automationenabled" case="ignore" value="true">
+
+          <rsb:select value="[a2p:type | tolower()]">
+            <rsb:case match="exact" value="ftp">
+              <rsb:set attr="tmp.sendAll" value="[service.ftpSendAllFiles | def('')]"/>
+              <rsb:set attr="tmp.receiveAll" value="[service.ftpReceiveAllFiles | def('')]"/>
+            </rsb:case>
+            <rsb:case match="exact" value="sftp">
+              <rsb:set attr="tmp.sendAll" value="[service.sftpSendAllFiles | def('')]"/>
+              <rsb:set attr="tmp.receiveAll" value="[service.sftpReceiveAllFiles | def('')]"/>
+            </rsb:case>
+            <rsb:case match="exact" value="as2">
+              <rsb:set attr="tmp.sendAll" value="[service.as2SendAllFiles | def('')]"/>
+            </rsb:case>
+            <rsb:case match="exact" value="oftp">
+              <rsb:set attr="tmp.sendAll" value="[service.oftpSendAllFiles | def('')]"/>
+              <rsb:set attr="tmp.receiveAll" value="[service.oftpReceiveAllFiles | def('')]"/>
+            </rsb:case>
+            <rsb:default>
+              <rsb:set attr="tmp.sendAll" value="[service.sendAllFiles | def('')]"/>
+              <rsb:set attr="tmp.receiveAll" value="[service.receiveAllFiles | def('')]"/>
+            </rsb:default>
+          </rsb:select>
+
+          <rsb:check attr="tmp.sendAll">
+            <rsb:call op="[tmp.sendAll]?orgname=[a2p:orgname | urlencode]" input="tmpIn"/>
+          </rsb:check>
+
+          <rsb:check attr="tmp.receiveAll">
+            <rsb:call op="[tmp.receiveAll]?orgname=[a2p:orgname | urlencode]" input="tmpIn"/>
+          </rsb:check>
+        </rsb:equals>
+
+        <rsb:catch code="*">
+          <rsb:set attr="_log.error" value="Error processing [a2p:orgname | def]: [_message]"/>
+          <rsb:include file='../errorHTML.rst'/>
+        </rsb:catch>
+      </rsb:try>
+
+    </rsb:call>
+
+    <rsb:set attr="tmp.action" value="RELEASE"/>
+    <rsb:call op="[service.sendAllLock]" input="tmp"/>
+      Send all successful...
+    <rsb:else>
+      Lock is in use by another thread. Aborting send attempt...
+    </rsb:else>
+  </rsb:equals>
+
+  <rsb:check value="[RunTasks | def('True')]">
+    <rsb:call op="[service.runTasks]"/>
+    <hr/>
+    Run all tasks successful...
+  </rsb:check>
+
+</rsb:script>

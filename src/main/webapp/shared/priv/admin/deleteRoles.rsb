@@ -1,0 +1,22 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="deleteUser" description="Deletes the roles for a user.">
+    <input name="username" description="The username." required="true"/>
+  </rsb:info>
+  
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:user" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:set item="deleteroles" attr="database" value="[site.userdb]"/>
+  <rsb:set item="deleteroles" attr="paramname#1" value="username"/>
+  <rsb:set item="deleteroles" attr="paramvalue#1" value="[_input.username]"/>
+  <rsb:set item="deleteroles" attr="query">DELETE FROM user_roles WHERE user_id=(SELECT id FROM users WHERE user_name=@username)</rsb:set>
+  <rsb:call op="sqliteQuery" in="deleteroles"/>
+
+</rsb:script>

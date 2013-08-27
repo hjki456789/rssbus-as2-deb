@@ -1,0 +1,22 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="DuplicateConnector" desc="Creates a duplicated connector.">
+    <input name="origconnector" desc="The original connector name."/>
+    <input name="duplconnector" desc="The duplicated connector name."/>
+  </rsb:info>
+
+  <rsb:notequals attr="_input.origconnector" value="[duplconnector]">
+    <rsb:set attr="file.source" value="~/[origconnector]"/>
+    <rsb:set attr="file.destination" value="~/[duplconnector]"/>
+    <rsb:set attr="file.recurse" value="true"/>
+    <rsb:call op="fileCopy" input="file"/>
+
+    <rsb:set attr="tmp.origconnector" value="[origconnector]"/>
+    <rsb:set attr="tmp.renaconnector" value="[duplconnector | urlencode]"/>
+    <rsb:set attr="tmp.updateurlonly" value="true"/>
+    <rsb:call op="renameConnector.rsb" in="tmp" />      
+  </rsb:notequals>  
+</rsb:script>

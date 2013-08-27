@@ -1,0 +1,52 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="deleteSendFile" description="Delete send files for a partner.">
+    <input  name="orgname"    desc="The partner identifier" requird="true"/>
+    <input  name="fileName"   desc="The file name"          requird="true" />
+    <output name="file:file"  desc="The name of the file or directory that got deleted."/>
+  </rsb:info>
+
+  <rsb:equals attr="fileName" value="*">
+    <rsb:call op="[service.listSentFiles]">
+      <rsb:set attr="file" value="[file:fullname]"/>
+      <rsb:call op="fileDelete" output="out">
+        <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+      </rsb:call>
+    </rsb:call>
+    <rsb:else>
+      <rsb:call op="[service.getPartner]">
+        <rsb:set item='partner' copyfrom='_out1'/>
+      </rsb:call>
+
+      <rsb:check item="partner" attr="a2p:dirsent">
+        <rsb:set attr="tmp.pathlen" value="[partner.a2p:dirsent | getlength() | add('1')]"/>
+        <rsb:check attr="fileName">
+          <rsb:set attr="tmp.deleted" value="0"/>
+        
+          <rsb:set attr="path" value="[partner.a2p:dirsent]"/>
+          <rsb:set attr="mask" value="[fileName | filename]"/>
+          <rsb:set attr="recurse" value="[partner.a2p:recursesubdirectories | def(false) | tolower]"/>
+          <rsb:call op="fileListDir" output="out1">
+            <rsb:set attr="file" value="[out1.file:fullname]"/>
+            <rsb:set attr="tmp.filename" value="[out1.file:fullname | substring([tmp.pathlen])]"/>
+            <rsb:equals attr="tmp.filename" value="[fileName]">
+              <rsb:call op="fileDelete" output="out2">
+                <rsb:set attr="tmp.deleted" value="[tmp.deleted | add('1')]"/>
+                <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+              </rsb:call>
+            </rsb:equals>
+          </rsb:call>
+          <rsb:equals attr="tmp.deleted" value="0">
+            <rsb:push title="[rss:title | def('untitled item')]" description="File not found."/>
+          </rsb:equals>
+        </rsb:check>
+      </rsb:check>
+    </rsb:else>
+  </rsb:equals>
+  
+</rsb:script>
+
+

@@ -1,0 +1,37 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="verifyUser" description="Verify a user.">
+    <input name="username" description="The username." required="true"/>
+    <input name="password" description="The password of a user." required="true"/>
+		<output name="status" description="True if user was verified. Otherwise, false." />
+  </rsb:info>
+  
+	<rsb:try>
+    <rsb:check attr="password">
+      <rsb:set item="verify" attr="database" value="[site.userdb]"/>
+      <rsb:set item="verify" attr="paramname#1" value="user"/>
+      <rsb:set item="verify" attr="paramvalue#1" value="[_input.username]"/>
+      <rsb:set item="verify" attr="query" value="SELECT user_password FROM users WHERE lower(user_name)=lower(@user)"/>
+      <rsb:call op="sqliteQuery" in="verify" output="out1">
+        <rsb:equals attr="out1.sqlite:user_password" value="[_input.password]">
+          <rsb:set attr="return.status" value="true"/>
+          <rsb:push item="return"/>
+        </rsb:equals>
+      </rsb:call>
+    </rsb:check>
+    
+    <rsb:check attr="return.status">
+      <rsb:else>
+        <rsb:set attr="return.status" value="false"/>
+        <rsb:push item="return"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:catch code="*">
+      <rsb:set attr="error.status" value="false"/>
+      <rsb:push item="error"/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

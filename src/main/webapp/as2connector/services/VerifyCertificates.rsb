@@ -1,0 +1,191 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Verify Certificates" description="Check the expiration date of personal and trading partner certificates.  The expiration date and number of days until expiration will be returned after execution of this service.">
+    <input  name="Name"           desc="The organization name or AS2 Identifier of the trading partner." required="true" />
+    
+    <output name='Subject'        desc='The subject of certificate.' />
+    <output name='ExpirationDate' desc='The expiration date of certificate.' />
+    <output name='ExpirationDays' desc='The days to expiration date of certificate.' />
+    <output name='Error'          desc='The error message.' />
+  </rsb:info>
+  
+  <rsb:call op="[service.GetSelf]" out="out1">
+    <rsb:check attr="out1.a2p:certpfx">
+      <rsb:set attr="verify.store" value="[out1.a2p:certpfx]" />
+      <rsb:set attr="verify.password" value="[out1.a2p:certpassword]" />
+      <rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+        <rsb:check attr="Cert.fa:subject">
+          <rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:expdate">
+          <rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:expdays">
+          <rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:error">
+          <rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+        </rsb:check>
+        <rsb:set attr="out2.Name" value="[out1.a2p:certpfx]" />
+        <rsb:set attr="out2.Type" value="Personal Private Certificate" />
+        <rsb:push title="[out2.Type]" item="out2" />
+        <rsb:unset item="out2"/>
+      </rsb:call>
+      <rsb:unset item="verify"/>
+    </rsb:check>
+    
+    <rsb:check attr="out1.a2p:publiccert">
+      <rsb:set attr="verify.store" value="[out1.a2p:publiccert]" />
+      <rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+        <rsb:check attr="Cert.fa:subject">
+          <rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:expdate">
+          <rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:expdays">
+          <rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+        </rsb:check>
+        <rsb:check attr="Cert.fa:error">
+          <rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+        </rsb:check>
+        <rsb:set attr="out2.Name" value="[out1.a2p:publiccert]" />
+        <rsb:set attr="out2.Type" value="Personal Public Certificate" />
+        <rsb:push title="[out2.Type]" item="out2" />
+        <rsb:unset item="out2"/>
+      </rsb:call>
+      <rsb:unset item="verify"/>
+    </rsb:check>
+    <rsb:unset item="out1"/>
+  </rsb:call>
+  
+  <rsb:check attr="Name">
+    <rsb:set attr="orgname" value="[Name]" />
+    <rsb:call op="[service.GetPartner]" out="out1">
+      <rsb:check attr="out1.a2p:encryptcert">
+	    <rsb:set attr="verify.store" value="[out1.a2p:encryptcert]" />
+	    <rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+		    <rsb:check attr="Cert.fa:subject">
+					<rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+				</rsb:check>
+				<rsb:check attr="Cert.fa:expdate">
+						<rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdays">
+						<rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:error">
+						<rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+					</rsb:check>
+					<rsb:set attr="out2.Name" value="[out1.a2p:encryptcert]" />
+					<rsb:set attr="out2.Type" value="Encryption key for [out1.a2p:friendlyname]" />
+					<rsb:push title="[out2.Type]" item="out2" />
+          <rsb:unset item="out2"/>
+				</rsb:call>    
+        <rsb:unset item="verify"/>
+			</rsb:check>
+
+			<rsb:check attr="out1.a2p:signcert">
+				<rsb:set attr="verify.store" value="[out1.a2p:signcert]" />
+				<rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+					<rsb:check attr="Cert.fa:subject">
+						<rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdate">
+						<rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdays">
+						<rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:error">
+						<rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+					</rsb:check>
+					<rsb:set attr="out2.Name" value="[out1.a2p:signcert]" />
+					<rsb:set attr="out2.Type" value="Signing key for [out1.a2p:friendlyname]" />
+					<rsb:push title="[out2.Type]" item="out2" />
+          <rsb:unset item="out2"/>
+				</rsb:call>    
+        <rsb:unset item="verify"/>
+			</rsb:check>
+
+			<rsb:check attr="out1.a2p:sslacceptcert">
+				<rsb:set attr="verify.store" value="[out1.a2p:sslacceptcert]" />
+				<rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+					<rsb:check attr="Cert.fa:subject">
+						<rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdate">
+						<rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdays">
+						<rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:error">
+						<rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+					</rsb:check>
+					<rsb:set attr="out2.Name" value="[out1.a2p:sslacceptcert]" />
+					<rsb:set attr="out2.Type" value="SSL key for [out1.a2p:friendlyname]" />
+					<rsb:push title="[out2.Type]" item="out2" />
+          <rsb:unset item="out2"/>
+				</rsb:call>    
+        <rsb:unset item="verify"/>
+			</rsb:check>
+
+			<rsb:check attr="out1.a2p:sslclientcertfile">
+				<rsb:set attr="verify.store" value="[out1.a2p:sslclientcertfile]" />
+				<rsb:set attr="verify.password" value="[out1.a2p:sslclientcertpwd]" />
+				<rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+					<rsb:check attr="Cert.fa:subject">
+						<rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdate">
+						<rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdays">
+						<rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:error">
+						<rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+					</rsb:check>
+					<rsb:set attr="out2.Name" value="[out1.a2p:sslclientcertfile]" />
+					<rsb:set attr="out2.Type" value="SSL Client key for [out1.a2p:friendlyname]" />
+					<rsb:push title="[out2.Type]" item="out2" />
+          <rsb:unset item="out2"/>
+				</rsb:call>    
+        <rsb:unset item="verify"/>
+			</rsb:check>
+
+			<rsb:check attr="out1.a2p:alternatecert">
+				<rsb:set attr="verify.store" value="[out1.a2p:alternatecert]" />
+				<rsb:set attr="verify.password" value="[out1.a2p:alternatecertpassword]" />
+				<rsb:call op="[service.VerifyCert]" in="verify" output="Cert">
+					<rsb:check attr="Cert.fa:subject">
+						<rsb:set item="out2" attr="Subject" value="[Cert.fa:subject]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdate">
+						<rsb:set item="out2" attr="ExpirationDate" value="[Cert.fa:expdate]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:expdays">
+						<rsb:set item="out2" attr="ExpirationDays" value="[Cert.fa:expdays]" />
+					</rsb:check>
+					<rsb:check attr="Cert.fa:error">
+						<rsb:set item="out2" attr="Error" value="[Cert.fa:error]" />
+					</rsb:check>
+					<rsb:set attr="out2.Name" value="[out1.a2p:alternatecert]" />
+					<rsb:set attr="out2.Type" value="Alternate personal key for [out1.a2p:friendlyname]" />
+					<rsb:push title="[out2.Type]" item="out2" />
+          <rsb:unset item="out2"/>
+				</rsb:call>    
+        <rsb:unset item="verify"/>
+			</rsb:check>
+      <rsb:unset item="out1"/>
+		</rsb:call>
+	</rsb:check>
+
+</rsb:script>
+

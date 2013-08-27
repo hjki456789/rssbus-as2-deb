@@ -1,0 +1,21 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Send Email" description="Send an email to the application administrator using the email and SMTP server configured in the person profile.">
+    <input name="Subject" desc="The subject of the email message." required="true" />
+    <input name="Message" desc="The text of the email message." required="true" />
+  </rsb:info>
+  
+  <rsb:set item="input" attr="subject" value="[Subject]" />
+  <rsb:set item="input" attr="message" value="[Message]" />
+  
+  <rsb:call op="[service.sendMail]" in="input" />
+  	
+</rsb:script>
+
+
+

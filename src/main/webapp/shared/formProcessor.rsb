@@ -1,0 +1,68 @@
+<!--
+A generic form processor that takes the inputs, formats the body of the message
+and sends email to a single address.
+-->
+
+<rsb:info>
+  <input name="*"     desc="All the inputs"    />
+</rsb:info>
+
+<!-- Human? -->
+<rsb:check attr="_request.enteredCode">
+  <rsb:set attr="deobfusCode" value="[_request.enteredCode | divide('2')]"/>
+  <rsb:equals attr="deobfusCode" value="[origCode]">
+    <rsb:set attr="human" value="true"/>
+    <rsb:else>
+      <rsb:set attr="human" value="false"/>
+    </rsb:else>
+  </rsb:equals>
+  <rsb:else>
+    <rsb:set attr="human" value="true"/>
+  </rsb:else>
+</rsb:check>
+
+<!-- Inputs -->
+
+<rsb:set  item="myinput"   attr="smtpserver"      value="localhost" />
+<rsb:set  item="myinput"   attr="to"          value="[sendto | def('support@rssbus.com')]" />
+<rsb:set  item="myinput"   attr="cc"          value="[cc | def('')]" />
+<rsb:set  item="myinput"   attr="from"        value="[email | def('www@rssbus.com')]" />
+<rsb:set  item="myinput"   attr="subject"     value="[subject | def('Website Feedback')]" />
+
+<!--Check the inputs and construct the body of the message -->
+<rsb:set item="myinput"  attr="html"      value="" />
+<rsb:set item="myinput"  attr="message"   value="" />
+
+<rsb:enum item="_input">
+  <rsb:select    value="[_attr]"   >
+    <rsb:case    value="message"  >
+      <!--multiline message; add it to the end of the email -->
+      <rsb:set item="myinput" attr="message" value="[_value]" />
+    </rsb:case>
+    <rsb:case  value="subject"  />
+    <rsb:default>
+      <rsb:set item="myinput" attr="html">
+        [myinput.html] <tr><td>[_attr | capitalize() | toitalic()] : </td><td>[_value]</td></tr>
+      </rsb:set>
+    </rsb:default>
+  </rsb:select>
+</rsb:enum>
+
+<rsb:set item="myinput" attr="html">
+     [myinput.html]
+     <tr><td>&nbsp;</td><td>&nbsp;</td></tr>
+     <tr><td>IP : 	</td><td>[_request.server:REMOTE_HOST | def('')]</td></tr>
+     <tr><td>Date : 	</td><td>[ foo | date() | todate('MM/dd/yy') ]</td></tr>
+</rsb:set>
+
+<rsb:set item="myinput" attr="html">
+  <table border="0">[myinput.html]</table><br />[myinput.message]
+</rsb:set>
+
+<!-- Send the email  -->
+<rsb:equals attr="human" value="true">
+  <rsb:call op="smtpSendMessage" in="myinput" output="out" />
+  <rsb:else>
+    <rsb:throw code="captcha" desc="Not Human" />
+  </rsb:else>
+</rsb:equals> 

@@ -1,0 +1,90 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="updateUser" description="Updates the user's information.">
+    <input name="username" description="The username."/>
+    <input name="password" description="The user's password."/>
+    <input name="email" description="The user's email address."/>
+    <input name="roles" description="A comma-separated list of roles for the user."/>
+    <input name="authtoken" description="The user's authtoken."/>
+    <input name="winuseronly" description="True if the current user is Windows user only." values="true,false" default="false"/>
+  </rsb:info>
+  
+  <rsb:set item="sql" attr="database" value="[site.userdb]"/>
+
+  <rsb:set attr="tmp.updatepwd" value="false" />
+  <rsb:check value="[winuseronly]">
+    <rsb:set attr="_input.password" value=""/>
+    <rsb:set attr="tmp.updatepwd" value="true" />
+    <rsb:else>
+      <rsb:check attr="password">
+        <rsb:set attr="tmp.updatepwd" value="true" />
+        <rsb:else>
+          <rsb:set attr="in.username" value="[_input.username]" />
+          <rsb:call op="~/shared/priv/admin/isWinUserOnly.rsb" input="in" output="out">
+            <rsb:equals attr="out.winuseronly" value="true">
+              <rsb:throw code="rsb:user" description="User need a new password."/>
+            </rsb:equals>
+          </rsb:call>
+        </rsb:else>
+      </rsb:check>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check value="[tmp.updatepwd]">
+    <rsb:set item="updatepassword" attr="paramname#1" value="password"/>
+    <rsb:set item="updatepassword" attr="paramvalue#1" value="[_input.password]"/>
+    <rsb:set item="updatepassword" attr="paramname#2" value="username"/>
+    <rsb:set item="updatepassword" attr="paramvalue#2" value="[_input.username]"/>
+    <rsb:set item="updatepassword" attr="query">UPDATE users SET user_password=@password WHERE user_name=@username</rsb:set>
+    <rsb:call op="sqliteQuery" in="sql,updatepassword">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:user" description="Invalid username or password."/>
+      </rsb:equals>
+    </rsb:call>
+  </rsb:check>
+
+  <rsb:set item="updateemail" attr="paramname#1" value="email"/>
+  <rsb:set item="updateemail" attr="paramvalue#1" value="[_input.email | def]"/>
+  <rsb:set item="updateemail" attr="paramname#2" value="username"/>
+  <rsb:set item="updateemail" attr="paramvalue#2" value="[_input.username]"/>
+  <rsb:set item="updateemail" attr="query">UPDATE users SET user_email=@email WHERE user_name=@username</rsb:set>
+  <rsb:call op="sqliteQuery" in="sql,updateemail">
+    <rsb:equals attr="sqlite:affectedrows" value="0">
+      <rsb:throw code="rsb:user" description="Invalid username or email."/>
+    </rsb:equals>
+  </rsb:call>
+
+  <rsb:check attr="authtoken">
+    <rsb:set item="updateauthtoken" attr="paramname#1" value="authtoken"/>
+    <rsb:set item="updateauthtoken" attr="paramvalue#1" value="[_input.authtoken]"/>
+    <rsb:set item="updateauthtoken" attr="paramname#2" value="username"/>
+    <rsb:set item="updateauthtoken" attr="paramvalue#2" value="[_input.username]"/>
+    <rsb:set item="updateauthtoken" attr="query">UPDATE users SET user_token=@authtoken WHERE user_name=@username</rsb:set>
+    <rsb:call op="sqliteQuery" in="sql,updateauthtoken">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:user" description="Invalid username or authtoken."/>
+      </rsb:equals>
+    </rsb:call>
+  </rsb:check>
+
+  <rsb:try>
+    <rsb:check attr="roles">
+      <rsb:set attr="in.username" value="[_input.username]" />
+      <rsb:notequals attr="username" value="admin">
+        <rsb:call op="[service.deleteRoles]" input="in"/>
+      
+        <rsb:enum list="[_input.roles]" separator=",">
+          <rsb:set attr="in.role" value="[_value]" />
+          <rsb:call op="[service.addRole]" input="in"/>
+        </rsb:enum>
+      </rsb:notequals>
+    </rsb:check>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:user" description="Invalid username or email."/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

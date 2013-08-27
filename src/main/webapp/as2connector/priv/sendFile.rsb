@@ -1,0 +1,243 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  <rsb:include file="../../shared/view/loadLanguage.rst"/>
+
+  <rsb:info title="as2SendFile" description="Sends a file to a partner">
+    <input  name="orgname"      desc="The partner identifier." requird="true"/>
+    <input  name="file"         desc="The file name."          requird="true"/>
+    <input  name="attachment#"  desc="The attachment file."/>
+    <input  name="isauto"       desc="If true, enable automation"/>
+    <output name="result"       desc="The result message of transmission."/>
+  </rsb:info>
+
+  <rsb:set attr="selffeed" value="[service.getSelf]"/>
+  <rsb:set attr="partnerfeed" value="[service.getPartner]"/>
+  <rsb:set attr="localsettingsfeed" value="[service.getLocalSettings]"/>
+  <rsb:set attr="logfeed" value="[service.writeSysLog]"/>
+  <rsb:set attr="mailfeed" value="[service.sendMail]"/>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+  <rsb:call op="[service.getSelf]">
+    <rsb:set item="self" copyfrom="_out1"/>
+  </rsb:call>
+  <rsb:call op="[service.getLocalSettings]">
+    <rsb:set item='local' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:set attr="page.isPaid" value="[local.fa:errorcode | isless(1,'','paid')]" />
+  
+  <rsb:check attr="page.ispaid">
+    <rsb:try>
+      <rsb:set item="before" attr="AS2To" value="[orgname]"/>
+      <rsb:set item="before" attr="AS2From" value="[self.a2p:orgname]"/>
+      <rsb:set item="before" attr="Organization" value="[partner.a2p:friendlyname]"/>
+      <rsb:set item="before" attr="FileName" value="[file]"/>
+      <rsb:set item="before" attr="ShortDate" value="[null | now('d')]"/>
+      <rsb:set item="before" attr="LongDate" value="[null | now('D')]"/>
+      <rsb:call op="[service.beforeSend]" in="before"/>
+
+      <rsb:catch code="*">
+        <rsb:try>
+          <rsb:set attr="_log.error" value="[_code] [_description] [_details | def]"/>
+          <rsb:catch code="*"/>
+        </rsb:try>
+      </rsb:catch>
+    </rsb:try>
+  </rsb:check>
+
+  <rsb:try>
+    <rsb:check item="partner" attr="a2p:diroutgoing">
+      <rsb:set attr="file" value="[partner.a2p:diroutgoing | pathcombine('[file]')]"/>
+      <rsb:match pattern="true" value="[file | ischild('[partner.a2p:diroutgoing]')]">
+        <rsb:else>
+          <rsb:throw code="file" description="Unable to send file '[file]' from directory '[partner.a2p:diroutgoing]'."/>
+        </rsb:else>
+      </rsb:match>
+      <rsb:enum attr="attachment">
+        <rsb:set attr="attachfile" value="[partner.a2p:diroutgoing | pathcombine('[_value]')]"/>
+        <rsb:match pattern="true" value="[attachfile | ischild('[partner.a2p:diroutgoing]')]">
+          <rsb:set attr="_input.attachment#[_index]" value="[attachfile]"/>
+        </rsb:match>
+      </rsb:enum>
+    </rsb:check>
+    
+    <rsb:call op="as2connectorAs2SendFile" output="out">
+      
+      <rsb:check attr="out.encodedmessageid">
+        <rsb:set attr="cache.orgname" value="[orgname]"/>
+        <rsb:set attr="cache.logname" value="{[out.encodedmessageid]}"/>
+        <rsb:call op="[service.addSentCache]" in="cache"/>
+      </rsb:check>
+
+      <rsb:check attr="out.result">
+        <rsb:equals attr="out.result" value="failed" case="ignore">
+          <rsb:else>
+            <rsb:check value="[out.as2:result | equals('2')]">
+              <rsb:set attr="result" value="Transmission Successful."/>
+              <rsb:else>
+                <rsb:set attr="result" value="Transmission Successful - Pending Asynchronous MDN."/>
+              </rsb:else>
+            </rsb:check>
+            
+            <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+
+            <rsb:check attr="page.ispaid">
+              <rsb:try>
+                <rsb:set item="after" attr="AS2To" value="[_input.orgname]"/>
+                <rsb:set item="after" attr="FileName" value="[_input.file]"/>
+                <rsb:set item="after" attr="AS2From" value="[self.a2p:orgname]"/>
+                <rsb:set item="after" attr="Organization" value="[partner.a2p:friendlyname]"/>
+                <rsb:set item="after" attr="MessageId" value="[out.as2:messageid]"/>
+                <rsb:set item="after" attr="ShortDate" value="[null | now('d')]"/>
+                <rsb:set item="after" attr="LongDate" value="[null | now('D')]"/>
+                <rsb:set item="after" attr="Status" value="Success"/>
+                <rsb:call op="[service.afterSend]" in="after"/>
+              
+                <rsb:catch code="*">
+                  <rsb:try>
+                    <rsb:set attr="_log.error" value="[_code] [_description] [_details | def]"/>
+                    <rsb:catch code="*"/>
+                  </rsb:try>
+                </rsb:catch>
+              </rsb:try>
+            </rsb:check>
+          
+          </rsb:else>
+        </rsb:equals>
+      </rsb:check>
+
+    </rsb:call>
+
+    <rsb:catch code="*">
+      <rsb:set attr="ex:ecode" value="[_code|def('-1')]" />
+      <rsb:set attr="ex:category" value="[lang.ex_category1]" />
+      <rsb:set attr="ex:generalmsg" value="[_description]" />
+      <rsb:set attr="ex:specificmsg" value="[_details]" />
+      <rsb:set attr="ex:tip" value="[lang.ex_tip1]" />
+
+      <rsb:select attr="ex:ecode">
+        <!--HTTP Errors-->
+        <rsb:case value="151">
+          <rsb:set attr="ex:category" value="[lang.ex_category2]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg1]" />
+          <rsb:set attr="ex:specificmsg" value="[lang.ex_specificmsg1]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip151]" />
+        </rsb:case>
+        <!--Unexpected unsigned receipt-->
+        <rsb:case value="531">
+          <rsb:set attr="ex:category" value="[lang.ex_category2]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip531]" />
+        </rsb:case>
+        <!--Receipt Signature verification failure-->
+        <rsb:case value="532">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg2]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip532]" />
+        </rsb:case>
+        <!--MDN Error: Decryption failed-->
+        <rsb:case value="611">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg3]" />
+          <rsb:set attr="ex:specificmsg" value="[lang.ex_specificmsg2]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip611]" />
+        </rsb:case>
+        <!--MDN Error: Authentication failed-->
+        <rsb:case value="612">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg3]" />
+          <rsb:set attr="ex:specificmsg" value="[lang.ex_specificmsg3]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip612]" />
+        </rsb:case>
+        <!--MDN Error: Signature Verification failed-->
+        <rsb:case value="613">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg3]" />
+          <rsb:set attr="ex:specificmsg" value="[lang.ex_specificmsg4]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip613]" />
+        </rsb:case>
+        <!--Unexpected processing MDN Errors-->
+        <rsb:case value="614">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg4]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip614]" />
+        </rsb:case>
+        <!--Insufficient security MDN Errors-->
+        <rsb:case value="615">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg5]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip615]" />
+        </rsb:case>
+        <!--Decryption error-->
+        <rsb:case value="712">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_specificmsg2]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip712]" />
+        </rsb:case>
+        <!--Authentication error-->
+        <rsb:case value="731">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_specificmsg3]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip731]" />
+        </rsb:case>
+        <!--Signature verification error-->
+        <rsb:case value="732">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_specificmsg4]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip732]" />
+        </rsb:case>
+        <!--Signature verification error-->
+        <rsb:case value="762">
+          <rsb:set attr="ex:category" value="[lang.ex_category2]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg6]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip762]" />
+        </rsb:case>
+        <!--Signature verification error-->
+        <rsb:case value="999">
+          <rsb:set attr="ex:category" value="[lang.ex_category3]" />
+          <rsb:set attr="ex:generalmsg" value="[lang.ex_generalmsg7]" />
+          <rsb:set attr="ex:specificmsg" value="[_description]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip999]" />
+        </rsb:case>
+        <!--Host not responded-->
+        <rsb:case value="10060">
+          <rsb:set attr="ex:category" value="[lang.ex_category2]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip10060]" />
+        </rsb:case>
+        <!--Connection closed-->
+        <rsb:case value="32000">
+          <rsb:set attr="ex:category" value="[lang.ex_category2]" />
+          <rsb:set attr="ex:tip" value="[lang.ex_tip32000]" />
+        </rsb:case>
+      </rsb:select>
+      <rsb:push />
+      
+      <rsb:try>
+        <rsb:set item="after" attr="AS2To" value="[_input.orgname | def('')]"/>
+        <rsb:set item="after" attr="FileName" value="[_input.file | def('')]"/>
+        <rsb:set item="after" attr="AS2From" value="[self.a2p:orgname | def('')]"/>
+        <rsb:set item="after" attr="Organization" value="[partner.a2p:friendlyname | def('')]"/>
+        <rsb:set item="after" attr="MessageId" value=""/>
+        <rsb:set item="after" attr="ShortDate" value="[null | now('d')]"/>
+        <rsb:set item="after" attr="LongDate" value="[null | now('D')]"/>
+        <rsb:set item="after" attr="ErrorMessage" value="[ex:generalmsg]: [ex:specificmsg]"/>
+        <rsb:set item="after" attr="Status" value="FAIL"/>
+        <rsb:call op="[service.afterSend]" in="after"/>
+        <rsb:catch code="*"/>
+      </rsb:try>
+    </rsb:catch>
+  </rsb:try>
+
+</rsb:script>
+

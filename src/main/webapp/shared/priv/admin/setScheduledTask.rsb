@@ -1,0 +1,96 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="setScheduledTask" description="Sets a scheduled task.">
+    <input name="OldName" description="A task's old name." />
+    <input name="Name" description="A task's name." />
+    <input name="URL" description="A task's URL." />
+    <input name="Cron" description="The cron schedule." />
+    <input name="RunCount" description="The run count." />
+    <input name="LogFile" description="The log file." />
+    <input name="Description" description="The description of the task." />
+    <input name="User" description="The user who created the task." />
+  </rsb:info>
+  
+  <rsb:check attr="User">
+    <rsb:equals attr="User" value="System">
+      <rsb:check attr="_request.server:AUTH_USER">
+        <rsb:throw code="scheduler" desc="This user cannot schedule system tasks."/>
+      </rsb:check>
+    </rsb:equals>
+  </rsb:check>
+  
+  <rsb:check value="[site.profiledb | fileexists()]">
+    <rsb:set attr="db.database" value="[site.profiledb]"/>
+    
+    <rsb:set attr="cache.name" value="[name]" />
+    <rsb:set attr="cache.url" value="[url]" />
+    <rsb:set attr="cache.minutes" value="[cron | def | split(' ','1')]"/>
+    <rsb:set attr="cache.hours" value="[cron | def | split(' ','2')]"/>
+    <rsb:set attr="cache.daysofmonth" value="[cron | def | split(' ','3')]"/>
+    <rsb:set attr="cache.months" value="[cron | def | split(' ','4')]"/>
+    <rsb:set attr="cache.daysofweek" value="[cron | def | split(' ','5')]"/>
+    <rsb:set attr="cache.special" value="[special | def('None')]" />
+    <rsb:set attr="cache.runcount" value="[runcount | def('-1')]" />
+    <rsb:set attr="cache.logfile" value="[logfile | def]" />
+    <rsb:set attr="cache.description" value="[description | def]" />
+    <rsb:set attr="cache.user" value="[user | def('None')]" />
+    
+    <rsb:check attr="oldname">
+      <rsb:equals attr="OldName" value="[Name]">
+        <rsb:else>
+          <rsb:set attr="stop.name" value="[oldname]"/>
+          <rsb:call op="schedulerStop" in="stop"/>
+          
+          <rsb:set attr="delete.paramname#1" value="name"/>
+          <rsb:set attr="delete.paramvalue#1" value="[oldname]"/>
+          <rsb:set attr="delete.query" value="DELETE FROM scheduled_tasks WHERE name=@name"/>
+          <rsb:call op="sqliteQuery" in="delete,db">
+            <rsb:equals attr="sqlite:affectedrows" value="0">
+              <rsb:throw code="rsb:scheduler" description="Invalid task."/>
+            </rsb:equals>
+          </rsb:call>
+        </rsb:else>
+      </rsb:equals>
+    </rsb:check>
+    
+    <rsb:set attr="tasks.paramname#1" value="name"/>
+    <rsb:set attr="tasks.paramvalue#1" value="[cache.name]"/>
+    <rsb:set attr="tasks.paramname#2" value="url"/>
+    <rsb:set attr="tasks.paramvalue#2" value="[cache.url]"/>
+    <rsb:set attr="tasks.paramname#3" value="minutes"/>
+    <rsb:set attr="tasks.paramvalue#3" value="[cache.minutes]"/>
+    <rsb:set attr="tasks.paramname#4" value="hours"/>
+    <rsb:set attr="tasks.paramvalue#4" value="[cache.hours]"/>
+    <rsb:set attr="tasks.paramname#5" value="daysofmonth"/>
+    <rsb:set attr="tasks.paramvalue#5" value="[cache.daysofmonth]"/>
+    <rsb:set attr="tasks.paramname#6" value="months"/>
+    <rsb:set attr="tasks.paramvalue#6" value="[cache.months]"/>
+    <rsb:set attr="tasks.paramname#7" value="daysofweek"/>
+    <rsb:set attr="tasks.paramvalue#7" value="[cache.daysofweek]"/>
+    <rsb:set attr="tasks.paramname#8" value="special"/>
+    <rsb:set attr="tasks.paramvalue#8" value="[cache.special]"/>
+    <rsb:set attr="tasks.paramname#9" value="runcount"/>
+    <rsb:set attr="tasks.paramvalue#9" value="[cache.runcount]"/>
+    <rsb:set attr="tasks.paramname#10" value="logfile"/>
+    <rsb:set attr="tasks.paramvalue#10" value="[cache.logfile]"/>
+    <rsb:set attr="tasks.paramname#11" value="description"/>
+    <rsb:set attr="tasks.paramvalue#11" value="[cache.description]"/>
+    <rsb:set attr="tasks.paramname#12" value="user"/>
+    <rsb:set attr="tasks.paramvalue#12" value="[cache.user]"/>
+    <rsb:set attr="tasks.query" value="INSERT OR REPLACE INTO scheduled_tasks (name, url, minutes, hours, daysofmonth, months, daysofweek, special, runcount, logfile, description, user) VALUES (@name, @url, @minutes, @hours, @daysofmonth, @months, @daysofweek, @special, @runcount, @logfile, @description, @user)"/>
+    <rsb:call op="sqliteQuery" in="tasks,db">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:scheduler" description="Invalid task."/>
+      </rsb:equals>
+      <rsb:check attr="_input.cron">
+        <rsb:call op="schedulerStart" in="cache"/>
+        <rsb:else>
+          <rsb:call op="schedulerStop" in="cache"/>
+        </rsb:else>
+      </rsb:check>
+    </rsb:call>
+  </rsb:check>
+</rsb:script>

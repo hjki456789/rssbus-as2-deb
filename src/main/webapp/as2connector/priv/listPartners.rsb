@@ -1,0 +1,26 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="listPartners" description="List all trading partners">
+    <input name='updatecache'        desc='When true, the cache will be updated.' def="false" />
+    <output name='orgname'           desc='The organization Name.' />
+    <output name='friendlyname'      desc='The friendly name.' />
+    <output name='type'              desc='Partner type'/>
+    <output name='automationenabled' desc='If true, enable automation'/>
+  </rsb:info>
+
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set attr="conn" value="Version=3,uri=file:[site.statusdb]" />
+    <rsb:else>
+      <rsb:set attr="conn" value="jdbc:sqlite:[site.statusdb]" />
+    </rsb:else>
+  </rsb:equals>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileListPartners" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+

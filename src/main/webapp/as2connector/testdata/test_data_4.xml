@@ -1,0 +1,1173 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<?soxtype urn:x-commerceone:document:com:commerceone:XCBL30:XCBL30.sox$1.0?>
+<Order>
+	<OrderHeader>
+		<OrderNumber>
+			<BuyerOrderNumber>754330000</BuyerOrderNumber>
+			<!--Seller Order Number would be populated by the supplier-->
+			<SellerOrderNumber>0000000001</SellerOrderNumber>
+		</OrderNumber>
+		<OrderIssueDate>20010106T15:00:01</OrderIssueDate>
+		<OrderReferences>
+			<AccountCode>
+				<Reference>
+					<RefNum>AC1</RefNum>
+				</Reference>
+			</AccountCode>
+			<ContractReferences>
+				<ListOfContract>
+					<Contract>
+						<ContractID>
+							<Identifier>
+								<Agency>
+									<AgencyCoded>Other</AgencyCoded>
+									<AgencyCodedOther>ANTZ</AgencyCodedOther>
+								</Agency>
+								<Ident>ACME-C3</Ident>
+							</Identifier>
+						</ContractID>
+						<ContractType>
+							<ContractTypeCoded>FirmFixedPrice</ContractTypeCoded>
+						</ContractType>
+						<ValidityDates>
+							<StartDate>20010101T00:01:00</StartDate>
+							<EndDate>20011231T23:59:59</EndDate>
+						</ValidityDates>
+					</Contract>
+				</ListOfContract>
+			</ContractReferences>
+			<QuoteReference>
+				<Reference>
+					<RefNum/>
+					<RefDate>20010101T00:00:01</RefDate>
+				</Reference>
+			</QuoteReference>
+		</OrderReferences>
+		<ReleaseNumber>1</ReleaseNumber>
+		<Purpose>
+			<PurposeCoded>Original</PurposeCoded>
+		</Purpose>
+		<RequestedResponse>
+			<RequestedResponseCoded>ResponseExpected</RequestedResponseCoded>
+		</RequestedResponse>
+		<OrderType>
+			<OrderTypeCoded>PurchaseOrder</OrderTypeCoded>
+		</OrderType>
+		<OrderCurrency>
+			<Currency>
+				<CurrencyCoded>CAD</CurrencyCoded>
+			</Currency>
+		</OrderCurrency>
+		<OrderLanguage>
+			<Language>
+				<LanguageCoded>en</LanguageCoded>
+			</Language>
+		</OrderLanguage>
+		<OrderDates>
+			<RequestedShipByDate>20010107T18:00:00</RequestedShipByDate>
+			<RequestedDeliverByDate>20010108T18:14:00</RequestedDeliverByDate>
+			<ValidityDates>
+				<StartDate>20010106T12:00:00</StartDate>
+				<EndDate>20010131T12:00:00</EndDate>
+			</ValidityDates>
+			<CancelByDate>20010201T12:00:00</CancelByDate>
+		</OrderDates>
+		<OrderParty>
+			<BuyerParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther>Quadrem</AgencyCodedOther>
+								<AgencyDescription>Quadrem Netherlands</AgencyDescription>
+							</Agency>
+							<Ident>ZZn/Software</Ident>
+						</Identifier>
+					</PartyID>
+					<NameAddress>
+						<Name1>ACME</Name1>
+						<Name2>Sample Name</Name2>
+						<Name3>Sample Name2</Name3>
+						<Street>1313 Mockingbird Lane</Street>
+						<StreetSupplement1>Suite 0307</StreetSupplement1>
+						<StreetSupplement2>Box 314</StreetSupplement2>
+						<PostalCode>M3Y-1R5</PostalCode>
+						<City>Toronto</City>
+						<Region>
+							<RegionCoded>CAON</RegionCoded>
+						</Region>
+						<Country>
+							<CountryCoded>CA</CountryCoded>
+						</Country>
+						<Timezone>
+							<TimezoneCoded>-06.00</TimezoneCoded>
+							<TimezoneCodedOther>Sample Data</TimezoneCodedOther>
+						</Timezone>
+					</NameAddress>
+					<OrderContact>
+						<Contact>
+							<ContactID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ACME-CORP</AgencyCodedOther>
+										<AgencyDescription>ACME Corp Office</AgencyDescription>
+									</Agency>
+									<Ident>Buyer1</Ident>
+								</Identifier>
+							</ContactID>
+							<ContactName>Charles Enever</ContactName>
+							<ListOfContactNumber>
+								<ContactNumber>
+									<ContactNumberValue>(416)567-8901</ContactNumberValue>
+									<ContactNumberTypeCoded>TelephoneNumber</ContactNumberTypeCoded>
+								</ContactNumber>
+							</ListOfContactNumber>
+						</Contact>
+					</OrderContact>
+					<OtherContacts>
+						<ListOfContact>
+							<Contact>
+								<ContactID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>Other</AgencyCoded>
+											<AgencyCodedOther>ACME-CORP</AgencyCodedOther>
+											<AgencyDescription>Acme Corporate Inc.</AgencyDescription>
+										</Agency>
+										<Ident>SudBuyer</Ident>
+									</Identifier>
+								</ContactID>
+								<ContactName>Division Buyer</ContactName>
+							</Contact>
+						</ListOfContact>
+					</OtherContacts>
+					<CorrespondenceLanguage>
+						<Language>
+							<LanguageCoded>en</LanguageCoded>
+						</Language>
+					</CorrespondenceLanguage>
+				</Party>
+			</BuyerParty>
+			<SellerParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther>Quadrem</AgencyCodedOther>
+								<AgencyDescription>Quadrem Netherlands</AgencyDescription>
+							</Agency>
+							<Ident>zzsterling1</Ident>
+						</Identifier>
+					</PartyID>
+					<NameAddress>
+						<Name1>ANTZE</Name1>
+						<Name2/>
+						<Street>Douglas St. S</Street>
+						<StreetSupplement1>Suite 400</StreetSupplement1>
+						<StreetSupplement2>Box 982</StreetSupplement2>
+						<PostalCode>92618</PostalCode>
+						<City>Fountain Valley</City>
+						<Region>
+							<RegionCoded>USCA</RegionCoded>
+						</Region>
+						<Country>
+							<CountryCoded>US</CountryCoded>
+						</Country>
+						<Timezone>
+							<TimezoneCoded>-09.00</TimezoneCoded>
+						</Timezone>
+					</NameAddress>
+					<OrderContact>
+						<Contact>
+							<ContactID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ANTZ</AgencyCodedOther>
+										<AgencyDescription>ANTZ Inc.</AgencyDescription>
+									</Agency>
+									<Ident>Salesman1</Ident>
+								</Identifier>
+							</ContactID>
+							<ContactName>Honest Ed (salesman)</ContactName>
+							<ListOfContactNumber>
+								<ContactNumber>
+									<ContactNumberValue>(310)888-5555</ContactNumberValue>
+									<ContactNumberTypeCoded>TelephoneNumber</ContactNumberTypeCoded>
+								</ContactNumber>
+							</ListOfContactNumber>
+						</Contact>
+					</OrderContact>
+					<OtherContacts>
+						<ListOfContact>
+							<Contact>
+								<ContactID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>Other</AgencyCoded>
+											<AgencyCodedOther>Antze</AgencyCodedOther>
+											<AgencyDescription>Antze Ltd</AgencyDescription>
+										</Agency>
+										<Ident>SalesGrp1</Ident>
+									</Identifier>
+								</ContactID>
+								<ContactName>Sales Group 1</ContactName>
+							</Contact>
+						</ListOfContact>
+					</OtherContacts>
+					<CorrespondenceLanguage>
+						<Language>
+							<LanguageCoded>en</LanguageCoded>
+						</Language>
+					</CorrespondenceLanguage>
+				</Party>
+			</SellerParty>
+			<ShipToParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther>ACME-TIMM</AgencyCodedOther>
+								<AgencyDescription>Acme Timmins Division</AgencyDescription>
+							</Agency>
+							<Ident>Craig Mine</Ident>
+						</Identifier>
+					</PartyID>
+					<NameAddress>
+						<Name1>ACME Timmins</Name1>
+						<Name2>East Mine (Warehouse #3)</Name2>
+						<Street>675 Mineral Road</Street>
+						<StreetSupplement1>RR 4</StreetSupplement1>
+						<StreetSupplement2>Box 89</StreetSupplement2>
+						<PostalCode>P0M-2T6</PostalCode>
+						<City>Timmins</City>
+						<Region>
+							<RegionCoded>CAON</RegionCoded>
+						</Region>
+						<Country>
+							<CountryCoded>CA</CountryCoded>
+						</Country>
+						<Timezone>
+							<TimezoneCoded>-06.00</TimezoneCoded>
+						</Timezone>
+					</NameAddress>
+					<ReceivingContact>
+						<Contact>
+							<ContactID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ACME-TIMM</AgencyCodedOther>
+										<AgencyDescription>ACME Timmins</AgencyDescription>
+									</Agency>
+									<Ident>Warehouseman1</Ident>
+								</Identifier>
+							</ContactID>
+							<ContactName>Jim Neighbours</ContactName>
+							<ListOfContactNumber>
+								<ContactNumber>
+									<ContactNumberValue>(705)432-7654</ContactNumberValue>
+									<ContactNumberTypeCoded>TelephoneNumber</ContactNumberTypeCoded>
+								</ContactNumber>
+							</ListOfContactNumber>
+						</Contact>
+					</ReceivingContact>
+					<CorrespondenceLanguage>
+						<Language>
+							<LanguageCoded>en</LanguageCoded>
+						</Language>
+					</CorrespondenceLanguage>
+				</Party>
+			</ShipToParty>
+			<BillToParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther/>
+								<AgencyDescription/>
+							</Agency>
+							<Ident/>
+						</Identifier>
+					</PartyID>
+					<NameAddress>
+						<Name1/>
+						<Name2/>
+						<Name3/>
+						<Street/>
+						<StreetSupplement1/>
+						<StreetSupplement2/>
+						<PostalCode/>
+						<City/>
+						<Region>
+							<RegionCoded>USTX</RegionCoded>
+						</Region>
+						<Country>
+							<CountryCoded>US</CountryCoded>
+						</Country>
+						<Timezone>
+							<TimezoneCoded>07.00</TimezoneCoded>
+						</Timezone>
+					</NameAddress>
+					<OrderContact>
+						<Contact>
+							<ContactName/>
+						</Contact>
+					</OrderContact>
+					<ReceivingContact>
+						<Contact>
+							<ContactID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>AssignedBySellerOrSellersAgent</AgencyCoded>
+										<AgencyCodedOther>Quadrem</AgencyCodedOther>
+										<AgencyDescription/>
+									</Agency>
+									<Ident/>
+								</Identifier>
+							</ContactID>
+							<ContactName/>
+							<ListOfContactNumber>
+								<ContactNumber>
+									<ContactNumberValue/>
+									<ContactNumberTypeCoded>TelephoneNumber</ContactNumberTypeCoded>
+								</ContactNumber>
+							</ListOfContactNumber>
+						</Contact>
+					</ReceivingContact>
+					<OtherContacts>
+						<ListOfContact>
+							<Contact>
+								<ContactID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>AssignedBySellerOrSellersAgent</AgencyCoded>
+											<AgencyCodedOther>Quadrem</AgencyCodedOther>
+											<AgencyDescription/>
+										</Agency>
+										<Ident/>
+									</Identifier>
+								</ContactID>
+								<ContactName/>
+							</Contact>
+						</ListOfContact>
+					</OtherContacts>
+					<CorrespondenceLanguage>
+						<Language>
+							<LanguageCoded>en</LanguageCoded>
+						</Language>
+					</CorrespondenceLanguage>
+				</Party>
+			</BillToParty>
+			<ShipFromParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther>ANTZ</AgencyCodedOther>
+								<AgencyDescription>ANTZE Ltd.</AgencyDescription>
+							</Agency>
+							<Ident>Main Warehouse</Ident>
+						</Identifier>
+					</PartyID>
+					<NameAddress>
+						<Name1>Warehouse Number 1</Name1>
+						<Name2/>
+						<Name3/>
+						<Street/>
+						<StreetSupplement1/>
+						<StreetSupplement2/>
+						<PostalCode>POM-1SO</PostalCode>
+						<City>Fountain Valley</City>
+						<Region>
+							<RegionCoded>USCA</RegionCoded>
+						</Region>
+						<Country>
+							<CountryCoded>US</CountryCoded>
+						</Country>
+						<Timezone>
+							<TimezoneCoded>-09.00</TimezoneCoded>
+						</Timezone>
+					</NameAddress>
+					<ShippingContact>
+						<Contact>
+							<ContactID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ANTZ</AgencyCodedOther>
+										<AgencyDescription>ANTZ Inc.</AgencyDescription>
+									</Agency>
+									<Ident>Shipper1</Ident>
+								</Identifier>
+							</ContactID>
+							<ContactName>Pakem Tite</ContactName>
+							<ListOfContactNumber>
+								<ContactNumber>
+									<ContactNumberValue>(972)563-7928</ContactNumberValue>
+									<ContactNumberTypeCoded>TelephoneNumber</ContactNumberTypeCoded>
+								</ContactNumber>
+							</ListOfContactNumber>
+						</Contact>
+					</ShippingContact>
+					<OtherContacts>
+						<ListOfContact>
+							<Contact>
+								<ContactID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>Other</AgencyCoded>
+											<AgencyCodedOther/>
+											<AgencyDescription/>
+										</Agency>
+										<Ident/>
+									</Identifier>
+								</ContactID>
+								<ContactName/>
+							</Contact>
+						</ListOfContact>
+					</OtherContacts>
+					<CorrespondenceLanguage>
+						<Language>
+							<LanguageCoded>en</LanguageCoded>
+						</Language>
+					</CorrespondenceLanguage>
+				</Party>
+			</ShipFromParty>
+			<SoldToParty>
+				<Party>
+					<PartyID>
+						<Identifier>
+							<Agency>
+								<AgencyCoded>Other</AgencyCoded>
+								<AgencyCodedOther>SoldToParty Agency</AgencyCodedOther>
+							</Agency>
+							<Ident/>
+						</Identifier>
+					</PartyID>
+				</Party>
+			</SoldToParty>
+		</OrderParty>
+		<OrderTermsOfDelivery>
+			<TermsOfDelivery>
+				<TermsOfDeliveryFunctionCoded>DeliveryCondition</TermsOfDeliveryFunctionCoded>
+				<ShipmentMethodOfPaymentCoded>Account</ShipmentMethodOfPaymentCoded>
+				<ShipmentMethodOfPaymentCodedOther>FOB</ShipmentMethodOfPaymentCodedOther>
+				<TermsOfDeliveryDescription>Pack in refrigerated truck</TermsOfDeliveryDescription>
+			</TermsOfDelivery>
+		</OrderTermsOfDelivery>
+		<OrderPaymentInstructions>
+			<PaymentInstructions>
+				<PaymentTerms>
+					<PaymentTerm>
+						<PaymentTermCoded>Basic</PaymentTermCoded>
+						<PaymentTermCodedOther/>
+						<PaymentTermDetails>
+							<Discounts>
+								<DiscountPercent>3</DiscountPercent>
+								<DiscountDaysDue>10</DiscountDaysDue>
+							</Discounts>
+						</PaymentTermDetails>
+					</PaymentTerm>
+					<PaymentTermsNote>Sample Note</PaymentTermsNote>
+				</PaymentTerms>
+				<PaymentMethod>
+					<PaymentMeanCoded>Cheque</PaymentMeanCoded>
+					<PaymentMeanCodedOther/>
+					<CardInfo>
+						<CardNum/>
+					</CardInfo>
+				</PaymentMethod>
+			</PaymentInstructions>
+		</OrderPaymentInstructions>
+		<ListOfStructuredNote>
+			<StructuredNote>
+				<GeneralNote>Pricing types</GeneralNote>
+				<NoteID>Pricing types</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Deadlines</GeneralNote>
+				<NoteID>Deadlines</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Terms of delivery</GeneralNote>
+				<NoteID>Terms of delivery</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+					<AgencyCodedOther>SAP</AgencyCodedOther>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Shipping instructions</GeneralNote>
+				<NoteID>Shipping instructions</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Terms of payment</GeneralNote>
+				<NoteID>Terms of payment</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Warranties</GeneralNote>
+				<NoteID>Warranties</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Penalty for breach of contract</GeneralNote>
+				<NoteID>Penalty for breach of contract</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Guarantees</GeneralNote>
+				<NoteID>Guarantees</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Contract riders</GeneralNote>
+				<NoteID>Contract riders</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Asset</GeneralNote>
+				<NoteID>Asset</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Other contractual stipulations</GeneralNote>
+				<NoteID>Other contractual stipulations</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+			<StructuredNote>
+				<GeneralNote>Delivery</GeneralNote>
+				<NoteID>Delivery</NoteID>
+				<Agency>
+					<AgencyCoded>Other</AgencyCoded>
+				</Agency>
+			</StructuredNote>
+		</ListOfStructuredNote>
+	</OrderHeader>
+	<OrderDetail>
+		<ListOfItemDetail>
+			<ItemDetail>
+				<BaseItemDetail>
+					<LineItemNum>
+						<BuyerLineItemNum>10</BuyerLineItemNum>
+						<!--SellerLineItemNum would be populated by the supplier.-->
+						<SellerLineItemNum>1</SellerLineItemNum>
+					</LineItemNum>
+					<LineItemType>
+						<LineItemTypeCoded>Item</LineItemTypeCoded>
+					</LineItemType>
+					
+					<ItemIdentifiers>
+						<PartNumbers>
+							<SellerPartNumber>
+								<PartNum>
+									<PartID>BUS DH1237FN 1PR23280</PartID>
+									<PartIDExt/>
+								</PartNum>
+							</SellerPartNumber>
+							<BuyerPartNumber>
+								<PartNum>
+									<PartID>3625189</PartID>
+									<PartIDExt/>
+								</PartNum>
+							</BuyerPartNumber>
+							<ManufacturerPartNumber>
+								<PartID>QBUS DH1237FN</PartID>
+								<PartIDExt/>
+								<ManufacturerID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>Other</AgencyCoded>
+											<AgencyCodedOther/>
+											<AgencyDescription/>
+										</Agency>
+										<Ident/>
+									</Identifier>
+								</ManufacturerID>
+							</ManufacturerPartNumber>
+							<StandardPartNumber>
+								<ProductIdentifierCoded>
+									<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+									<ProductIdentifierQualifierCodedOther>Sample Data</ProductIdentifierQualifierCodedOther>
+									<ProductIdentifier/>
+									<ProductIdentifierExt/>
+								</ProductIdentifierCoded>
+							</StandardPartNumber>
+							<SubstitutePartNumbers>
+								<ListOfProductIdentifierCoded>
+									<ProductIdentifierCoded>
+										<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+										<ProductIdentifierQualifierCodedOther>JarvisClark</ProductIdentifierQualifierCodedOther>
+										<ProductIdentifier>YER-48UJ8-9LL</ProductIdentifier>
+										<ProductIdentifierExt/>
+									</ProductIdentifierCoded>
+								</ListOfProductIdentifierCoded>
+							</SubstitutePartNumbers>
+							<OtherItemIdentifiers>
+								<ListOfProductIdentifierCoded>
+									<ProductIdentifierCoded>
+										<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+										<ProductIdentifierQualifierCodedOther>Category</ProductIdentifierQualifierCodedOther>
+										<ProductIdentifier>Enclosed Bushings</ProductIdentifier>
+										<ProductIdentifierExt/>
+									</ProductIdentifierCoded>
+								</ListOfProductIdentifierCoded>
+							</OtherItemIdentifiers>
+						</PartNumbers>
+						<ItemDescription>BUSHING CHUCK DH1237FN 1PR23280</ItemDescription>
+						<CommodityCode>
+							<Identifier>
+								<Agency>
+									<AgencyCoded>Other</AgencyCoded>
+									<AgencyCodedOther>UNSPSC</AgencyCodedOther>
+									<AgencyDescription> UNiversal Standard Products and Services Classification</AgencyDescription>
+								</Agency>
+								<Ident> 27112807</Ident>
+							</Identifier>
+						</CommodityCode>
+					</ItemIdentifiers>
+					<TotalQuantity>
+						<Quantity>
+							<QuantityValue>8</QuantityValue>
+							<UnitOfMeasurement>
+								<UOMCoded>EA</UOMCoded>
+							</UnitOfMeasurement>
+						</Quantity>
+					</TotalQuantity>
+					<CountryOfOrigin>
+						<Country>
+							<CountryCoded>US</CountryCoded>
+						</Country>
+					</CountryOfOrigin>
+					<CountryOfDestination>
+						<Country>
+							<CountryCoded>CA</CountryCoded>
+						</Country>
+					</CountryOfDestination>
+					<FinalRecipient>
+						<Party>
+							<PartyID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ACME-Sud</AgencyCodedOther>
+										<AgencyDescription>ACME Sudbury</AgencyDescription>
+									</Agency>
+									<Ident>CRAIG MINE</Ident>
+								</Identifier>
+							</PartyID>
+							<NameAddress>
+								<Name1>CRAIG MINE</Name1>
+								<Name2>CRAIG MINE</Name2>
+								<Name3>FnlRecipName3</Name3>
+								<Street>675 Mineral Road</Street>
+								<StreetSupplement1>RR 4</StreetSupplement1>
+								<StreetSupplement2>Box 89</StreetSupplement2>
+								<PostalCode>P0M-002</PostalCode>
+								<City>Sudbury</City>
+								<Region>
+									<RegionCoded>CAON</RegionCoded>
+								</Region>
+								<Country>
+									<CountryCoded>CA</CountryCoded>
+								</Country>
+								<Timezone>
+									<TimezoneCoded>-06.00</TimezoneCoded>
+								</Timezone>
+							</NameAddress>
+						</Party>
+					</FinalRecipient>
+				</BaseItemDetail>
+				<PricingDetail>
+					<ListOfPrice>
+						<Price>
+							<UnitPrice>
+								<UnitPriceValue>1</UnitPriceValue>
+								<Currency>
+									<CurrencyCoded>CAD</CurrencyCoded>
+								</Currency>
+								<UnitOfMeasurement>
+									<UOMCoded>EA</UOMCoded>
+								</UnitOfMeasurement>
+							</UnitPrice>
+							<PriceBasisQuantity>
+								<Quantity>
+									<QuantityRange>
+										<MinimumValue>1</MinimumValue>
+										<MaximumValue>2</MaximumValue>
+									</QuantityRange>
+									<UnitOfMeasurement>
+										<UOMCoded>Other</UOMCoded>
+										<UOMCodedOther>Salt Ounces</UOMCodedOther>
+									</UnitOfMeasurement>
+								</Quantity>
+							</PriceBasisQuantity>
+							<ValidityDates>
+								<StartDate> 20010101T00:00:00</StartDate>
+								<EndDate> 20011231T11:59:59</EndDate>
+							</ValidityDates>
+							<PriceQuantityRange>
+								<Quantity>
+									<QuantityValue>3</QuantityValue>
+									<UnitOfMeasurement>
+										<UOMCoded>Other</UOMCoded>
+										<UOMCodedOther>PriceQuantityRange Unit of Measure</UOMCodedOther>
+									</UnitOfMeasurement>
+								</Quantity>
+							</PriceQuantityRange>
+							<PriceMultiplier>
+								<PriceMultiplierCoded>Other</PriceMultiplierCoded>
+								<PriceMultiplierCodedOther>Universal Multiplier</PriceMultiplierCodedOther>
+								<Multiplier>11</Multiplier>
+							</PriceMultiplier>
+						</Price>
+					</ListOfPrice>
+					<Tax>
+						<TaxFunctionQualifierCoded>Other</TaxFunctionQualifierCoded>
+						<TaxFunctionQualifierCodedOther>Sample Data</TaxFunctionQualifierCodedOther>
+						<TaxCategoryCoded>Other</TaxCategoryCoded>
+						<TaxCategoryCodedOther>Sample Data</TaxCategoryCodedOther>
+						<ReasonTaxExemptCoded>Other</ReasonTaxExemptCoded>
+						<ReasonTaxExemptCodedOther>Maybe-TaxExemptSampleData</ReasonTaxExemptCodedOther>
+						<TaxTypeCoded>Other</TaxTypeCoded>
+						<TaxTypeCodedOther>
+							<Identifier>
+								<Agency>
+									<AgencyCoded>Other</AgencyCoded>
+									<AgencyCodedOther/>
+									<AgencyDescription/>
+								</Agency>
+								<Ident/>
+							</Identifier>
+						</TaxTypeCodedOther>
+						<TaxPercent>0</TaxPercent>
+						<TaxPaymentMethodCoded>Other</TaxPaymentMethodCoded>
+						<TaxPaymentMethodCodedOther>Sample Data</TaxPaymentMethodCodedOther>
+						<TaxableAmount>0</TaxableAmount>
+						<TaxableAmountInTaxAccountingCurrency>0</TaxableAmountInTaxAccountingCurrency>
+						<TaxAmount>0</TaxAmount>
+						<TaxAmountInTaxAccountingCurrency>0</TaxAmountInTaxAccountingCurrency>
+						<TaxLocation>
+							<Location>
+								<LocationQualifierCoded>Other</LocationQualifierCoded>
+								<LocationQualifierCodedOther>Sample Data</LocationQualifierCodedOther>
+								<ExternalAddressID/>
+							</Location>
+						</TaxLocation>
+					</Tax>
+					<TotalValue>
+						<MonetaryValue>
+							<MonetaryAmount>8</MonetaryAmount>
+							<Currency>
+								<CurrencyCoded>USD</CurrencyCoded>
+							</Currency>
+						</MonetaryValue>
+					</TotalValue>
+				</PricingDetail>
+				<DeliveryDetail>
+					<ShipFromLocation>
+						<Location>
+							<LocationQualifierCoded>DistrictOffice</LocationQualifierCoded>
+							<NameAddress>
+								<Name1>ANTZE</Name1>
+								<Street/>
+								<StreetSupplement1/>
+								<StreetSupplement2/>
+								<PostalCode/>
+								<City/>
+								<Region>
+									<RegionCoded>USTX</RegionCoded>
+								</Region>
+								<Country>
+									<CountryCoded>US</CountryCoded>
+								</Country>
+								<Timezone>
+									<TimezoneCoded>07.00</TimezoneCoded>
+								</Timezone>
+							</NameAddress>
+						</Location>
+					</ShipFromLocation>
+					<ListOfScheduleLine>
+						<ScheduleLine>
+							<Quantity>
+								<QuantityValue>3</QuantityValue>
+								<UnitOfMeasurement>
+									<UOMCoded>KJO</UOMCoded>
+								</UnitOfMeasurement>
+							</Quantity>
+							<RequestedDeliveryDate> 20010131T12:00:00</RequestedDeliveryDate>
+						</ScheduleLine>
+					</ListOfScheduleLine>
+				</DeliveryDetail>
+				<LineItemNote/>
+				<ListOfStructuredNote>
+					<StructuredNote>
+						<GeneralNote>Material PO text</GeneralNote>
+						<NoteID>Material PO text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+					<StructuredNote>
+						<GeneralNote>Info record PO text</GeneralNote>
+						<NoteID>Info record PO text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+					<StructuredNote>
+						<GeneralNote>Delivery text</GeneralNote>
+						<NoteID>Delivery text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+				</ListOfStructuredNote>
+			</ItemDetail>
+			<ItemDetail>
+				<BaseItemDetail>
+					<LineItemNum>
+						<BuyerLineItemNum>20</BuyerLineItemNum>
+						<!--SellerLineItemNum would be inserted by the supplier-->
+						<SellerLineItemNum>1</SellerLineItemNum>
+					</LineItemNum>
+					<LineItemType>
+						<LineItemTypeCoded>Item</LineItemTypeCoded>
+					</LineItemType>
+
+					<ItemIdentifiers>
+						<PartNumbers>
+							<SellerPartNumber>
+								<PartNum>
+									<PartID>PBEAR IDH23602</PartID>
+									<PartIDExt/>
+								</PartNum>
+							</SellerPartNumber>
+							<BuyerPartNumber>
+								<PartNum>
+									<PartID>3625605</PartID>
+									<PartIDExt/>
+								</PartNum>
+							</BuyerPartNumber>
+							<ManufacturerPartNumber>
+								<PartID>QPBEAR IDH23602</PartID>
+								<PartIDExt/>
+								<ManufacturerID>
+									<Identifier>
+										<Agency>
+											<AgencyCoded>Other</AgencyCoded>
+											<AgencyCodedOther/>
+											<AgencyDescription/>
+										</Agency>
+										<Ident/>
+									</Identifier>
+								</ManufacturerID>
+							</ManufacturerPartNumber>
+							<StandardPartNumber>
+								<ProductIdentifierCoded>
+									<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+									<ProductIdentifierQualifierCodedOther>Sample Data</ProductIdentifierQualifierCodedOther>
+									<ProductIdentifier/>
+									<ProductIdentifierExt/>
+								</ProductIdentifierCoded>
+							</StandardPartNumber>
+							<SubstitutePartNumbers>
+								<ListOfProductIdentifierCoded>
+									<ProductIdentifierCoded>
+										<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+										<ProductIdentifierQualifierCodedOther>JarvisClark</ProductIdentifierQualifierCodedOther>
+										<ProductIdentifier>YT567-856W</ProductIdentifier>
+										<ProductIdentifierExt/>
+									</ProductIdentifierCoded>
+								</ListOfProductIdentifierCoded>
+							</SubstitutePartNumbers>
+							<OtherItemIdentifiers>
+								<ListOfProductIdentifierCoded>
+									<ProductIdentifierCoded>
+										<ProductIdentifierQualifierCoded>Other</ProductIdentifierQualifierCoded>
+										<ProductIdentifierQualifierCodedOther>Category</ProductIdentifierQualifierCodedOther>
+										<ProductIdentifier>Calibrated Bearings</ProductIdentifier>
+										<ProductIdentifierExt/>
+									</ProductIdentifierCoded>
+								</ListOfProductIdentifierCoded>
+							</OtherItemIdentifiers>
+						</PartNumbers>
+						<ItemDescription>PLATE BEARING IDH23602</ItemDescription>
+						<CommodityCode>
+							<Identifier>
+								<Agency>
+									<AgencyCoded>Other</AgencyCoded>
+									<AgencyCodedOther>UNSPSC</AgencyCodedOther>
+									<AgencyDescription> UNiversal Standard Products and Services Classification</AgencyDescription>
+								</Agency>
+								<Ident>31171507</Ident>
+							</Identifier>
+						</CommodityCode>
+					</ItemIdentifiers>
+					<TotalQuantity>
+						<Quantity>
+							<QuantityValue>7</QuantityValue>
+							<UnitOfMeasurement>
+								<UOMCoded>EA</UOMCoded>
+							</UnitOfMeasurement>
+						</Quantity>
+					</TotalQuantity>
+					<CountryOfOrigin>
+						<Country>
+							<CountryCoded>US</CountryCoded>
+						</Country>
+					</CountryOfOrigin>
+					<CountryOfDestination>
+						<Country>
+							<CountryCoded>CA</CountryCoded>
+						</Country>
+					</CountryOfDestination>
+					<FinalRecipient>
+						<Party>
+							<PartyID>
+								<Identifier>
+									<Agency>
+										<AgencyCoded>Other</AgencyCoded>
+										<AgencyCodedOther>ACME-Sud</AgencyCodedOther>
+										<AgencyDescription>ACME Sudbury</AgencyDescription>
+									</Agency>
+									<Ident>CRAIG MINE</Ident>
+								</Identifier>
+							</PartyID>
+							<NameAddress>
+								<Name1>CRAIG MINE</Name1>
+								<Name2>CRAIG MINE</Name2>
+								<Name3>FnlRecipName3</Name3>
+								<Street>675 Mineral Road</Street>
+								<StreetSupplement1>RR 4</StreetSupplement1>
+								<StreetSupplement2>Box 89</StreetSupplement2>
+								<PostalCode>P0M-002</PostalCode>
+								<City>Sudbury</City>
+								<Region>
+									<RegionCoded>CAON</RegionCoded>
+								</Region>
+								<Country>
+									<CountryCoded>CA</CountryCoded>
+								</Country>
+								<Timezone>
+									<TimezoneCoded>-06.00</TimezoneCoded>
+								</Timezone>
+							</NameAddress>
+						</Party>
+					</FinalRecipient>
+				</BaseItemDetail>
+				<PricingDetail>
+					<ListOfPrice>
+						<Price>
+							<UnitPrice>
+								<UnitPriceValue>3</UnitPriceValue>
+								<Currency>
+									<CurrencyCoded>CAD</CurrencyCoded>
+								</Currency>
+								<UnitOfMeasurement>
+									<UOMCoded>EA</UOMCoded>
+								</UnitOfMeasurement>
+							</UnitPrice>
+							<PriceBasisQuantity>
+								<Quantity>
+									<QuantityRange>
+										<MinimumValue>1</MinimumValue>
+										<MaximumValue>3</MaximumValue>
+									</QuantityRange>
+									<UnitOfMeasurement>
+										<UOMCoded>Other</UOMCoded>
+										<UOMCodedOther>Salt Ounces</UOMCodedOther>
+									</UnitOfMeasurement>
+								</Quantity>
+							</PriceBasisQuantity>
+							<ValidityDates>
+								<StartDate> 20010101T00:00:00</StartDate>
+								<EndDate> 20011231T11:59:59</EndDate>
+							</ValidityDates>
+							<PriceQuantityRange>
+								<Quantity>
+									<QuantityValue>5</QuantityValue>
+									<UnitOfMeasurement>
+										<UOMCoded>Other</UOMCoded>
+										<UOMCodedOther>Salt Ounces</UOMCodedOther>
+									</UnitOfMeasurement>
+								</Quantity>
+							</PriceQuantityRange>
+							<PriceMultiplier>
+								<PriceMultiplierCoded>Other</PriceMultiplierCoded>
+								<PriceMultiplierCodedOther>Universal Multiplier</PriceMultiplierCodedOther>
+								<Multiplier>13</Multiplier>
+							</PriceMultiplier>
+						</Price>
+					</ListOfPrice>
+					<Tax>
+						<TaxFunctionQualifierCoded>Other</TaxFunctionQualifierCoded>
+						<TaxFunctionQualifierCodedOther>Sample Data</TaxFunctionQualifierCodedOther>
+						<TaxCategoryCoded>Other</TaxCategoryCoded>
+						<TaxCategoryCodedOther>Sample Data</TaxCategoryCodedOther>
+						<ReasonTaxExemptCoded>Other</ReasonTaxExemptCoded>
+						<ReasonTaxExemptCodedOther>Maybe-TaxExemptSampleData</ReasonTaxExemptCodedOther>
+						<TaxTypeCoded>Other</TaxTypeCoded>
+						<TaxTypeCodedOther>
+							<Identifier>
+								<Agency>
+									<AgencyCoded>Other</AgencyCoded>
+									<AgencyCodedOther>Taxing Agency's Code</AgencyCodedOther>
+								</Agency>
+								<Ident/>
+							</Identifier>
+						</TaxTypeCodedOther>
+						<TaxPercent>0</TaxPercent>
+						<TaxPaymentMethodCoded>Other</TaxPaymentMethodCoded>
+						<TaxPaymentMethodCodedOther>Sample Data</TaxPaymentMethodCodedOther>
+						<TaxableAmount>0</TaxableAmount>
+						<TaxableAmountInTaxAccountingCurrency>0</TaxableAmountInTaxAccountingCurrency>
+						<TaxAmount>0</TaxAmount>
+						<TaxAmountInTaxAccountingCurrency>0</TaxAmountInTaxAccountingCurrency>
+						<TaxLocation>
+							<Location>
+								<LocationQualifierCoded>Other</LocationQualifierCoded>
+								<LocationQualifierCodedOther>Sample Data</LocationQualifierCodedOther>
+								<ExternalAddressID/>
+							</Location>
+						</TaxLocation>
+					</Tax>
+					<TotalValue>
+						<MonetaryValue>
+							<MonetaryAmount>21</MonetaryAmount>
+							<Currency>
+								<CurrencyCoded>CAD</CurrencyCoded>
+							</Currency>
+						</MonetaryValue>
+					</TotalValue>
+				</PricingDetail>
+				<DeliveryDetail>
+					<ShipFromLocation>
+						<Location>
+							<LocationQualifierCoded>DistrictOffice</LocationQualifierCoded>
+							<NameAddress>
+								<Name1>ANTZE</Name1>
+								<Street/>
+								<StreetSupplement1/>
+								<StreetSupplement2/>
+								<PostalCode/>
+								<City/>
+								<Region>
+									<RegionCoded>USTX</RegionCoded>
+								</Region>
+								<Country>
+									<CountryCoded>US</CountryCoded>
+								</Country>
+								<Timezone>
+									<TimezoneCoded>07.00</TimezoneCoded>
+								</Timezone>
+							</NameAddress>
+						</Location>
+					</ShipFromLocation>
+					<ListOfScheduleLine>
+						<ScheduleLine>
+							<Quantity>
+								<QuantityValue>7</QuantityValue>
+								<UnitOfMeasurement>
+									<UOMCoded>KJO</UOMCoded>
+								</UnitOfMeasurement>
+							</Quantity>
+							<RequestedDeliveryDate> 20010131T12:00:00</RequestedDeliveryDate>
+						</ScheduleLine>
+					</ListOfScheduleLine>
+				</DeliveryDetail>
+				<LineItemNote/>
+				<ListOfStructuredNote>
+					<StructuredNote>
+						<GeneralNote>Material PO text</GeneralNote>
+						<NoteID>Material PO text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+					<StructuredNote>
+						<GeneralNote>Info record PO text</GeneralNote>
+						<NoteID>Info record PO text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+					<StructuredNote>
+						<GeneralNote>Delivery text</GeneralNote>
+						<NoteID>Delivery text</NoteID>
+						<Agency>
+							<AgencyCoded>Other</AgencyCoded>
+							<AgencyCodedOther/>
+							<AgencyDescription/>
+						</Agency>
+					</StructuredNote>
+				</ListOfStructuredNote>
+			</ItemDetail>
+		</ListOfItemDetail>
+	</OrderDetail>
+	<OrderSummary>
+		<NumberOfLines>2</NumberOfLines>
+		<TotalAmount>
+			<MonetaryValue>
+				<MonetaryAmount>29</MonetaryAmount>
+				<Currency>
+					<CurrencyCoded>CAD</CurrencyCoded>
+				</Currency>
+				<RateOfExchangeDetail>
+					<ReferenceCurrency>
+						<Currency>
+							<CurrencyCoded>CAD</CurrencyCoded>
+						</Currency>
+					</ReferenceCurrency>
+					<TargetCurrency>
+						<Currency>
+							<CurrencyCoded>USD</CurrencyCoded>
+						</Currency>
+					</TargetCurrency>
+					<RateOfExchange>1.500</RateOfExchange>
+					<DateOfRateOfExchange>20010106T15:00:01</DateOfRateOfExchange>
+				</RateOfExchangeDetail>
+			</MonetaryValue>
+		</TotalAmount>
+	</OrderSummary>
+</Order>

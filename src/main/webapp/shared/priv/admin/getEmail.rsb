@@ -1,0 +1,19 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getEmail" description="Gets the user's email address.">
+    <input name="username" description="The username."/>
+    <output name="email" description="The email address of the user." />
+  </rsb:info>
+  
+  <rsb:set item="users" attr="database" value="[site.userdb]"/>
+  <rsb:set item="users" attr="paramname#1" value="username"/>
+  <rsb:set item="users" attr="paramvalue#1" value="[username]"/>
+  <rsb:set item="users" attr="query" value="SELECT user_email FROM users WHERE user_name=@username"/>
+  <rsb:call op="sqliteQuery" in="users">
+    <rsb:set attr="user.email" value="[sqlite:user_email]"/>
+    <rsb:push item="user"/>
+  </rsb:call>
+</rsb:script>

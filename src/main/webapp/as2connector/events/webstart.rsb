@@ -1,0 +1,7 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:call op="../priv/cleanAllLocks.rsb"/>
+    
+  <rsb:call op="../priv/startTimer.rsb"/>
+  
+</rsb:script>

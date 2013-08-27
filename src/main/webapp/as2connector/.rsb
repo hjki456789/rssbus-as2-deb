@@ -1,0 +1,18 @@
+<!--
+Please do not delete this file. It allows other RSSBus installations and RSSTools
+to discover feeds configured on your machine. Conventionally the URL 
+http://[your site]/.rsb is a feed of available feeds.
+-->
+
+<rsb:info title="Feeds Available" description="The feeds available on this instance of AS2 Connector SE&#8482; application.">
+  <output name="rsb:title" desc="The title of the script."/> 
+  <output name="rsb:description" desc="The description of the script."/> 
+  <output name="rsb:url" desc="The URL of the script."/> 
+  <output name="rsb:info_url" desc="The Info of the script."/> 
+</rsb:info>
+
+<rsb:set attr="path" value="services"/>
+<rsb:set attr="recurse" value="false"/> <!-- Set recurse to true, to list feeds in sub-directories. -->
+<rsb:call op="rsbListFeeds" output="out">
+  <rsb:push>[out.*]<hr></rsb:push>
+</rsb:call>

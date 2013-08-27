@@ -1,0 +1,26 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="DeleteConnector" desc="Deletes a connector.">
+    <input name="delconnector" desc="The removing connector name."/>
+  </rsb:info>
+
+  <rsb:set attr="file.file" value="~/[delconnector]"/>
+  <rsb:call op="fileDelete" input="file"/>
+
+  <rsb:set attr="tmp.cachedb" value="[_profile.default_datadir_global | pathcombine(settings.db)]"/>
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set attr="tmp.conn" value="Version=3,uri=file:[tmp.cachedb]" />
+    <rsb:else>
+      <rsb:set attr="tmp.conn" value="jdbc:sqlite:[tmp.cachedb]" />
+    </rsb:else>
+  </rsb:equals>
+
+  <rsb:set attr="tmp.app" value="[delconnector]"/>
+  <rsb:match pattern="true" value="[tmp.cachedb | fileexists | tolower]">
+    <rsb:call op="appDeleteSettings" in="tmp"/>       
+  </rsb:match>   
+  
+</rsb:script>

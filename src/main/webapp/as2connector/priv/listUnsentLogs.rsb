@@ -1,0 +1,57 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:info title="listUnsentLogs" description="List Unsent Logs.">
+    <input  name="orgname"          desc="The partner identifier" required="true"/>
+    <input  name="sort"             desc="The column to sort on." required="true" def="timestamp"/>
+    <input  name="desc"             desc="Whether or not the results should be descending." def="true"/>
+    <input  name="type"             desc="The type to sort on."/>
+    <input  name="filter"           desc="The filter for list logs." def="All"/>
+    <output name="id"               desc="the id of the file in the current entry."/>
+    <output name="filename"         desc="The name of the file in the current entry."/>
+    <output name="timestamp"        desc="The time at which the file in the current entry was written to."/>
+    <output name="filesize"         desc="The size of the file in the current entry."/>
+    <output name="status"           desc="The status of the entry."/>
+  </rsb:info>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:call op="[service.getPartner]">
+    <rsb:set attr="tmp.diroutgoing" value="[a2p:diroutgoing]"/>
+  </rsb:call>
+  
+  <rsb:set attr="listUnsent" value="false"/>
+  <rsb:equals attr="filter" value="All">
+    <rsb:set attr="listUnsent" value="true"/>
+  </rsb:equals>
+  <rsb:equals attr="filter" value="Unsent">
+    <rsb:set attr="listUnsent" value="true"/>
+  </rsb:equals>
+  
+  <rsb:equals attr="listUnsent" value="true">
+    <!-- List outgoing files -->
+    <rsb:call op="[service.listOutgoingFiles]" output="log" save="unsentlist">
+      <rsb:set attr="log.timestamp" value="[log.file:mtime]"/>
+      <rsb:set attr="log.status" value="Unsent"/>
+      <rsb:set attr="log.id" value=""/>
+      <rsb:set attr="log.filesize" value="[log.file:size]"/>
+      <rsb:set attr="log.filename" value="[log.file:name]"/>
+    </rsb:call>
+    
+    <rsb:check attr="sort">
+      <rsb:check attr="type">
+        <rsb:set attr="sortParameters" value="&sort=[desc | def('true') | equals('true','-','+')][sort]&type=[type]"/>
+      </rsb:check>
+    </rsb:check>
+    
+    <rsb:call op="feedSort?feed=[_feeds.unsentlist | urlencode][sortParameters | def('')]" output="out1">
+      <rsb:unset attr="out.*"/>
+      <rsb:set attr="out.timestamp" value="[out1.file:mtime]"/>
+      <rsb:set attr="out.status" value="Unsent"/>
+      <rsb:set attr="out.id" value=""/>
+      <rsb:set attr="out.filesize" value="[out1.file:size]"/>
+      <rsb:set attr="out.filename" value="[out1.file:fullname  | torelativepath('[tmp.diroutgoing]')]"/>
+      <rsb:push item="out" title="[rss:title | def('untitled item')]" description="[out.*]"/>
+    </rsb:call>
+  </rsb:equals>
+  
+</rsb:script>

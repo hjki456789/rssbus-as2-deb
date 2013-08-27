@@ -1,0 +1,37 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="deletePartner" description="Delete specified trading partner">
+    <input  name="orgname"      desc="The organization Name." required="true"/>
+    <output name="a2p:success"  desc="If true is success. Otherwise false."/>
+  </rsb:info>
+
+  <!-- Delete partner table -->
+  <rsb:select value="[site.statusdb | fileexists | tolower]">
+    <rsb:case match="exact" value="true">
+      <rsb:set item="database" attr="database" value="[site.statusdb]"/>
+      <rsb:set item="page" attr="table" value="\[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_RECEIVED\]"/>
+      <rsb:set item="database" attr="query" value="DROP TABLE IF EXISTS [page.table]"/>
+      <rsb:call op="sqliteQuery" in="database"/>
+      <rsb:set item="page" attr="table" value="\[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_SENT\]"/>
+      <rsb:set item="database" attr="query" value="DROP TABLE IF EXISTS [page.table]"/>
+      <rsb:call op="sqliteQuery" in="database"/>
+    </rsb:case>
+   
+    <rsb:default/>
+  </rsb:select>
+  
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set attr="conn" value="Version=3,uri=file:[site.statusdb]" />
+    <rsb:else>
+      <rsb:set attr="conn" value="jdbc:sqlite:[site.statusdb]" />
+    </rsb:else>
+  </rsb:equals>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileDeletePartner" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+</rsb:script>
+
+

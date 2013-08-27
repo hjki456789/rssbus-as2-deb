@@ -1,0 +1,24 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="getUsersCount" description="Gets the count of users.">
+    <output name="count" description="A user's role." />
+  </rsb:info>
+  
+  <rsb:set attr="return.count" value="0"/>
+  <rsb:try>
+    <rsb:set item="users" attr="database" value="[site.userdb]"/>
+    <rsb:set item="users" attr="query" value="SELECT * FROM users"/>
+    <rsb:call op="sqliteQuery" in="users">
+      <rsb:set attr="return.count" value="[return.count | add('1')]"/>
+    </rsb:call>
+
+    <rsb:push item="return"/>
+
+    <rsb:catch>
+      <rsb:push item="return"/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>
+

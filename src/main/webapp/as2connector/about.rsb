@@ -1,0 +1,18 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:include file="app.rst"/>
+  
+  <rsb:info title="about" description="Returns information about the application.">
+    <output name='name' desc='The name of the application.' />
+    <output name='events' desc='A comma-delimited list of the events of the application.' />
+    <output name='rolename#' desc='The role name.' />
+    <output name='roledesc#' desc='The role description.' />
+  </rsb:info>
+
+  <rsb:set attr="tmp.name" value="AS2 Connector" />
+  <rsb:set attr="tmp.events" value="AfterReceive.rsb,AfterSend.rsb,BeforeSend.rsb" />
+  <rsb:set attr="tmp.rolename#1" value="rssbus_as2connector_user" />
+  <rsb:set attr="tmp.roledesc#1" value="User" />
+  <rsb:set attr="tmp.version" value="[app.version]"/>
+  <rsb:push item="tmp"/>
+</rsb:script>
+

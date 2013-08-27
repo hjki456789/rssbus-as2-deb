@@ -1,0 +1,3 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:call op="../priv/stopTimer.rsb"/>
+</rsb:script>

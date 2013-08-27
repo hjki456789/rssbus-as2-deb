@@ -1,0 +1,42 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="deleteUser" description="Deletes a user.">
+    <input name="username" description="The username." required="true"/>
+  </rsb:info>
+  
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:user" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:equals attr="username" value="admin">
+    <rsb:throw code="rsb:user" description="Cannot delete 'admin' user."/>
+  </rsb:equals>
+
+  <rsb:set item="deleteaccess" attr="database" value="[site.userdb]"/>
+  <rsb:set item="deleteaccess" attr="paramname#1" value="username"/>
+  <rsb:set item="deleteaccess" attr="paramvalue#1" value="[_input.username]"/>
+  <rsb:set item="deleteaccess" attr="query">DELETE FROM user_scripts WHERE user_id=(SELECT id FROM users WHERE user_name=@username)</rsb:set>
+  <rsb:call op="sqliteQuery" in="deleteaccess"/>
+
+  <rsb:set item="deleteroles" attr="database" value="[site.userdb]"/>
+  <rsb:set item="deleteroles" attr="paramname#1" value="username"/>
+  <rsb:set item="deleteroles" attr="paramvalue#1" value="[_input.username]"/>
+  <rsb:set item="deleteroles" attr="query">DELETE FROM user_roles WHERE user_id=(SELECT id FROM users WHERE user_name=@username)</rsb:set>
+  <rsb:call op="sqliteQuery" in="deleteroles"/>
+
+  <rsb:set item="deleteuser" attr="database" value="[site.userdb]"/>
+  <rsb:set item="deleteuser" attr="paramname#1" value="username"/>
+  <rsb:set item="deleteuser" attr="paramvalue#1" value="[_input.username]"/>
+  <rsb:set item="deleteuser" attr="query">DELETE FROM users WHERE user_name=@username</rsb:set>
+  <rsb:call op="sqliteQuery" in="deleteuser">
+     <rsb:equals attr="sqlite:affectedrows" value="0">
+      <rsb:throw code="rsb:user" description="Invalid username."/>
+    </rsb:equals>
+  </rsb:call>
+
+</rsb:script>

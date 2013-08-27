@@ -1,0 +1,31 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="as2SendAll" description="Send all files to a partner">
+    <input  name="orgname" desc="The partner identifier" required="true"/>
+    <output name="result"  desc="The result message of transmission."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:check item="partner" attr="a2p:automationenabled">
+    <rsb:else>
+      <rsb:set item="partner" attr="a2p:automationenabled" value="false"/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:equals item="partner" attr="a2p:automationenabled" case="ignore" value="true">
+    <rsb:set attr="isauto" value="TRUE"/>
+    <rsb:set attr="file" value=""/>
+
+    <rsb:call op="[service.as2SendFile]" output="out">
+      <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+    </rsb:call>
+  </rsb:equals>
+
+</rsb:script>
+

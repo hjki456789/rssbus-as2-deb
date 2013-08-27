@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <groupId>com.docprocess.dx</groupId>
+    <artifactId>as2portal</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>DocXchange :: AS2 Portal</name>
+    <description>RSSBus AS2 Web Application with Debian packager.</description>
+
+    <prerequisites>
+        <maven>3.0.3</maven>
+    </prerequisites>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <debian.dependencies>tomcat7</debian.dependencies>
+        <jdeb.version>1.0</jdeb.version>
+    </properties>
+
+    <build>
+        <finalName>as2portal</finalName>
+        <resources>
+            <resource>
+                <directory>${project.basedir}/src/deb/etc</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/etc</targetPath>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.vafer</groupId>
+                <artifactId>jdeb</artifactId>
+                <version>${jdeb.version}</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jdeb</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>true</verbose>
+                            <controlDir>${basedir}/src/deb/control</controlDir>
+                            <dataSet>
+                                <data>
+                                    <src>${project.build.directory}/${project.build.finalName}.war</src>
+                                    <type>file</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/var/lib/tomcat7/webapps</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                    </mapper>
+                                </data>
+                                <data>
+                                    <src>${project.build.directory}/etc</src>
+                                    <type>directory</type>
+                                    <mapper>
+                                        <type>perm</type>
+                                        <prefix>/etc</prefix>
+                                        <user>loader</user>
+                                        <group>loader</group>
+                                    </mapper>
+                                </data>
+                            </dataSet>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

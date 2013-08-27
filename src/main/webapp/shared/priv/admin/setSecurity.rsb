@@ -1,0 +1,34 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="SetSecurity" desc="Sets the endpoint to public or private.">
+    <input name="Script" desc="The script name." required="true"/>
+    <input name="Security" desc="Whether the endpoints are public or private." values="Public,Restricted" required="true"/>
+  </rsb:info>
+  
+  <!-- delete the scripts from the database -->
+  <rsb:set item="delete" attr="database" value="[site.userdb]"/>
+  <rsb:set item="delete" attr="paramname#1" value="script"/>
+  <rsb:set item="delete" attr="paramvalue#1" value="[script | replace('~/','')]"/>
+  <rsb:set item="delete" attr="query">DELETE FROM public_scripts WHERE script LIKE @script</rsb:set>
+  <rsb:call op="sqliteQuery" in="delete"/>
+
+  <!-- add the scripts to the database -->
+  <rsb:check value="[script | startswith('~/')]">
+    <rsb:set attr="script" value="[script | substring('2')]"/>
+  </rsb:check>
+  <rsb:equals attr="security" value="public" case="ignore">
+    <rsb:set item="add" attr="database" value="[site.userdb]"/>
+    <rsb:set item="add" attr="paramname#1" value="script"/>
+    <rsb:set item="add" attr="paramvalue#1" value="[script]"/>
+    <rsb:set item="add" attr="query">INSERT INTO public_scripts (script) VALUES (@script)</rsb:set>
+    <rsb:call op="sqliteQuery" in="add">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:access" description="Invalid username or script."/>
+      </rsb:equals>
+    </rsb:call>
+  </rsb:equals>
+  
+</rsb:script>

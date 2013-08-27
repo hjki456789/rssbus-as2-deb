@@ -1,0 +1,2 @@
+#!/bin/sh
+echo "Thank you for installing AS2Portal. You can now access the web application at http://hostname:port/as2portal."

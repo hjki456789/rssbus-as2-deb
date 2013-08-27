@@ -1,0 +1,33 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="deleteScheduledTask" description="Deletes a scheduled task.">
+    <input name="Name" description="A task's name." />
+  </rsb:info>
+  
+  <rsb:check value="[site.profiledb | fileexists()]">
+    <rsb:set attr="db.database" value="[site.profiledb]"/>
+    
+    <rsb:set attr="select.paramname#1" value="name"/>
+    <rsb:set attr="select.paramvalue#1" value="[Name]"/>
+    <rsb:set attr="select.query" value="SELECT * FROM scheduled_tasks WHERE name=@name"/>
+    <rsb:call op="sqliteQuery" in="select,db">
+      <rsb:set attr="task.url" value="[sqlite:url]"/>
+    </rsb:call>
+    
+    <rsb:set attr="task.name" value="[Name]"/>
+    <rsb:call op="schedulerStop" in="task"/>
+    
+    <rsb:set attr="delete.paramname#1" value="name"/>
+    <rsb:set attr="delete.paramvalue#1" value="[Name]"/>
+    <rsb:set attr="delete.query" value="DELETE FROM scheduled_tasks WHERE name=@name"/>
+    <rsb:call op="sqliteQuery" in="delete,db">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:scheduler" description="Invalid task."/>
+      </rsb:equals>
+    </rsb:call>
+
+  </rsb:check>
+</rsb:script>

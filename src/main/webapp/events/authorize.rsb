@@ -1,0 +1,51 @@
+<rsb:info>
+  <input name="user" description="The name of the user trying to access the service."/>
+  <input name="roles" description="The roles of the user."/>
+  <input name="script" description="The script that is being accessed." req="true"/>
+  <input name="method" description="The method of the request." def="GET"/>
+  <output name="allow" description="Whether or not the request should be allowed"/>
+</rsb:info>
+
+<rsb:include file="../shared/config.rst"/>
+
+<rsb:set attr="result.allow" value="false"/>
+<rsb:set attr="sql.database" value="[site.userdb]"/> 
+
+<!-- First check public_scripts database -->
+<rsb:equals attr="method" value="GET" case="ignore">
+  <rsb:set attr="check.paramname#1" value="script"/>
+  <rsb:set attr="check.paramvalue#1" value="[_input.script]"/>
+  <rsb:set attr="check.query" value="SELECT script FROM public_scripts WHERE public_scripts.\[script\]=@script"/> 
+  <rsb:call op="sqliteQuery" in="sql,check" out="out0">
+    <rsb:check attr="out0.sqlite:script">
+      <rsb:set attr="result.allow" value="true"/>
+    </rsb:check>
+  </rsb:call>
+</rsb:equals>
+
+<rsb:check attr="_input.user">
+  <rsb:set attr="check.paramname#1" value="script"/>
+  <rsb:set attr="check.paramvalue#1" value="[_input.script]"/>
+  <rsb:set attr="check.paramname#2" value="user"/>
+  <rsb:set attr="check.paramvalue#2" value="[_input.user]"/>
+  <rsb:set attr="check.query" value="SELECT * FROM user_scripts,users WHERE user_scripts.\[script\]=@script AND users.\[user_name\]=@user AND user_scripts.\[user_id\]=users.\[id\]"/> 
+  <rsb:call op="sqliteQuery" in="sql,check">
+    <rsb:check attr="sqlite:method">
+
+      <rsb:match pattern="*" value="[sqlite:method | def('')]" type="exact">
+        <rsb:set attr="result.allow" value="true"/>
+      </rsb:match>
+      <rsb:match pattern="true" value="[sqlite:method | def('') | contains('[_input.method | toupper]')]" type="exact">
+        <rsb:set attr="result.allow" value="true"/>
+      </rsb:match>
+      
+      <rsb:else>
+        
+        <rsb:set attr="result.allow" value="true"/>
+        
+      </rsb:else>
+    </rsb:check>
+  </rsb:call>
+</rsb:check>
+
+<rsb:push item="result"/>

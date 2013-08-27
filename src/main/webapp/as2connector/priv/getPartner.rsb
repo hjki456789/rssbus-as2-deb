@@ -1,0 +1,55 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="GetPartner"                    desc="Gets the configuration information for a trading partner">
+    <input  name="orgname"                        desc="The organization Name." required="true"/>
+  </rsb:info>
+
+  <rsb:set attr="partner.datadir" value="[site.profilesPath | pathcombine('[orgname | urlencode]')]"/>
+  <rsb:set attr="out2.a2p:orgname" value="[orgname]"/>
+
+  <!-- get partner settings --> 
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set attr="conn" value="Version=3,uri=file:[site.statusdb]" />
+    <rsb:else>
+      <rsb:set attr="conn" value="jdbc:sqlite:[site.statusdb]" />
+    </rsb:else>
+  </rsb:equals>
+  
+  <rsb:call op="[op.getPartner]" out="out">
+    <rsb:check attr="out.a2p:orgname">
+      <rsb:map to="out2" from="out" map="a2p:* = a2p:*"/>
+      <rsb:else>
+        <rsb:map to="out2" from="out" map="a2p:* = *"/>
+      </rsb:else>
+    </rsb:check>
+  </rsb:call>
+
+  <!-- get folders -->
+  <rsb:check attr="out2.a2p:dirincoming">
+    <rsb:else>
+      <rsb:set attr="out2.a2p:dirincoming" value="[partner.datadir | pathcombine(Incoming)]" />
+    </rsb:else>
+  </rsb:check>
+  <rsb:check attr="out2.a2p:dirlogs">
+    <rsb:else>
+      <rsb:set attr="out2.a2p:dirlogs" value="[partner.datadir | pathcombine(Logs)]" />                   
+    </rsb:else>
+  </rsb:check>
+  <rsb:check attr="out2.a2p:diroutgoing">
+    <rsb:else>
+      <rsb:set attr="out2.a2p:diroutgoing" value="[partner.datadir | pathcombine(Outgoing)]" />                   
+    </rsb:else>
+  </rsb:check>
+  <rsb:check attr="out2.a2p:dirsent">
+    <rsb:else>
+      <rsb:set attr="out2.a2p:dirsent" value="[partner.datadir | pathcombine(Sent)]" />  
+    </rsb:else>
+  </rsb:check>
+    
+  <rsb:push item="out2"/>
+
+</rsb:script>
+

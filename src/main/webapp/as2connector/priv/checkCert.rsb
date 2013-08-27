@@ -1,0 +1,124 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+  
+  <rsb:info title="Check Certificate" description="Check the expiration date of private certificate for the profile. Notify the administrator by email 30 days before the certificate is about to expire.">
+    <output name='subject#'        desc='The subject of certificate.' />
+    <output name='expirationdate#' desc='The expiration date of certificate.' />
+    <output name='expirationdays#' desc='The days to expiration date of certificate.' />
+    <output name='error#'          desc='The error message.' />
+  </rsb:info>
+  
+  <rsb:call op="[service.getLocalSettings]" output="out">
+    <rsb:check attr="out.fa:notifycertexpiry">
+      <rsb:equals attr="out.fa:notifycertexpiry" value="true" case="ignore">
+        <rsb:call op="[service.GetSelf]" output="out2">
+          <rsb:equals attr="site.supportPartnerType" value="as2" case="ignore">
+            <rsb:set attr="tmp.name" value="[a2p:orgname]"/>
+            <rsb:check attr="a2p:certpfx">
+              <rsb:set attr="tmp.certpfx" value="[a2p:certpfx]"/>
+              <rsb:set attr="tmp.certpassword" value="[a2p:certpassword]"/>
+            </rsb:check>
+          </rsb:equals>
+          <rsb:equals attr="site.supportPartnerType" value="oftp" case="ignore">
+            <rsb:set attr="tmp.name" value="[a2p:clientssidcode]"/>
+            <rsb:check attr="a2p:authchallengepfx">
+              <rsb:set attr="tmp.certpfx#" value="[a2p:authchallengepfx]"/>
+              <rsb:set attr="tmp.certpassword#" value="[a2p:authchallengepfxpassword]"/>
+            </rsb:check>
+            <rsb:check attr="a2p:certpfx">
+              <rsb:set attr="tmp.exist" value="false"/>
+              <rsb:enum attr="tmp.certpfx">
+                <rsb:equals attr="out2.a2p:certpfx" value="[_value]">
+                  <rsb:set attr="tmp.exist" value="true"/>
+                </rsb:equals>
+              </rsb:enum>
+              <rsb:equals attr="tmp.exist" value="false">
+                <rsb:set attr="tmp.certpfx#" value="[a2p:certpfx]"/>
+                <rsb:set attr="tmp.certpassword#" value="[a2p:certpassword]"/>
+              </rsb:equals>
+            </rsb:check>
+            <rsb:check attr="a2p:receiptsignpfx">
+              <rsb:set attr="tmp.exist" value="false"/>
+              <rsb:enum attr="tmp.certpfx">
+                <rsb:equals attr="out2.a2p:receiptsignpfx" value="[_value]">
+                  <rsb:set attr="tmp.exist" value="true"/>
+                </rsb:equals>
+              </rsb:enum>
+              <rsb:equals attr="tmp.exist" value="false">
+                <rsb:set attr="tmp.certpfx#" value="[a2p:receiptsignpfx]"/>
+                <rsb:set attr="tmp.certpassword#" value="[a2p:receiptsignpfxpassword]"/>
+              </rsb:equals>
+            </rsb:check>
+            <rsb:check attr="a2p:signpfx">
+              <rsb:set attr="tmp.exist" value="false"/>
+              <rsb:enum attr="tmp.certpfx">
+                <rsb:equals attr="out2.a2p:signpfx" value="[_value]">
+                  <rsb:set attr="tmp.exist" value="true"/>
+                </rsb:equals>
+              </rsb:enum>
+              <rsb:equals attr="tmp.exist" value="false">
+                <rsb:set attr="tmp.certpfx#" value="[a2p:signpfx]"/>
+                <rsb:set attr="tmp.certpassword#" value="[a2p:signpfxpassword]"/>
+              </rsb:equals>
+            </rsb:check>
+            <rsb:check attr="a2p:sslservercert">
+              <rsb:set attr="tmp.exist" value="false"/>
+              <rsb:enum attr="tmp.certpfx">
+                <rsb:equals attr="out2.a2p:sslservercert" value="[_value]">
+                  <rsb:set attr="tmp.exist" value="true"/>
+                </rsb:equals>
+              </rsb:enum>
+              <rsb:equals attr="tmp.exist" value="false">
+                <rsb:set attr="tmp.certpfx#" value="[a2p:sslservercert]"/>
+                <rsb:set attr="tmp.certpassword#" value="[a2p:sslcertpassword]"/>
+              </rsb:equals>
+            </rsb:check>
+          </rsb:equals>
+
+          <rsb:enum attr="tmp.certpfx">
+            <rsb:set attr="store" value="[_value]" />
+            <rsb:set attr="password" value="[tmp.certpassword#[_index] | def('')]" />
+            <rsb:call op="[service.VerifyCert]" output="out3">
+              <rsb:check attr="out3.fa:subject">
+                <rsb:set item="cert" attr="subject" value="[out3.fa:subject]" />
+              </rsb:check>
+              <rsb:check attr="out3.fa:expdate">
+                <rsb:set item="cert" attr="expirationdate" value="[out3.fa:expdate]" />
+              </rsb:check>
+              <rsb:check attr="out3.fa:expdays">
+                <rsb:set item="cert" attr="expirationdays" value="[out3.fa:expdays]" />
+              </rsb:check>
+              <rsb:check attr="out3.fa:error">
+                <rsb:set item="cert" attr="error" value="[out3.fa:error]" />
+              </rsb:check>
+              <rsb:set attr="cert.name" value="[store]" />
+              <rsb:set attr="cert.type" value="Personal Private Certificate" />
+            </rsb:call>      
+            <rsb:push title="[cert.type]" item="cert" />
+            <rsb:check attr="cert.expirationdays">
+              <rsb:set attr="cert.notify" value="[cert.expirationdays | lessthan(30)]"/>
+              <rsb:equals attr="cert.notify" value="true" case="ignore">
+                <rsb:check attr="tmp.subjects">
+                  <rsb:set attr="tmp.subjects" value="[tmp.subjects],"/>
+                </rsb:check>
+                <rsb:set attr="tmp.subjects" value="[tmp.subjects | def('')]([cert.subject])"/>
+              </rsb:equals>
+              <rsb:else>
+                <rsb:throw code="checkcert" desc="Could not check certificate"/>
+              </rsb:else>
+            </rsb:check>
+            <rsb:unset item="cert"/>
+          </rsb:enum>
+            
+          <rsb:check attr="tmp.subjects">
+            <rsb:set attr="mail.subject" value="WARNING! The private key for the [site.supportPartnerType] profile [tmp.name] [tmp.subjects] will expire in less than 30 days."/>
+            <rsb:set attr="mail.message" value="This message is intended for the administrator of the [site.appname] application for the organization configured as [tmp.name]. The private key with the subject [tmp.subjects] will expire on 30 days. It is recommended that you obtain and configure a new certificate before this time. This message is automatically generated. Do not reply to this email."/>
+            <rsb:call op="[service.sendMail]" in="mail"/>
+          </rsb:check>
+        </rsb:call>
+      </rsb:equals>
+    </rsb:check>
+  </rsb:call>
+</rsb:script>

@@ -1,0 +1,97 @@
+<rsb:info>
+   <input name="user" description="The user of the profile."/>
+   <input name="action" description="The action to be taken on the enteries." values="get, update, delete, replace"/>
+   <input name="profile:*" description="The profile entries."/>
+</rsb:info>
+
+<rsb:include file="[_about.approot]/shared/about.rst"/>
+<rsb:check value="[site.java]">
+  <rsb:set attr="sql.database" value="[_about.approot | pathcombine('WEB-INF/Profile.db')]"/>
+  <rsb:else>
+    <rsb:set attr="sql.database" value="[_about.approot | pathcombine('app_data/Profile.db')]"/>
+  </rsb:else>
+</rsb:check>
+
+<rsb:set attr="sql.table" value="profile"/>
+
+<rsb:set attr="temp.isadmin" value="true"/>
+<rsb:check attr="user">
+  <rsb:set attr="temp.isadmin" value="[_input.user | isuserinrole('admin')]"/>
+  <rsb:equals attr="temp.isadmin" value="false">
+    <rsb:set attr="temp.isadmin" value="[user | isuserinrole('rssbus_admin')]"/>
+  </rsb:equals>
+</rsb:check>
+
+<rsb:select value="[action]">
+<rsb:case value="delete">
+   <rsb:enum attr="profile:*">
+      <rsb:set attr="d.rec:pname" value="[_attr | split(':',2)]"/>
+      <rsb:set attr="d.rec:puser" value="[_input.user | def('Anonymous')]"/>
+      <rsb:set attr="temp.isglobal" value="[d.rec:pname | endswith('_global')]"/>
+      <rsb:equals attr="temp.isglobal" value="true">
+        <rsb:set attr="d.rec:puser" value='_global'/>
+        <rsb:equals attr="temp.isadmin" value="false">
+          <rsb:continue />
+        </rsb:equals>
+      </rsb:equals> 
+      <rsb:call op="sqliteDeleteRow" in="sql,d"/>
+   </rsb:enum>
+</rsb:case>
+
+<rsb:case value="update">
+   <rsb:enum attr="profile:*">
+      <rsb:set attr="up.paramname#1" value="puser"/>
+      <rsb:set attr="up.paramname#2" value="pname"/>      
+      <rsb:set attr="up.paramname#3" value="pvalue"/>
+      <rsb:set attr="up.paramvalue#1" value="[_input.user | def('Anonymous')]"/>      
+      <rsb:set attr="up.paramvalue#2" value="[_attr | split(':',2)]"/>
+      <rsb:set attr="up.paramvalue#3" value="[_value]"/>
+      <rsb:set attr="temp.isglobal" value="[up.paramvalue#2 | endswith('_global')]"/>
+      <rsb:equals attr="temp.isglobal" value="true">
+        <rsb:set attr="up.paramvalue#1" value='_global'/>
+        <rsb:equals attr="temp.isadmin" value="false">
+          <rsb:continue />
+        </rsb:equals>
+      </rsb:equals>
+      <rsb:set attr="up.query" value="INSERT OR REPLACE INTO PROFILE (puser,pname,pvalue) values (@puser,@pname,@pvalue)"/>  
+      <rsb:call op="sqliteQuery" in="sql,up"/>
+   </rsb:enum>
+</rsb:case>
+
+<rsb:case value="replace">
+  <rsb:equals attr="temp.isadmin" value="true">
+    <rsb:set attr="d.query" value="DELETE FROM PROFILE WHERE PUSER = '_global' OR PUSER = '[_input.user | def(Anonymous)]'"/>
+    <rsb:else>
+      <rsb:set attr="d.query" value="DELETE FROM PROFILE WHERE PUSER = '[_input.user]'"/>
+    </rsb:else>
+  </rsb:equals>
+   <rsb:call op="sqliteQuery" in="sql,d"/>
+ 
+   <rsb:enum attr="profile:*">
+      <rsb:set attr="in.rec:pname" value="[_attr | split(':',2)]"/>
+      <rsb:set attr="in.rec:puser" value="[_input.user | def('Anonymous')]"/>
+      <rsb:set attr="in.rec:pvalue" value="[_value]"/>
+      <rsb:set attr="temp.isglobal" value="[in.rec:pname | endswith('_global')]"/>
+      <rsb:equals attr="temp.isglobal" value="true">
+        <rsb:set attr="in.rec:puser" value='_global'/>
+        <rsb:equals attr="temp.isadmin" value="false">
+          <rsb:continue />
+        </rsb:equals>
+      </rsb:equals>       
+      <rsb:call op="sqliteInsertRow" in="sql,in"/>
+   </rsb:enum>
+</rsb:case>
+</rsb:select>
+
+<rsb:set attr="result.count" value="0"/>
+<rsb:set attr="sel.paramname#1" value="puser"/>      
+<rsb:set attr="sel.paramvalue#1" value="[_input.user | def('Anonymous')]"/>      
+<rsb:set attr="sel.query" value="SELECT * FROM PROFILE WHERE PUSER = '_global' OR PUSER = @puser"/>
+ 
+<rsb:call op="sqliteQuery" in="sql,sel">
+  <rsb:set attr="result.profile:[sqlite:pname]" value="[sqlite:pvalue]"/>
+  <rsb:set attr="result.count" value="[_index]"/> 
+</rsb:call>
+
+<rsb:push item="result"/>
+

@@ -1,0 +1,15 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:call op="[service.listPartners]" output="out">
+    <rsb:set attr="file" value="[site.profilesPath | pathcombine([out.a2p:orgname]) | pathcombine('Locks')]"/>
+    <rsb:set attr="cleanLock" value="[file | fileexists]"/>
+    <rsb:equals attr="cleanLock" value="true">
+      <rsb:call op="fileDelete">
+        <rsb:catch code="*"/>
+      </rsb:call>
+    </rsb:equals>
+  </rsb:call>
+</rsb:script>

@@ -1,0 +1,42 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="RebuildCache" description="Rebuilds the cache of incoming and outgoing logs for the specified trading partner.">
+    <input  name="Name"          desc="The organization name or Identifier of the trading partner." />
+    <output name="status"           desc="The status of the entry."/>
+  </rsb:info>
+
+  <rsb:check attr="Name">
+    <rsb:set attr="partner.name" value="[Name]"/>
+    <rsb:else>
+      <rsb:set attr="in2.updatecache" value="true"/>
+      <rsb:call op="[service.listPartners]" input="in2">
+        <rsb:set attr="partner.name#" value="[a2p:orgname]"/>
+      </rsb:call>
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:enum attr="partner.name">
+    <rsb:set attr="in.orgname" value="[_value]" />
+    <rsb:set attr="result.partner" value="[_value]" />
+    
+    <rsb:try>
+
+      <rsb:call op="[service.buildSentCache]" input="in" out="out1" />
+      
+      <rsb:call op="[service.buildReceivedCache]" input="in" out="out2" />
+      
+      <rsb:set attr="result.status" value="Successful" />
+      
+      <rsb:catch code="*">
+        <rsb:set attr="result.status" value="Failure: [_description]" />
+      </rsb:catch>
+    </rsb:try>
+    <rsb:push item="result"/>
+  </rsb:enum>
+
+</rsb:script>

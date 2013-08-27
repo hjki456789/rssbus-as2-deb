@@ -1,0 +1,33 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="createCert" description="Create certification key pair">
+    <input  name="commonname"         desc="The common name." />
+    <input  name="country"            desc="The country." />
+    <input  name="email"              desc="The email." />
+    <input  name="expiration"         desc="The expiration (in year)." default="1" />
+    <input  name="filename"           desc="The filename." />
+    <input  name="keysize"            desc="The key size."             default="1024" />
+    <input  name="locality"           desc="The locality." />
+    <input  name="organization"       desc="The organization." />
+    <input  name="organizationalunit" desc="The organizational unit." />
+    <input  name="password"           desc="The password." />
+    <input  name="serialnumber"       desc="The serial number." />
+    <input  name="state"              desc="The state." />
+    <output name="fa:error"           desc="The error message."/>
+  </rsb:info>
+
+  <rsb:try>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorCreateCert" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+    <rsb:catch code="*">
+      <rsb:set attr="out.fa:error" value="[_message | def('')]"/>
+      <rsb:push item="out"/>
+    </rsb:catch>
+  </rsb:try>
+
+</rsb:script>
+

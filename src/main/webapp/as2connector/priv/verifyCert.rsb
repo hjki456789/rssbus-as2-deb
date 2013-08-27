@@ -1,0 +1,33 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+                                                      
+  <!--include config-->                 
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="verifyCert" description="Verify the certificate.">                     
+    <input  name='store'      desc='The store of certificate.' required='true'/>
+    <input  name='password'   desc='The password of certificate.' />
+    <output name='fa:subject' desc='The subject of certificate.' />               
+    <output name='fa:expdate' desc='The expiration date of certificate.' />
+    <output name='fa:expdays' desc='The days to expiration date of certificate.' />
+    <output name='fa:error'   desc='The error message.' />                 
+  </rsb:info>                        
+  
+  <rsb:equals attr="store" value="*">                                         
+    <rsb:set attr="tmp.fa:error" value="WARNING! The server certificate will not be validated." />
+    <rsb:push item="tmp"/>
+    <rsb:else>
+      <rsb:try>
+        <rsb:set attr="isexist" value="[site.profilesPath | pathcombine([store]) | fileexists]"/>
+        <rsb:equals attr="isexist" value="true">                              
+          <rsb:set attr="store" value="[site.profilesPath | pathcombine([store])]"/>
+        </rsb:equals>
+        <rsb:catch code="*" />
+      </rsb:try>
+      
+      <rsb:call op="[site.supportPartnerType | tolower]connectorVerifyCert" output="out">                     
+        <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+      </rsb:call>
+    </rsb:else>           
+  </rsb:equals>
+
+</rsb:script>   

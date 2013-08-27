@@ -1,0 +1,63 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+  
+  <rsb:info title="Get Local Settings" description="Get the local settings for the application. Settings that will be returned are listed below in the output section.">
+    <output name="AutomationURL"                          desc="The URL that is used for automation cycles." />
+    <output name="Culture"                                desc="Regional language of the application." />
+    <output name="NotifyOfCertificateExpiration"          desc="Notify the application administrator via email 30 days before the private key certificate expires." values="True, False" default="True" />
+    <output name="CertificateExpirationNotificationSent"  desc="If the application has notified the application administrator of an expiring certificate, this will contain the date and time the notification was sent." />
+    <output name="AutomationCert"                         desc="The public key certificate that the SSL server uses, if the server is only hosting SSL connections." />
+    <output name="PublicDomain"                           desc="The domain name or IP address to be used for URL's on the Public.rst page." />
+    <output name="NotifyStopStart"                        desc="Note in the event log when the application starts and stops." values="True, False" default="True" />
+    <output name="Localhost"                              desc="Local interface to bind to for outgoing connections."/>
+    <output name="LogDebugInfo"                           desc="Enables enhanced logging for the application." values="True, False" default="False" />
+    <output name="MaxFilesPerPartner"                     desc="Controls how many files a sending thread will attempt to send for each partner. Limited to prevent the application from sending so many files that the request to start sending files times out.  Increaase this configuration with caution." default="5" />
+    <output name="MaxThreads"                             desc="Governs how many sending threads to use at once.  Increase this value with caution." default="1" />
+  </rsb:info>
+
+	<rsb:call op="[service.getLocalSettings]">
+		<rsb:set item="output" />
+		<rsb:check attr="fa:automatedsendurl">
+			<rsb:set item="output" attr="AutomationURL" value="[_profile.as2_heartbeaturl_global | def('')]" />
+		</rsb:check>
+		<rsb:check attr="fa:culture">
+			<rsb:set item="output" attr="Culture" value="[fa:culture]" />
+		</rsb:check>
+		<rsb:check attr="fa:notifycertexpiry">
+			<rsb:set item="output" attr="NotifyOfCertificateExpiration" value="[fa:notifycertexpiry]" />
+		</rsb:check>
+		<rsb:check attr="fa:notificationsent">
+			<rsb:set item="output" attr="CertificateExpirationNotificationSent" value="[fa:notificationsent]" />
+		</rsb:check>
+		<rsb:check attr="fa:logdebug">
+			<rsb:set item="output" attr="LogDebugInfo" value="[fa:logdebug]" />
+		</rsb:check>
+		<rsb:check attr="fa:automationcert">
+			<rsb:set item="output" attr="AutomationCert" value="[fa:automationcert]" />
+		</rsb:check>
+		<rsb:check attr="fa:publicdomain">
+			<rsb:set item="output" attr="PublicDomain" value="[fa:publicdomain]" />
+		</rsb:check>
+		<rsb:check attr="fa:notifystopstart">
+			<rsb:set item="output" attr="NotifyStopStart" value="[fa:notifystopstart]" />
+		</rsb:check>
+		<rsb:check attr="fa:localhost">
+			<rsb:set item="output" attr="Localhost" value="[fa:localhost]" />
+		</rsb:check>
+		<rsb:check attr="fa:maxfilesperpartnerperthread">
+			<rsb:set item="output" attr="MaxFilesPerPartner" value="[fa:maxfilesperpartnerperthread]" />
+		</rsb:check>
+		<rsb:check attr="fa:maxconcurrentthreads">
+			<rsb:set item="output" attr="MaxThreads" value="[fa:maxconcurrentthreads]" />
+		</rsb:check>
+    
+		<rsb:push item="output" title="Local Settings Configuration" />
+	</rsb:call>
+
+</rsb:script>
+
+

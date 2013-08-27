@@ -1,0 +1,25 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Test Send" description="Create a test file and send it to a specified trading partner.">
+    <input  name="Name"      desc="The organization name or AS2 Identifier of the trading partner." required="true" />
+
+    <output name="Result"    desc="The result message of transmission." />
+  </rsb:info>
+  
+  <rsb:set attr="orgname" value="[Name]" />
+  <rsb:call op="[service.getPartner]">
+    <rsb:call op="[service.createTestFile]">
+      <rsb:set attr="file" value="[file:destination]" />
+      <rsb:call op="[service.as2SendFile]" output="out">
+        <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]" />
+      </rsb:call>
+    </rsb:call>
+  </rsb:call>
+  
+  
+</rsb:script>

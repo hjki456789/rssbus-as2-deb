@@ -1,0 +1,23 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Archive Logs" description="Archive log files for a given trading partner. Archiving log files will enhance application performance. However, only logs older than 5 days will be archived by the application.">
+    <input  name="FileAge"             desc="Archive logs older than the number of specified days. The minimum number of days old to archive a log is 5." required="true" />
+    <input  name="Name"                 desc="The organization name or AS2 Identifier of the trading partner." />
+    <input  name="LogType"              desc="The type of log." values="Sent, Received, Async, All" default="All" />
+    <input  name="Directory"            desc="The archive directory. By default the application will create an archive directory for the trading partner." />
+    
+    <output name="SourceDirectory"      desc="The full path of the source directory of the log being moved." />
+    <output name="DestinationDirectory" desc="The full path of the destination directory of the log being moved." />
+    <output name="Status"               desc="The status of archiving the current log." />
+  </rsb:info>
+
+  <rsb:call op="[service.archiveLogs]">
+    <rsb:push/>
+  </rsb:call>
+</rsb:script>
+

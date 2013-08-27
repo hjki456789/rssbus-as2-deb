@@ -1,0 +1,44 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="ReceiveMDN" description="Receive MDN from a AS2 partner">
+  </rsb:info>
+
+  <rsb:equals attr="_request.server:REQUEST_METHOD" value="POST" case="ignore">
+    <rsb:check item="_httpheaders" attr="AS2-From">
+      <rsb:set attr="_context.settings:outputformat" value="null"/>
+      <rsb:set attr="selffeed" value="[service.getSelf]"/>
+      <rsb:set attr="partnerfeed" value="[service.getPartner]"/>
+      <rsb:set attr="localsettingsfeed" value="[service.getLocalSettings]"/>
+      <rsb:set attr="logfeed" value="[service.writeSysLog]"/>
+      <rsb:set attr="mailfeed" value="[service.sendMail]"/>
+
+      <!--fetch and set orgname for partner feed-->
+      <rsb:call op="[service.getSelf]">
+        <rsb:set item='self' copyfrom='_out1'/>
+      </rsb:call>
+      <rsb:match type="exact" pattern="[_httpheaders.AS2-To | replace('&quot;','')]" value="[self.a2p:orgname]">
+        <rsb:set attr="orgname" value="[_httpheaders.AS2-From | replace('&quot;','')]"/>
+        <rsb:else>
+          <rsb:set attr="orgname" value="[_httpheaders.AS2-From | replace('&quot;','')].[_httpheaders.AS2-To | replace('&quot;','')]"/>
+        </rsb:else>
+      </rsb:match>
+
+      <rsb:call op="as2connectorAs2ReceiveMDN" output="out">
+        <rsb:set attr="cache.orgname" value="[orgname]"/>
+        <rsb:set attr="cache.logname" value="{[out.encodedmessageid]}"/>
+        <rsb:call op="[service.addSentCache]" in="cache" out="sentcache"/>
+        <rsb:unset item="sentcache"/>
+
+        <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+      </rsb:call>
+
+      <rsb:else>
+        <rsb:throw code="ReceiveMDN" description="Invalid http headers."/>
+      </rsb:else>
+    </rsb:check>
+  </rsb:equals>
+
+</rsb:script>

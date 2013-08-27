@@ -1,0 +1,34 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="deleteAccess" description="Deletes the script for a user.">
+    <input name="username" description="The username." required="true"/>
+    <input name="script" description="The script." required="true"/>
+  </rsb:info>
+  
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:user" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+  <rsb:check attr="script">
+    <rsb:else>
+      <rsb:throw code="rsb:script" description="No script specified."/>
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:check value="[script | startswith('~/')]">
+    <rsb:set attr="script" value="[script | substring('2')]"/>
+  </rsb:check>
+  
+  <rsb:set item="delete" attr="database" value="[site.userdb]"/>
+  <rsb:set item="delete" attr="paramname#1" value="username"/>
+  <rsb:set item="delete" attr="paramvalue#1" value="[_input.username]"/>
+  <rsb:set item="delete" attr="paramname#2" value="script"/>
+  <rsb:set item="delete" attr="paramvalue#2" value="[script]"/>
+  <rsb:set item="delete" attr="query">DELETE FROM user_scripts WHERE user_id=(SELECT id FROM users WHERE user_name=@username) AND script=@script</rsb:set>
+  <rsb:call op="sqliteQuery" in="delete"/>
+
+</rsb:script>

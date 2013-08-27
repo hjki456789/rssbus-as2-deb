@@ -1,0 +1,45 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="listUsers" description="Lists all users.">
+    <input name="roles" description="Roles to include when listing users"/>
+    <output name="username" description="The username." />
+    <output name="email" description="The user's email." />
+    <output name="authtoken" description="The user's authtoken." />
+  </rsb:info>
+  
+  <rsb:check attr="roles">
+    
+    <rsb:set item="users" attr="database" value="[site.userdb]"/>
+    <rsb:set item="users" attr="query" value="SELECT * FROM user_roles,roles,users Where ("/>
+    <rsb:set attr="tmp.or" value=""/>
+    <rsb:enum list="[roles]" separator=",">
+      <rsb:set item="users" attr="paramname#[_index]" value="role[_index]"/>
+      <rsb:set item="users" attr="paramvalue#[_index]" value="[_value]"/>
+      <rsb:set item="users" attr="query" value="[users.query][tmp.or] role_name=@role[_index]"/>
+      <rsb:set attr="tmp.or" value=" or"/>
+    </rsb:enum>
+    <rsb:set item="users" attr="query" value="[users.query]) AND user_roles.\[user_id\]=users.\[id\] AND user_roles.\[role_id\]=roles.\[id\] ORDER BY user_name"/>
+    <rsb:call op="sqliteQuery" in="users">
+      <rsb:set attr="user.username" value="[sqlite:user_name]"/>
+      <rsb:set attr="user.email" value="[sqlite:user_email]"/>
+      <rsb:set attr="user.authtoken" value="[sqlite:user_token]"/>
+      <rsb:push item="user"/>
+    </rsb:call>
+  
+    <rsb:else>
+      <rsb:set item="users" attr="database" value="[site.userdb]"/>
+      <rsb:set item="users" attr="query" value="SELECT * FROM users ORDER BY user_name"/>
+      <rsb:call op="sqliteQuery" in="users">
+        <rsb:set attr="user.username" value="[sqlite:user_name]"/>
+        <rsb:set attr="user.email" value="[sqlite:user_email]"/>
+        <rsb:set attr="user.authtoken" value="[sqlite:user_token]"/>
+        <rsb:push item="user"/>
+      </rsb:call>
+    </rsb:else>
+
+  </rsb:check>
+  
+</rsb:script>

@@ -1,0 +1,127 @@
+<rsb:info>
+   <input name="type" description="The type of log message."/>
+   <input name="script" description="The app causing the error."/>
+   <input name="message" description="The message."/>
+   <input name="timestamp" description="The time when the event occured."/>   
+</rsb:info>
+
+<rsb:set attr="dir.path" value="[_about.approot | pathcombine('events/logs')]"/>
+<rsb:match pattern="true" value="[dir.path | direxists | tolower]">
+  <rsb:else>
+    <rsb:call op="fileMakeDir" in="dir"/>
+  </rsb:else>
+</rsb:match>
+
+<rsb:set attr="filename" value="Log-[none | now | todate('MM-dd') | tolower()].txt"/>
+<rsb:set attr="write.file" value="[dir.path | pathcombine('[filename]')]"/>
+<rsb:set attr="write.data" value=""/>
+<rsb:set attr="write.mode" value="append"/>
+
+<rsb:try>
+  <rsb:equals attr="type" value="verbose" case="ignore">
+    <rsb:else>
+      <!-- Log to file -->
+      <rsb:match pattern="true" value="[write.file | fileexists | tolower]">
+        <rsb:else>
+          <rsb:set attr="list.path" value="[dir.path]"/>
+          <rsb:set attr="list.mask" value="Log-*-[none | now | todate('dd') | tolower() ].txt"/>
+          <rsb:call op="fileListDir" in="list">
+            <rsb:set attr="delete.file" value="[file:fullname]"/>
+            <rsb:call op="fileDelete" in="delete"/>
+          </rsb:call>
+          
+          <rsb:set attr="write.data" value="#Fields: datetime logtype resource message\r\n"/>
+        </rsb:else>
+      </rsb:match>
+
+      <rsb:set attr="write.data">[write.data][timestamp |def('')]\t[type | def('error')]\t[script | def('')]\t[message | def('')]\r\n</rsb:set>
+
+      <rsb:call op="fileWrite" in="write"/>
+
+      <!-- Log to database -->
+      <rsb:include file="[_about.approot]/shared/about.rst"/>
+      <rsb:check value="[site.java]">
+        <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('WEB-INF')]"/>
+        <rsb:else>
+        <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('app_data')]"/>
+        </rsb:else>
+      </rsb:check>
+      <rsb:set item="db" attr="database" value="[tmp.appdatadir | pathcombine('Logs.db')]"/>
+
+      <rsb:set attr="tmp.appfolder" value="[script | def('') | replace('~/','')]"/>
+      <rsb:match pattern="[tmp.appfolder | contains('?','true','false')]" value="true">
+        <rsb:set attr="tmp.index" value="[tmp.appfolder | lfind('?')]"/>
+        <rsb:set attr="tmp.appfolder" value="[tmp.appfolder | substring('0','[tmp.index]')]"/>
+      </rsb:match>
+      <rsb:set attr="tmp.appfolder" value="[_about.approot | pathcombine('[tmp.appfolder]') | replace('[_about.approot]','')]"/>
+      <rsb:set attr="tmp.appfolder" value="[tmp.appfolder | split('/','1')]"/>
+      <rsb:set attr="tmp.appfolder" value="[tmp.appfolder | split('\\','1') | tolower]"/>
+
+      <rsb:set item="adddb" attr="paramname#1" value="datetime"/>
+      <rsb:set item="adddb" attr="paramvalue#1" value="[timestamp |def('[now | now]') | todate('yyyy-MM-dd HH:mm:ss.fff')]"/>
+      <rsb:set item="adddb" attr="paramname#2" value="logtype"/>
+      <rsb:set item="adddb" attr="paramvalue#2" value="[type | def('error')]"/>
+      <rsb:set item="adddb" attr="paramname#3" value="resource"/>
+      <rsb:set item="adddb" attr="paramvalue#3" value="[script | def('')]"/>
+      <rsb:set item="adddb" attr="paramname#4" value="message"/>
+      <rsb:set item="adddb" attr="paramvalue#4" value="[message | def('')]"/>
+      <rsb:set item="adddb" attr="paramname#5" value="appfolder"/>
+      <rsb:set item="adddb" attr="paramvalue#5" value="[tmp.appfolder]"/>
+      <rsb:set item="adddb" attr="query">INSERT INTO logs (datetime, logtype, resource, message, appfolder) VALUES (@datetime, @logtype, @resource, @message, @appfolder)</rsb:set>
+      <rsb:call op="sqliteQuery" in="db,adddb"/>
+
+      <rsb:set item="deletedb" attr="paramname#1" value="datetime"/>
+      <rsb:set item="deletedb" attr="paramvalue#1" value="[now | now | dateadd('Day','-30') | todate('yyyy-MM-dd')]"/>
+      <rsb:set item="deletedb" attr="query">DELETE FROM logs WHERE datetime<@datetime</rsb:set>
+      <rsb:call op="sqliteQuery" in="db,deletedb"/>
+      
+      <!-- Send notifications -->
+      <rsb:equals attr="type" value="error">
+        
+        <rsb:set item="profile" value=""/>
+        <rsb:set attr="profile_query.action" value="get"/>
+        <rsb:call op="profile.rsb" in="profile_query" out="out">
+          <rsb:map from="out" to="profile" map="* = profile:*"/>
+        </rsb:call>
+        
+        <rsb:check attr="profile.[tmp.appfolder]_notifyemail_global">
+          <rsb:match value="[profile.[tmp.appfolder]_notifyemail_global | tolower]" pattern="true">
+            <rsb:check attr="profile.[tmp.appfolder]_emailto_global">
+              <rsb:set attr="smtp.smtpserver" value="[profile.smtpserver_global | def('')]"/>
+              <rsb:set attr="smtp.smtpport" value="[profile.smtpport_global | def('')]"/>
+              <rsb:set attr="smtp.user" value="[profile.smtpuser_global | def('')]"/>
+              <rsb:set attr="smtp.password" value="[profile.smtppassword_global | def('')]"/>
+              <rsb:set attr="smtp.sslmode" value="[profile.smtpsslstartmode_global | def('')]"/>
+              <rsb:set attr="smtp.sslcert" value="*"/>
+              
+              <rsb:set attr="smtp.from" value="[profile.[tmp.appfolder]_emailfrom_global]"/>
+              <rsb:set attr="smtp.to" value="[profile.[tmp.appfolder]_emailto_global]"/>
+              <rsb:set attr="smtp.subject" value="[profile.[tmp.appfolder]_emailsubject_global | def('')]"/>
+              <rsb:set attr="smtp.text" value="[message]"/>
+              
+              <rsb:call op="smtpSendMessage" in="smtp"/>
+            </rsb:check>
+          </rsb:match>
+        </rsb:check>
+        
+        <rsb:check attr="profile.[tmp.appfolder]_notifyeventlog_global">
+          <rsb:match value="[profile.[tmp.appfolder]_notifyeventlog_global | tolower]" pattern="true">
+            <rsb:set attr="eventlog.log" value="APPLICATION"/>
+            <rsb:set attr="eventlog.src" value="RSSBus [profile.[tmp.appfolder]_notifyappname_global]"/>
+            <rsb:set attr="eventlog.sev" value="e"/>
+            <rsb:set attr="eventlog.msg" value="[message]"/>
+            <rsb:call op="sysWriteEventLog" in="eventlog"/>
+          </rsb:match>
+        </rsb:check>
+        
+      </rsb:equals>
+
+    </rsb:else>
+  </rsb:equals>
+  
+  <rsb:catch code="*">
+    <!-- This won't write to the database -->
+    <rsb:set attr="write.data">[timestamp |def('')]\t[type | def('error')]\t[script | def('')]\t[_code]: [_description]\r\n</rsb:set>
+    <rsb:call op="fileWrite" in="write"/>
+  </rsb:catch>
+</rsb:try>

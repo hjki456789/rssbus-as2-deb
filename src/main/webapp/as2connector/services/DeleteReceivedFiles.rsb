@@ -1,0 +1,32 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Delete Received Files" description="Delete received files for a trading partner.">
+    <input  name="Name"       desc="The organization name." required="true" />
+    <input  name="FileName"   desc="The name of the file to delete. Use * to delete all files." required="true" default="*" />
+    
+    <output name="DeletedFile"  desc="The name of the file that was deleted." />
+  </rsb:info>
+  
+  <rsb:check attr="FileName">
+    <rsb:else>
+      <rsb:throw code="rsb:info_check" desc="The attribute 'FileName' is required" />
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  <rsb:set item="input" attr="fileName" value="[FileName]" />
+  <rsb:call op="[service.deleteReceivedFile]" in="input">
+    <rsb:set item="output" />
+    <rsb:check attr="file:file">
+      <rsb:set item="output" attr="DeletedFile" value="[file:file]" />
+    </rsb:check>
+    <rsb:push item="output" title="[rss:title]" />
+  </rsb:call>
+</rsb:script>
+
+

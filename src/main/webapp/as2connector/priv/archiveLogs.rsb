@@ -1,0 +1,161 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Archive Logs" description="Archive log files for a given trading partner. Archiving log files will enhance application performance. However, only logs older than 5 days will be archived by the application.">
+    <input  name="FileAge"              desc="Archive logs older than the number of specified days. The minimum number of days old to archive a log is 5." required="true" />
+    <input  name="Name"                 desc="The organization name or AS2 Identifier of the trading partner." />
+    <input  name="LogType"              desc="The type of log." values="Sent, Received, Async, All" default="All" />
+    <input  name="Directory"            desc="The archive directory. By default the application will create an archive directory for the trading partner." />
+    
+    <output name="SourceDirectory"      desc="The full path of the source directory of the log being moved." />
+    <output name="DestinationDirectory" desc="The full path of the destination directory of the log being moved." />
+    <output name="Status"               desc="The status of archiving the current log." />
+  </rsb:info>
+
+  <rsb:set item="pg" attr="Days" value="[FileAge]" />
+  
+  <rsb:set item="database" attr="database" value="[site.statusdb]"/>
+  
+  <rsb:check attr="Name">
+    <rsb:set attr="pg.partners" value="[Name]"/>
+
+    <rsb:else>
+      <rsb:set attr="tmp.comma" value=""/>
+      <rsb:set attr="pg.partners" value=""/>
+      <rsb:call op="[service.listPartners]">
+        <rsb:set attr="pg.partners" value="[pg.partners][tmp.comma][a2p:orgname]"/>
+        <rsb:set attr="tmp.comma" value=","/>
+      </rsb:call>
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:equals attr="LogType" value="All">
+    <rsb:set attr="pg.logs" value="Sent,Received,Async"/>
+
+    <rsb:else>
+      <rsb:set attr="pg.logs" value="[LogType]"/>
+    </rsb:else>
+  </rsb:equals>
+  
+  <rsb:enum list="[pg.partners]" separator=",">
+    <rsb:set item="pg" attr="Name" value="[_value]" />
+
+    <rsb:check attr="pg.Name">
+      <rsb:else>
+        <rsb:continue/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:enum list="[pg.logs]" separator=",">
+
+      <rsb:set item="pg" attr="LogType" value="[_value]" />
+      
+      <rsb:check attr="pg.LogType">
+        <rsb:else>
+          <rsb:continue/>
+        </rsb:else>
+      </rsb:check>
+      
+      <rsb:set item="input" attr="orgname" value="[pg.Name]" />
+      <rsb:call op="[service.getPartner]" in="input">
+        <rsb:set item='partner' copyfrom='_out1'/>
+      </rsb:call>
+
+      <rsb:check item="partner" attr="a2p:dirlogs">
+        <rsb:set item="input2" attr="fileordir" value="files" />
+        <rsb:set item="input2" attr="path" value="[partner.a2p:dirlogs | pathcombine('[pg.LogType]')]" />
+
+        <rsb:equals attr="site.supportPartnerType" value="AS2">
+          <rsb:set item="input2" attr="recurse" value="true" />
+          <rsb:set item="input2" attr="mask" value="*.log" />
+        </rsb:equals>
+        <rsb:equals attr="site.supportPartnerType" value="OFTP">
+          <rsb:set item="input2" attr="recurse" value="false" />
+          <rsb:set item="input2" attr="mask" value="*" />
+          <rsb:set item="input2" attr="fileordir" value="all" />
+        </rsb:equals>
+        
+        <rsb:match pattern="false" type="exact" value="[input2.path | fileexists | tolower]">
+          <rsb:continue/>
+        </rsb:match>
+
+        <rsb:call op="fileListDir" in="input2" output="out">
+          <rsb:set attr="older" value="[out.file:mtime | datediff('Day') | abs() | isgreater([pg.Days],true,false) | tolower()]" />
+          <rsb:equals attr="older" value="true">
+            <rsb:set item="pg" attr="found" value="true" />
+            
+            <rsb:equals attr="site.supportPartnerType" value="AS2">
+              <rsb:set item="input3" attr="source" value="[out.file:fullname | getdirname()]" />
+              <rsb:else>
+                <rsb:set item="input3" attr="source" value="[out.file:fullname]" />
+              </rsb:else>
+            </rsb:equals>
+            <rsb:check attr="Directory">
+              <rsb:set item="input3" attr="destination" value="[Directory]" />
+              <rsb:else>
+                <rsb:set item="input3" attr="destination" value="[partner.a2p:dirlogs | pathcombine('../archive/')]" />
+              </rsb:else>
+            </rsb:check>
+            <rsb:equals attr="site.supportPartnerType" value="AS2">
+              <rsb:else>
+                <rsb:equals attr="out.file:isdir" value="false">
+                  <rsb:set attr="input3.destination" value="[input3.destination | pathcombine('[out.file:name]')]"/>
+                </rsb:equals>
+              </rsb:else>
+            </rsb:equals>
+            <rsb:try>
+              <rsb:call op="fileMove" in="input3">
+                <rsb:set item="out1" attr="SourceDirectory" value="[input3.source]" />
+                <rsb:set item="out1" attr="DestinationDirectory" value="[input3.destination]" />
+                <rsb:set item="out1" attr="Status" value="Success" />
+                <rsb:push title="[out1.SourceDirectory]" item="out1" />
+              </rsb:call>
+              
+              <rsb:select value="[pg.LogType | tolower]">
+                <rsb:case value="sent">
+                  <rsb:set item="pg" attr="table" value="\[[input.orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_SENT\]"/>
+                  <rsb:equals attr="site.supportPartnerType" value="AS2">
+                    <rsb:set item="database" attr="query" value="DELETE FROM [pg.table] WHERE id='[out.file:fullname | getdirname() | filename]'"/>
+                    <rsb:else>
+                      <rsb:set item="database" attr="query" value="DELETE FROM [pg.table] WHERE id='[out.file:name]'"/>
+                    </rsb:else>
+                  </rsb:equals>
+                  <rsb:call op="sqliteQuery" in="database"/>
+                </rsb:case>
+                <rsb:case value="received">
+                  <rsb:set item="pg" attr="table" value="\[[input.orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_RECEIVED\]"/>
+                  <rsb:equals attr="site.supportPartnerType" value="AS2">
+                    <rsb:set item="database" attr="query" value="DELETE FROM [pg.table] WHERE id='[out.file:fullname | getdirname() | filename]'"/>
+                    <rsb:else>
+                      <rsb:set item="database" attr="query" value="DELETE FROM [pg.table] WHERE id='[out.file:name]'"/>
+                    </rsb:else>
+                  </rsb:equals>
+                  <rsb:call op="sqliteQuery" in="database"/>
+                </rsb:case>
+                <rsb:default/>
+              </rsb:select>
+
+              <rsb:catch code="*">
+                <rsb:set item="out2" attr="SourceDirectory" value="[input3.source]" />
+                <rsb:set item="out2" attr="DestinationDirectory" value="[input3.destination]" />
+                <rsb:set item="out2" attr="Status" value="[_code|def('-1')]: [_description]" />
+                <rsb:push title="[out2.SourceDirectory]" item="out2" />
+              </rsb:catch>
+            </rsb:try>
+            
+          </rsb:equals>
+        </rsb:call>
+      </rsb:check>
+    </rsb:enum>
+  </rsb:enum>
+  
+  <rsb:check attr="pg.found">
+    <rsb:else>
+      <rsb:set item="out3" attr="Status" value="No logs older than [pg.Days] found." />
+      <rsb:push item="out3" />
+    </rsb:else>
+  </rsb:check>
+  
+</rsb:script>

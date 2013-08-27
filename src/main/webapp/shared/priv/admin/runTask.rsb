@@ -1,0 +1,13 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="runTask" description="Sets a scheduled task.">
+    <input name="Name" description="A task's name." />
+    <input name="URL" description="A task's URL." />
+  </rsb:info>
+  
+  <rsb:set attr="special" value="@runnow"/>
+  <rsb:call op="schedulerStart"/>
+</rsb:script>

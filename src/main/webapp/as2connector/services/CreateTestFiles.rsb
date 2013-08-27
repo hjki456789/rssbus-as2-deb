@@ -1,0 +1,27 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+  
+  <rsb:info title="CreateTestFiles" description="Create a set of test files for a trading partner. The resulting path of the created file will be supplied in the output of the service.">
+    <input  name="Name"            desc="The organization name or AS2 Identifier of the trading partner." required="true" />
+    
+    <output name="SourceFile"      desc="The full path of the source file." />
+    <output name="DestinationFile" desc="The full path of the destination file." />
+  </rsb:info>
+  
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  <rsb:call op="[service.createTestFile]" in="input">
+  	<rsb:set item="output" />
+  	<rsb:check attr="[file:source]">
+  		<rsb:set item="output" attr="SourceFile" value="[file:source]" />
+  	</rsb:check>
+  	<rsb:check attr="[file:destination]">
+  		<rsb:set item="output" attr="DestinationFile" value="[file:destination]" />
+  	</rsb:check>
+  	<rsb:push item="output" title="[rss:title]" />
+  </rsb:call>
+</rsb:script>
+

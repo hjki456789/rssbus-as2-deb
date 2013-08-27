@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uccnet:envelope communicationVersion="2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uccnet="http://www.uccnet.org/schemas/2.2/uccnet" xmlns:eanucc="http://www.ean-ucc.org/schemas/1.3/eanucc" xsi:schemaLocation="http://www.uccnet.org/schemas/2.2/uccnet http://test.uccnet.org/xmlschema/uccnet/2.2/Envelope.xsd">
+   <messageHeader>
+      <to>
+         <recipient>ZZtestas2</recipient>
+      </to>
+      <from>
+         <originator>ZZtestas2</originator>
+      </from>
+      <messageIdentifier>
+         <value>754810000</value>
+      </messageIdentifier>
+   </messageHeader>
+   <body>
+	<transaction>
+			<entityIdentification>
+				<uniqueCreatorIdentification/>
+				<globalLocationNumber>
+					<gln>0614141800001</gln>
+				</globalLocationNumber>
+			</entityIdentification>
+			<command>
+				<uccnet:notifyCommand>
+					<notifyCommandHeader>
+						<entityIdentification>
+							<uniqueCreatorIdentification/>
+							<globalLocationNumber>
+								<gln>0614141800001</gln>
+							</globalLocationNumber>
+						</entityIdentification>
+					</notifyCommandHeader>
+					<notifyCommandOperand>
+						<eanucc:catalogueItemNotification documentStatus="ORIGINAL" isReload="false" creationDate="2003-03-01T12:00:00.000-00:00" xsi:type="uccnet:CatalogueItemNotificationType">
+							<catalogueItem>
+								<catalogueItemState state="REGISTERED"/>
+								<tradeItem>
+									<tradeItemUnitDescriptor>BASE_UNIT_OR_EACH</tradeItemUnitDescriptor>
+									<tradeItemIdentification>
+										<gtin>00004448000071</gtin>
+										<additionalTradeItemIdentification xsi:type="uccnet:AlternateTradeItemIdentificationType">
+											<uccnet:eanuccType>UK</uccnet:eanuccType>
+											<uccnet:eanuccCode>00004448000071</uccnet:eanuccCode>
+										</additionalTradeItemIdentification>
+									</tradeItemIdentification>
+									<nextLowerLevelTradeItemInformation>
+										<quantityOfChildren>1</quantityOfChildren>
+										<totalQuantityOfNextLowerLevelTradeItem>1</totalQuantityOfNextLowerLevelTradeItem>
+										<childTradeItem>
+											<quantityofNextLowerLevelTradeItem>1</quantityofNextLowerLevelTradeItem>
+											<tradeItemIdentification>
+												<gtin>00004448000071</gtin>
+												<additionalTradeItemIdentification xsi:type="uccnet:AlternateTradeItemIdentificationType">
+													<uccnet:eanuccType>UK</uccnet:eanuccType>
+													<uccnet:eanuccCode>00004448000071</uccnet:eanuccCode>
+												</additionalTradeItemIdentification>
+											</tradeItemIdentification>
+										</childTradeItem>
+									</nextLowerLevelTradeItemInformation>
+									<tradeItemInformation>
+										<informationProviderOfTradeItem>
+											<informationProvider>
+												<gln>0614141800001</gln>
+											</informationProvider>
+											<nameOfInformationProvider>DGI</nameOfInformationProvider>
+										</informationProviderOfTradeItem>
+										<targetMarketInformation>
+											<targetMarketCountryCode>840</targetMarketCountryCode>
+											<targetMarketDescription language="en-US">
+												<text>US</text>
+											</targetMarketDescription>
+										</targetMarketInformation>
+										<classificationCategoryCode>
+											<classificationCategoryCode>0</classificationCategoryCode>
+											<classificationCategoryDefinition>NOTIFY</classificationCategoryDefinition>
+											<classificationCategoryName>NOTIFY</classificationCategoryName>
+											<additionalClassification>
+												<additionalClassificationAgencyName>UDEX</additionalClassificationAgencyName>
+												<additionalClassificationCategoryCode>02.0026.0000</additionalClassificationCategoryCode>
+												<additionalClassificationCategoryDescription>BREAD/BREAD ROLLS</additionalClassificationCategoryDescription>
+											</additionalClassification>
+										</classificationCategoryCode>
+										<tradeItemDescriptionInformation>
+											<brandName>Wswogger</brandName>
+											<descriptionShort>
+												<description language="en-US">
+													<text>This is the item desc</text>
+												</description>
+											</descriptionShort>
+											<functionalName>
+												<description language="en-US">
+													<text>Test Product</text>
+												</description>
+											</functionalName>
+											<tradeItemDescription>
+												<longDescription language="en-US">
+													<longText>EACH Item</longText>
+												</longDescription>
+											</tradeItemDescription>
+										</tradeItemDescriptionInformation>
+										<tradingPartnerNeutralTradeItemInformation>
+											<tradeItemUnitIndicator>
+												<isTradeItemABaseUnit>false</isTradeItemABaseUnit>
+												<isTradeItemAConsumerUnit>true</isTradeItemAConsumerUnit>
+												<isTradeItemADespatchUnit>true</isTradeItemADespatchUnit>
+												<isTradeItemAnInvoiceUnit>false</isTradeItemAnInvoiceUnit>
+												<isTradeItemAnOrderableUnit>true</isTradeItemAnOrderableUnit>
+												<isTradeItemAVariableUnit>false</isTradeItemAVariableUnit>
+											</tradeItemUnitIndicator>
+											<brandOwnerOfTradeItem>
+												<brandOwner>
+													<gln>0614141800001</gln>
+												</brandOwner>
+												<nameOfBrandOwner>Brand Owner Name</nameOfBrandOwner>
+											</brandOwnerOfTradeItem>
+											<packagingMarking>
+												<isPackagingMarkedAsRecyclable>true</isPackagingMarkedAsRecyclable>
+												<isPackagingMarkedReturnable>false</isPackagingMarkedReturnable>
+												<isPackagingMarkedWithExpirationDate>false</isPackagingMarkedWithExpirationDate>
+												<isPackagingMarkedWithGreenDot>true</isPackagingMarkedWithGreenDot>
+												<isPackagingMarkedWithIngredients>false</isPackagingMarkedWithIngredients>
+											</packagingMarking>
+											<tradeItemCountryOfOrigin>
+												<countryOfOrigin>US</countryOfOrigin>
+											</tradeItemCountryOfOrigin>
+											<tradeItemDateInformation>
+												<effectiveDate>2003-07-29</effectiveDate>
+												<lastChangeDateTime>2003-03-01T12:00:00.000-00:00</lastChangeDateTime>
+												<publicationDate>2003-03-01</publicationDate>
+												<startAvailabilityDateTime>2003-03-01T12:00:00.000-00:00</startAvailabilityDateTime>
+											</tradeItemDateInformation>
+											<tradeItemMarking>
+												<hasBatchNumber>false</hasBatchNumber>
+												<isNonSoldTradeItemReturnable>false</isNonSoldTradeItemReturnable>
+												<isTradeItemMarkedAsRecyclable>true</isTradeItemMarkedAsRecyclable>
+											</tradeItemMarking>
+											<tradeItemMeasurements>
+												<depth>
+													<measurementValue unitOfMeasure="IN">12.00</measurementValue>
+												</depth>
+												<grossWeight>
+													<measurementValue unitOfMeasure="KG">25</measurementValue>
+												</grossWeight>
+												<height>
+													<measurementValue unitOfMeasure="IN">12.00</measurementValue>
+												</height>
+												<isNetContentDeclarationIndicated>false</isNetContentDeclarationIndicated>
+												<width>
+													<measurementValue unitOfMeasure="IN">5.24</measurementValue>
+												</width>
+												<netContent>
+													<measurementValue unitOfMeasure="EA">13.0</measurementValue>
+												</netContent>
+												<netWeight>
+													<measurementValue unitOfMeasure="KG">22</measurementValue>
+												</netWeight>
+											</tradeItemMeasurements>
+										</tradingPartnerNeutralTradeItemInformation>
+									</tradeItemInformation>
+								</tradeItem>
+								<dataRecipient>0000914001018</dataRecipient>
+								<sourceDataPool>0614141800001</sourceDataPool>
+							</catalogueItem>
+							<catalogueItemNotificationIdentification>
+								<uniqueCreatorIdentification>111222211</uniqueCreatorIdentification>
+								<contentOwner>
+									<gln>0614141800001</gln>
+								</contentOwner>
+							</catalogueItemNotificationIdentification>
+							<uccnet:notificationTopic topic="NEW_ITEM"/>
+						</eanucc:catalogueItemNotification>
+					</notifyCommandOperand>
+				</uccnet:notifyCommand>
+			</command>
+		</transaction>
+	</body>
+</uccnet:envelope>

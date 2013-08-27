@@ -1,0 +1,18 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="getLocalSettings" description="Gets configuration of the local settings.">
+    <input  name="prop:*" desc="Sets configuration of the local settings."/>
+    <input  name="task:*" desc="Sets task of the local settings."/>
+    <output name="fa:*"   desc="properties and tasks of local setting."/>
+  </rsb:info>
+
+  <rsb:call op="[site.supportPartnerType | tolower]connectorLocalSettings" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+

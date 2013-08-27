@@ -1,0 +1,253 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Set Partner" desc="Configure an AS2 trading partner.">
+    <input name="AS2Identifier"                 desc="The AS2 Identifier of the trading partner." required="true" />
+    <input name="NewAS2Identifier"              desc="The new AS2 Identifier." />
+    <input name="Organization"                  desc="The organization name of the trading partner, to be used for display purposes." />
+    <input name="URL"                           desc="The trading partner's receiving URL." />
+    <input name="Certificate"                   desc="The trading partner's encryption certificate." />
+    <input name="SigningCertificate"            desc="The signing certificate of the trading partner, if different from the encryption certificate." />
+    <input name="SSLCertificate"                desc="The trading partner's SSL certificate, if SSL is used. A value of * means all certificates are accepted." />
+    
+    <input name="UseSigning"                    desc="Cryptographically sign outgoing messages." values="True, False" />
+    <input name="UseEncryption"                 desc="Encrypt outgoing messages." values="True, False" />
+    <input name="UseCompression"                desc="Compress outgoing messages." values="True, False" />
+    <input name="UseAS2Restart"                 desc="Partner supports AS2 Restart for very large messages. Note that AS2 Restart is an optional profile in AS2, and some trading partners may not support it." />
+    <input name="MDNDeliveryType"               desc="Determines whether the MDN will be delivered synchronously (in the server reponse) or asynchronously (over a seperate connection). Valid values are Synchronous and Asynchronous" />
+    <input name="MDNRequested"                  desc="The type of MDN that is requested. Valid values are Signed, Unsigned, and None." />
+    <input name="ConnectionTimeout"             desc="Timeout interval, in seconds, to wait for the server response." />
+    
+    <input name="ForceFIPSCompliance"           desc="Force FIPS 140-2 compliance. Note that the default algorithms used by AS2 are already FIPS compliant." values="True, False" />
+    <input name="RequireEncryption"             desc="Reject unencrypted incoming messages." values="True, False" />
+    <input name="RequireSignature"              desc="Reject cryptographically unsigned messages." values="True, False" />
+    
+    <input name="AutomationEnabled"             desc="Automatically send outgoing files." />
+    <input name="AutomationMaxAttempts"         desc="Maximum number of attempts that an automated file will be sent." />
+    <input name="AutomationRetryInterval"       desc="The interval, in minutes, that an automated file will be retried in the event of a failure." />   
+    <input name="AutomationFailureNotification" desc="Notify the application administrator about automatic send errors." values="True, False" />
+    
+    <input name="SSLClientCertificate"          desc="If SSL Client Authentication is required, the SSL Client certificate, in PFX format." />
+    <input name="SSLClientCertificatePassword"  desc="The password of the SSL Client certificate." />
+    <input name="SSLClientCertificateSubject"   desc="The subject of the SSL Client certificate." />
+
+    <input name="HTTPAuthenticationType"        desc="Type of HTTP authentication to be used. Valid values are Basic, Digest, and None." />
+    <input name="HTTPUser"                      desc="HTTP authentication user name." />
+    <input name="HTTPPassword"                  desc="HTTP authentication password." />
+    
+    <input name="AlternateAS2Identifier"        desc="An alternate local profile AS2 Identifier to be used for this trading partner." />
+    <input name="AlternateCertificate"          desc="An alternate local profile private key certificate to be used for this trading partner." />
+    <input name="AlternateCertificatePassword"  desc="The alternate certificate password." />
+    <input name="AlternateCertificateSubject"   desc="The alternate certificate subject." />
+    
+    <input name="AS2Version"                    desc="AS2-Version header to send in requests."/>
+    <input name="DecodeQuotedPrintable"         desc="Used to support Quoted-Prinatable decoding of messages." values="True, False"/>
+    <input name="SignatureAlgorithm"            desc="The signature algorithm to use." values="MD5,SHA1,SHA256,SHA384,SHA512,SHA224" />
+    <input name="EncryptionAlgorithm"           desc="The encryption algorithm to use." values="3DES,RC2,RC2CBC40,RC2CBC64,DES,AES,AESCBC192,AESCBC256" />
+    <input name="MDNOptions"                    desc="Used to overwrite MDNOptions."/>
+    <input name="MessageId"                     desc="Used to overwrite the message Id."/>
+    <input name="SendFilenameInContentType"     desc="If true, a name parameter is added to the content-type header of the EDI data, containing the filename." values="True,False"/>
+    <input name="AllowSSLv2Protocol"            desc="Allows the application to use use SSL2 protocol." values="True, False" default="False"/>
+    <input name="DirSent"                       desc="The application will move files that have been successfully sent to this directory."/>
+    <input name="TempIncomingDirectory"         desc="When set, the application will process incoming files in this directory." />
+    <input name="TempOutgoingDirectory"         desc="The application will use this directory for processing outgoing files." />
+    
+    <output name="AS2Identifier"                desc="The AS2 Identifier of the trading partner." />
+    <output name="Warnings#"                    desc="Any warning messages encountered during the update." />
+    <output name="CertificateExpirationMessage" desc="Any warning messages that a certificate is expired." />
+    <output name="CertificateWarnings"          desc="Any warnings encounted when configuring certificates." />
+  </rsb:info>
+
+  <rsb:set item="input" attr="orgname" value="[AS2Identifier]" />
+    
+  <rsb:check attr="NewAS2Identifier">
+    <rsb:set item="input" attr="neworgname" value="[NewAS2Identifier]" />
+	<rsb:else>
+	  <rsb:set item="input" attr="neworgname" value="[AS2Identifier]" />
+    </rsb:else>
+  </rsb:check>
+  <rsb:check attr="Organization">
+    <rsb:set item="input" attr="friendlyname" value="[Organization]" />
+  </rsb:check>
+  <rsb:check attr="URL">
+    <rsb:set item="input" attr="url" value="[URL]" />
+  </rsb:check>
+  <rsb:check attr="Certificate">
+    <rsb:set item="input" attr="encryptcert" value="[Certificate]" />
+  </rsb:check>
+  <rsb:check attr="SigningCertificate">
+    <rsb:set item="input" attr="signcert" value="[SigningCertificate]" />
+  </rsb:check>
+  <rsb:check attr="SSLCertificate">
+    <rsb:set item="input" attr="sslacceptcert" value="[SSLCertificate]" />
+  </rsb:check>
+  <rsb:check attr="UseSigning">
+    <rsb:set item="input" attr="signoutgoing" value="[UseSigning]" />
+  </rsb:check>
+  <rsb:check attr="UseEncryption">
+    <rsb:set item="input" attr="encryptoutgoing" value="[UseEncryption]" />
+  </rsb:check>
+  <rsb:check attr="UseCompression">
+    <rsb:set item="input" attr="compressoutgoing" value="[UseCompression]" />
+  </rsb:check>
+  <rsb:check attr="UseAS2Restart">
+    <rsb:set item="input" attr="supportrestart" value="[UseAS2Restart]" />
+  </rsb:check>
+  <rsb:check attr="MDNDeliveryType">
+    <rsb:equals attr="MDNDeliveryType" value="Synchronous">
+  	  <rsb:set item="input" attr="reqmdnsync" value="True" />
+  	  <rsb:else> 
+        <rsb:set item="input" attr="reqmdnsync" value="False" />
+      </rsb:else>
+    </rsb:equals>
+  </rsb:check>
+  <rsb:check attr="MDNRequested">
+    <rsb:select attr="MDNRequested">
+      <rsb:case match="exact" value="Signed">
+  	    <rsb:set item="input" attr="reqmdnsigned" value="True" />
+  	    <rsb:set item="input" attr="requestmdn" value="True" />
+      </rsb:case>
+      <rsb:case match="exact" value="Unsigned">
+  	    <rsb:set item="input" attr="reqmdnsigned" value="False" />
+  	    <rsb:set item="input" attr="requestmdn" value="True" />
+      </rsb:case>
+      <rsb:case match="exact" value="None">
+  	    <rsb:set item="input" attr="requestmdn" value="False" />
+      </rsb:case>
+	  <rsb:default />
+    </rsb:select>
+  </rsb:check>
+  <rsb:check attr="ConnectionTimeout">
+    <rsb:set item="input" attr="connectiontimeout" value="[ConnectionTimeout]" />
+  </rsb:check>
+  <rsb:check attr="ForceFIPSCompliance">
+    <rsb:set item="input" attr="forcefipscompliance" value="[ForceFIPSCompliance]" />
+  </rsb:check>
+  <rsb:check attr="RequireEncryption">
+    <rsb:set item="input" attr="encryptincoming" value="[RequireEncryption]" />
+  </rsb:check>
+  <rsb:check attr="RequireSignature">
+    <rsb:set item="input" attr="signincoming" value="[RequireSignature]" />
+  </rsb:check>
+  <rsb:check attr="AutomationEnabled">
+    <rsb:set item="input" attr="automationenabled" value="[AutomationEnabled]" />
+  </rsb:check>
+  <rsb:check attr="AutomationMaxAttempts">
+    <rsb:set item="input" attr="maxattempts" value="[AutomationMaxAttempts]" />
+  </rsb:check>
+  <rsb:check attr="AutomationRetryInterval">
+    <rsb:set item="input" attr="retryinterval" value="[AutomationRetryInterval]" />
+  </rsb:check>
+  <rsb:check attr="AutomationFailureNotification">
+    <rsb:set item="input" attr="sendmailonautomationerror" value="[AutomationFailureNotification]" />
+  </rsb:check>
+  <rsb:check attr="SSLClientCertificate">
+    <rsb:set item="input" attr="sslclientcertfile" value="[SSLClientCertificate]" />
+  </rsb:check>
+  <rsb:check attr="SSLClientCertificatePassword">
+    <rsb:set item="input" attr="sslclientcertpwd" value="[SSLClientCertificatePassword]" />
+  </rsb:check>
+  <rsb:check attr="SSLClientCertificateSubject">
+    <rsb:set item="input" attr="sslclientcertsubject" value="[SSLClientCertificateSubject]" />
+  </rsb:check>
+  <rsb:check attr="HTTPAuthenticationType">
+    <rsb:set item="input" attr="httpauthtype" value="[HTTPAuthenticationType]" />
+  </rsb:check>
+  <rsb:check attr="HTTPAuthenticationType">
+    <rsb:select attr="HTTPAuthenticationType">
+      <rsb:case match="exact" value="Basic">
+  	    <rsb:set item="input" attr="httpauthtype" value="Basic" />
+  	    <rsb:set item="input" attr="usehttpauth" value="True" />
+      </rsb:case>
+      <rsb:case match="exact" value="Digest">
+  	    <rsb:set item="input" attr="httpauthtype" value="Digest" />
+  	    <rsb:set item="input" attr="usehttpauth" value="True" />
+      </rsb:case>
+      <rsb:case match="exact" value="None">
+  	    <rsb:set item="input" attr="usehttpauth" value="False" />
+      </rsb:case>
+	  <rsb:default />
+    </rsb:select>
+  </rsb:check>
+  <rsb:check attr="HTTPUser">
+    <rsb:set item="input" attr="httpauthuser" value="[HTTPUser]" />
+  </rsb:check>
+  <rsb:check attr="HTTPPassword">
+    <rsb:set item="input" attr="httpauthpwd" value="[HTTPPassword]" />
+  </rsb:check>
+  <rsb:check attr="AlternateAS2Identifier">
+    <rsb:set item="input" attr="localas2identifier" value="[AlternateAS2Identifier]" />
+  </rsb:check>
+  <rsb:check attr="AlternateCertificate">
+    <rsb:set item="input" attr="alternatecert" value="[AlternateCertificate]" />
+  </rsb:check>
+  <rsb:check attr="AlternateCertificatePassword">
+    <rsb:set item="input" attr="alternatecertpassword" value="[AlternateCertificatePassword]" />
+  </rsb:check>
+  <rsb:check attr="AlternateCertificateSubject">
+    <rsb:set item="input" attr="alternatecertsubject" value="[AlternateCertificateSubject]" />
+  </rsb:check>
+  
+  <!-- Hidden Configs -->
+  <rsb:check attr="AS2Version">
+    <rsb:set item="input" attr="as2version" value="[AS2Version]"/>
+  </rsb:check>
+  <rsb:check attr="DecodeQuotedPrintable">
+    <rsb:set item="input" attr="decodequotedprintable" value="[DecodeQuotedPrintable]"/>
+  </rsb:check>
+  <rsb:check attr="SignatureAlgorithm">
+    <rsb:set item="input" attr="signaturealgorithm" value="[SignatureAlgorithm]"/>
+  </rsb:check>
+  <rsb:check attr="EncryptionAlgorithm">
+    <rsb:set item="input" attr="encryptionalgorithm" value="[EncryptionAlgorithm]"/>
+  </rsb:check>
+  <rsb:check attr="MDNOptions">
+    <rsb:set item="input" attr="mdnoptions" value="[MDNOptions]"/>
+  </rsb:check>
+  <rsb:check attr="MessageId">
+    <rsb:set item="input" attr="messageid" value="[MessageId]"/>
+  </rsb:check>
+  <rsb:check attr="SendFilenameInContentType">
+    <rsb:set item="input" attr="sendfilenameincontenttype" value="[SendFilenameInContentType]"/>
+  </rsb:check>
+  <rsb:check attr="AllowSSLv2Protocol">
+    <rsb:set item="input" attr="allowsslv2protocol" value="[AllowSSLv2Protocol]" />
+  </rsb:check>
+  <rsb:check attr="DirSent">
+    <rsb:set item="input" attr="dirsent" value="[DirSent]" />
+  </rsb:check>
+  <rsb:check attr="TempIncomingDirectory">
+    <rsb:set item="input" attr="dirdecodetemp" value="[TempIncomingDirectory]" />
+  </rsb:check>
+  <rsb:check attr="TempOutgoingDirectory">
+    <rsb:set item="input" attr="direncodetemp" value="[TempOutgoingDirectory]" />
+  </rsb:check>
+  
+  <rsb:call op="as2connectorAs2profileSetPartner" in="input">
+    <rsb:set item="output" />
+    <rsb:check attr="a2p:orgname">
+      <rsb:set item="output" attr="AS2Identifier" value="[a2p:orgname]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:warning">
+      <rsb:set item="output" attr="Warnings" value="[a2p:warning]" />
+    </rsb:check>
+    <rsb:check attr="a2p:warning0">
+      <rsb:map from="output2" to="output" map="Warnings* = a2p:warning*" />
+    </rsb:check>
+    <rsb:check attr="a2p:certExpMsg"> 
+      <rsb:set item="output" attr="CertificateExpirationMessage" value="[a2p:certExpMsg]" />
+    </rsb:check>
+    <rsb:check attr="a2p:certWarning">
+      <rsb:set item="output" attr="CertificateWarnings" value="[a2p:certWarning]" />
+    </rsb:check>
+    <rsb:push title="[rss:title | def('untitled item')]" item="output" />
+  </rsb:call>
+
+</rsb:script>
+
+
+

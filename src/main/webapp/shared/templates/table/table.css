@@ -1,0 +1,200 @@
+/* table template */
+table.app-table {
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+  width: 100%;
+  clear: right;
+}
+
+.app-table th, .app-table td {
+  border: 1px solid #D0D0D0;
+  padding: 5px;
+}
+
+.app-table  th.left, .app-table  td.left  { text-align: left; }
+.app-table  th.center, .app-table  td.center  { text-align: center; }
+.app-table  th.right, .app-table  td.right  { text-align: right; }
+
+.app-table  th {
+  background-color: #F0F0F0;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.app-table  th  span {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.app-table  th  span.sort {
+  padding: 0 20px;
+}
+
+.app-table  th span.asc { background:url(../../img/icons-sort.png) no-repeat 0 -54px!important;/*.app-icon-sort-blue-asc */ }
+.app-table  th span.desc { background:url(../../img/icons-sort.png) no-repeat 0 -84px!important;/*.app-icon-sort-blue-desc */ }
+.app-table  th:hover span.sort { background:url(../../img/icons-sort.png) no-repeat 0 -138px!important;/*.app-icon-sort-dark-both */ }
+
+.app-table tbody tr {
+  cursor:pointer;
+}
+
+.app-table tbody tr.full {
+  cursor:default;
+}
+
+.app-table tbody tr:hover td {
+  background-color:#EEF5FF;
+}
+
+.app-table td {
+  background-color: #FFF;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-overflow: clip\9; /* Hack for IE, we will set it to 'ellipsis' by JavaScript after load document */
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.app-table td span {
+  *white-space: nowrap; /* Hack for IE6,7 */
+}
+
+.app-table td p {
+  margin: 0;
+  padding: 0;
+}
+
+.app-table tr.separate td {
+  background-color: #FAFAFB;
+}
+
+.app-table tr.expand td {
+  background-color: #EEF5FF;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.app-table tr.wraptext td {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.app-table td.first {
+  background-image: url(../../img/icon-arrow.gif);
+  background-repeat: no-repeat;
+  background-position: 4px 10px;
+  padding-left:14px;
+}
+
+.app-table tr.expand  td.first {
+  background-image: url(../../img/icon-arrow-down.gif);
+  background-position: 4px 12px;
+}
+
+.app-table tr.full  td.first {
+  background-image: url(../../img/divider-hor.gif);
+  background-position: 4px 12px;
+}
+
+.app-table tr.expand td.deleteRow, .app-table td.deleteRow, .app-table th.deleteRow, .app-table tr:hover td.deleteRow {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.app-table .deleteRow div {
+  background: #EEF5FF;
+  border: 1px solid #D0D0D0;
+  border-left: none;
+  cursor:pointer;
+  display: none;
+}
+
+.app-table .hiddenCol div {
+  display: none;
+}
+
+.app-table tr:hover .hiddenCol div {
+  display: block;
+}
+
+.app-table tr:hover .deleteRow div {
+  display: block;
+}
+
+.app-table .deleteRow div  span {
+  background: url(../../img/ui-icons_454545_256x240.png) -95px -128px;
+  display: block;
+  margin: 4px 2px;
+  text-indent: -4999px;
+}
+
+.app-table .hiddenRow {
+  background: transparent !important;
+  border: none;
+}
+
+.app-table .loading {
+  height: 150px;
+  padding: 50px 0;
+}
+
+.app-table-box .paging {
+  float:left; 
+  margin:10px 0;
+}
+
+.app-table-box .paging a, .app-table-box .page a{
+  border: 1px solid #a0a0a0;
+  color: #505050 !important;
+  display: inline-block;
+  margin: 0 2px;
+  padding: 1px 2px;
+}
+
+.app-table-box .paging a:hover, .app-table-box .page a:hover {
+  background-color: #ddd;
+}
+
+.app-table-box .paging a.paging-selected, .app-table-box .page a.page-selected {
+  background-color: #ddd;
+  border: 1px solid #707070;
+  padding: 1px 2px;
+  cursor: default;
+}
+
+.app-table-box .filter {
+  float:left; 
+  margin:10px 0 0 10px;
+}
+
+.app-table-box .page {
+  float:right;
+  margin:10px 0;
+}
+
+.app-table-box .btnbar {
+  float:right;
+  margin:10px;
+}
+
+.app-table-box .btnbar .refresh {
+  background: url(../../img/refresh-white.png) no-repeat 0px 1px !important;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  text-indent: -4999px;
+  width: 20px;
+}
+
+.app-table-box .btnbar .loading {
+  margin: 0px 8px;
+  vertical-align: top;
+}

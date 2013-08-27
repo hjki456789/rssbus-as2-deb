@@ -1,0 +1,108 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+  
+  <rsb:info title="setSelf" desc="Sets configuration for the local organization">
+    <input  name="orgname"               desc="The organization Name.(AS2 identifier)"/>
+    <input  name="email"                 desc="The Email Address" />
+    <input  name="certpfx"               desc="Path for personal certificate PFX file " />
+    <input  name="certpassword"          desc="Personal Certificate password" />
+    <input  name="publiccert"            desc="The public certificate." />
+    <input  name="encryptioncertsubject" desc="The encryption cert subject"/>
+    <input  name="fwtype"                desc="Firewall Type. none,tunnel,socks4,socks5,http" />
+    <input  name="fwhost"                desc="Firewall host name" />
+    <input  name="enablepublicprofile"   desc="Enable public profile." />
+    <input  name="isreliability"         desc="Transfer reliability for as2 transofer" />
+    <input  name="smtpserver"            desc="The SMTP server hostname or IP address" />
+    <input  name="smtpuser"              desc="The SMTP server hostname or IP address"/>
+    <input  name="smtppassword"          desc="The SMTP server hostname or IP address"/>
+    <input  name="headervalue#"          desc="The custom header value." />
+    <input  name="sendurl"               desc="The automated send url" />
+    <input  name="fwpassword"            desc="Firewall password" />
+    <input  name="fwuser"                desc="Firewall user name" />
+    <input  name="pxauthscheme"          desc="Proxy auth scheme" />
+    <input  name="publicprofilebanner"   desc="The public welcome banner." />
+    <input  name="headername#"           desc="The custom header name." />
+    <input  name="fwport"                desc="Firewall port" />
+    <input  name="asyncmdnurl"           desc="URL where asynchronous MDNs should be posted " />
+    <input  name="recvurl"               desc="The Receiving URL" />
+    <input  name="allownonfipscompliantalgorithms" desc="Allows the application to use algorithms that are not FIPS compliant, such as MD5 and AES." />
+    <input  name="extensionmap"          desc="A set of name-value pairs for content-types to match to a given extension (Ex: .ext=value,.ext=value,.ext=value)." />
+    <input  name="clientssidcode"        desc="The client's SSID code."/>
+    <input  name="clientpassword"        desc="The client's password."/>
+    <input  name="oftpserverport"        desc="The port for incoming OFTP connections."/>
+    <input  name="usesslincoming"        desc="Require SSL for incoming connections."/>
+    <input  name="sslservercert"         desc="Path for ssl server certificate PFX file."/>
+    <input  name="sslcertpassword"       desc="SSL Server Certificate password."/>
+    <input  name="sslpubliccert"            desc="SSL public certificate."/>
+    <input  name='authchallengepfx'         desc='Certificate used for the OFTP authentication challenge.'/>
+    <input  name='authchallengepfxpassword' desc='Authentication challenge certificate password.'/>
+    <input  name='authchallengepubliccert'  desc="Authentication challenge public certificate."/>
+    <input  name='signpfx'                  desc='OFTP data verification certificate.'/>
+    <input  name='signpfxpassword'          desc='Data signing certificate password.'/>
+    <input  name='signpubliccert'           desc="Data signing public certificate."/>
+    <input  name='receiptsignpfx'           desc='OFTP receipt verification certificate.'/>
+    <input  name='receiptsignpfxpassword'   desc='Receipt signing certificate password.'/>
+    <input  name='receiptsignpubliccert'    desc="Receipt signing public certificate."/>
+    <input  name="verifycerts"           desc="Enable certificate verification." />
+    <input  name="certtslfile"           desc="Certificate TSL file." />
+    <input  name="useplatformsecurityapi"   desc="Use platform security api." />
+    <input  name="rolloverdecryptionpfx"         desc="OFTP rollover decryption certificate."/>
+    <input  name="rolloverdecryptionpfxpassword" desc="Rollover decryption certificate password."/>
+    <input  name="rolloverdecryptionpubliccert"  desc="Rollover decryption public certificate."/>
+    <input  name="receviedfilenameformat"  desc="Received file name format."/>
+    <output name="a2p:warning#"          desc="Any warning messages during an update"/>
+    <output name="a2p:certExpMsg"        desc="Any Certificate expiration messages"/>
+    <output name="a2p:certWarning"       desc="Any Certificate Warnings"/>
+  </rsb:info>
+
+  <!-- First clear out all custom headers -->
+  <rsb:check attr="orgname">
+    <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileGetSelf" out="out1">
+      <rsb:enum attr="out1.headername#">
+        <rsb:set attr="delete.headername#" value="[_value]"/>
+        <rsb:set attr="delete.headervalue#" value=""/>
+      </rsb:enum>
+      <rsb:set attr="delete.orgname" value="[orgname]"/>
+      <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileSetSelf" in="delete"/>
+    </rsb:call>
+  </rsb:check>
+  
+  <rsb:set attr="task" value="update"/>
+
+  <rsb:check attr="enablepublicprofile">
+    <rsb:set attr="enablepublicprofile" value="True"/>
+    <rsb:else>
+      <rsb:set attr="enablepublicprofile" value="False"/>      
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:check attr="isreliability">
+    <rsb:set attr="isreliability" value="True"/>
+    <rsb:else>
+      <rsb:set attr="isreliability" value="False"/>      
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="usesslincoming">
+    <rsb:set attr="usesslincoming" value="True"/>
+    <rsb:else>
+      <rsb:set attr="usesslincoming" value="False"/>      
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="verifycerts">
+    <rsb:set attr="verifycerts" value="True"/>
+    <rsb:else>
+      <rsb:set attr="verifycerts" value="False"/>      
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileSetSelf" output="out2">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out2.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+

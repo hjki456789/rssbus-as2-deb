@@ -1,0 +1,64 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Create Certificate" description="Create a private key and public key certificate pair.  The specified FileName will contain the name of the certificate to be created and must contain the &quot;.pfx&quot; extension. A &quot;.cer&quot; file with the same name will also be created by the service. The two certificates will be created in the &quot;../profiles/&quot; directory relative to the application&amp;apos;s root directory.">
+    <input  name="CommonName"         desc="The common name of the certificate (usually your domain name or IP address)." required="true" />
+    <input  name="Country"            desc="The country of the organization to which the certificate is issued." />
+    <input  name="Email"              desc="The email address of the certificate administrator." />
+    <input  name="ValidityPeriod"     desc="The validity period of the certificate (in years)." default="1" required="true" />
+    <input  name="FileName"           desc="The file name of the certificate to be created, with a .pfx extension." required="true" />
+    <input  name="KeySize"            desc="The key size of the certificate." values="512, 1024, 2048" default="1024" required="true" />
+    <input  name="Locality"           desc="The locality (city) of the organization the certificate to which the certificate is issued." />
+    <input  name="Organization"       desc="The organization the certificate to which the certificate is issued (usually your company name or AS2 Identifier)." required="true" />
+    <input  name="OrganizationalUnit" desc="The unit within the organization that the certificate to which the certificate is issued (for example, the division in the company)." />
+    <input  name="Password"           desc="The password of the certificate." required="true" />
+    <input  name="SerialNumber"       desc="The serial number of the certificate." required="true" default="1"/>
+    <input  name="State"              desc="The home state of the organization." />
+    
+    <output name="Status"             desc="The status of the certificate creation." />
+  </rsb:info>
+
+  <rsb:check value="[site.java]">
+    <rsb:throw code="not supported" description="This service is currently not supported in the Java edition."/>
+  </rsb:check>
+
+	<rsb:check attr="CommonName">
+		<rsb:set item="input" attr="commonname" value="[CommonName]" />
+	</rsb:check>
+	<rsb:check attr="Country">
+		<rsb:set item="input" attr="country" value="[Country]" />
+	</rsb:check>
+	<rsb:check attr="Email">
+		<rsb:set item="input" attr="email" value="[Email]" />
+	</rsb:check>
+	<rsb:set item="input" attr="expiration" value="[ValidityPeriod]" />
+	<rsb:set item="input" attr="filename" value="[FileName]" />
+	<rsb:set item="input" attr="keysize" value="[KeySize]" />
+	<rsb:check attr="Locality">
+		<rsb:set item="input" attr="locality" value="[Locality]" />
+	</rsb:check>
+	<rsb:set item="input" attr="organization" value="[Organization]" />
+	<rsb:check attr="OrganizationalUnit">
+		<rsb:set item="input" attr="organizationalunit" value="[OrganizationalUnit]" />
+	</rsb:check>
+	<rsb:set item="input" attr="password" value="[Password]" />
+	<rsb:set item="input" attr="serialnumber" value="[SerialNumber]" />
+	<rsb:check attr="State">
+		<rsb:set item="input" attr="state" value="[State]" />
+	</rsb:check>
+	<rsb:call op="[service.createCert]" in="input">
+		<rsb:set item="output" />
+		<rsb:check attr="fa:error">
+		  <rsb:set item="output" attr="Status" value="Error: [fa:error]" />
+			<rsb:else>
+				<rsb:set item="output" attr="Status" value="Certificate created successfully." />
+			</rsb:else>
+		</rsb:check>
+		<rsb:push item="output" title="Certificate creation status" />
+	</rsb:call>	
+</rsb:script>
+

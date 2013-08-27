@@ -1,0 +1,15 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="getSelf" description="Gets configuration for the self.">
+  </rsb:info>
+
+  <rsb:set attr="filename" value="[site.profilesPath | pathcombine('me.cfg')]"/>    
+  <rsb:call op="[op.getSelf]" out="out">
+    <rsb:push item="out"/>
+  </rsb:call>
+
+</rsb:script>
+

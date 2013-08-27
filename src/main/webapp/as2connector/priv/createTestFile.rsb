@@ -1,0 +1,26 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="createTestFile" description="Create test files for a partner">
+    <input  name="orgname"          desc="The partner identifier" required="true"/>
+    <output name="file:source"      desc="The full path of the source file."/>
+    <output name="file:destination" desc="The full path of the destination file."/>
+  </rsb:info>
+
+  <rsb:call op="[service.getPartner]">
+    <rsb:set item='partner' copyfrom='_out1'/>
+  </rsb:call>
+
+  <rsb:check item="partner" attr="a2p:diroutgoing">
+    <rsb:set attr="source" value="[site.rootPath | pathcombine('testdata')]"/>
+    <rsb:set attr="destination" value="[partner.a2p:diroutgoing]"/>
+    
+    <rsb:call op="fileCopy" output="out">
+      <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+    </rsb:call>
+  </rsb:check>
+
+</rsb:script>
+

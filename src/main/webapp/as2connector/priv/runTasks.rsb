@@ -1,0 +1,16 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:info title="runTasks" description="Run the tasks.">
+    <output name="a2p:result" desc="The result."/>
+  </rsb:info>
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:set attr="run.filename" value="[site.tasksfile]"/>
+  <rsb:set attr="run.xmlroot" value="[site.tasksroot]"/>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAppRunTasks" in="run" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+  
+</rsb:script>

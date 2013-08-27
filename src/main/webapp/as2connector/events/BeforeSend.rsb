@@ -1,0 +1,38 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="Before Send" desc="This event is fired before sending a file.">
+    <input name="AS2To"         desc="The name of the organization that is receiving the file."/>
+    <input name="AS2From"       desc="The name of the organization that is sending the file" />
+    <input name="Organization"  desc="The friendly name of the orgnaization" />
+    <input name="FileName"      desc="The name of the file to send." />
+    <input name="ShortDate"     desc="The short date." />
+    <input name="LongDate"      desc="The long date." />
+  </rsb:info>
+  
+  <!-- Comment: EXECUTE A BATCH FILE (WINDOWS)
+  <rsb:set item="batchInput" attr="name" value="C:\\temp\\myfile.bat" />
+  <rsb:set item="batchInput" attr="arguments" value='"[AS2To]" "[FileName]"' />
+  <rsb:call op="sysExecute" input="batchInput" />
+  Comment -->
+  
+  <!-- Comment: EXECUTE A SHELL SCRIPT (UNIX/MAC)
+  <rsb:set item="shellInput" attr="name" value="/temp/myfile.sh"/>
+  <rsb:set item="shellInput" attr="arguments" value="[AS2To] [FileName]"/>
+  <rsb:call op="sysExecute" input="shellInput"/>
+  Comment -->
+
+  <!-- Comment: SEND AN EMAIL
+  <rsb:set item="sendEmailInput" attr="subject" value="Sending"/>
+  <rsb:set item="sendEmailInput" attr="text" value="File [FileName] is being sent to [AS2To]."/>
+  <rsb:set item="sendEmailInput" attr="from" value='"AS2 Connector SE" <noreply@freeas2.com>'/>
+  <rsb:set item="sendEmailInput" attr="to" value="test@nowhere.com"/>
+  <rsb:set item="sendEmailInput" attr="smtpserver" value="MyServer"/>
+  <rsb:set item="sendEmailInput" attr="smtpport" value="25"/>
+  <rsb:set item="sendEmailInput" attr="user" value="MyUsername"/>
+  <rsb:set item="sendEmailInput" attr="password" value="MyPassword"/>
+  <rsb:call op="smtpSendMessage" input="sendEmailInput"/>
+  Comment -->
+  
+</rsb:script>

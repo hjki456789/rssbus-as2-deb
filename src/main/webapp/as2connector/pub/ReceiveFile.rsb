@@ -1,0 +1,117 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="ReceiveFile" description="Receive file from a AS2 partner">
+  </rsb:info>
+  
+  <rsb:equals attr="_request.server:REQUEST_METHOD" value="GET" case="ignore">
+    <rsb:set attr="status" value="The page was loaded successfully."/>
+    <rsb:push/>
+  
+    <rsb:else>
+      <rsb:check item="_httpheaders" attr="AS2-From">
+        <rsb:set attr="_context.settings:outputformat" value="null"/>
+        <rsb:set attr="selffeed" value="[service.getSelf]"/>
+        <rsb:set attr="partnerfeed" value="[service.getPartner]"/>
+        <rsb:set attr="localsettingsfeed" value="[service.getLocalSettings]"/>
+        <rsb:set attr="logfeed" value="[service.writeSysLog]"/>
+        <rsb:set attr="mailfeed" value="[service.sendMail]"/>
+        
+        <!--fetch and set orgname for partner feed-->
+        <rsb:call op="[service.getSelf]">
+          <rsb:set item='self' copyfrom='_out1'/>
+        </rsb:call>
+        <rsb:match type="exact" pattern="[_httpheaders.AS2-To | replace('&quot;','')]" value="[self.a2p:orgname]">
+          <rsb:set attr="orgname" value="[_httpheaders.AS2-From | replace('&quot;','')]"/>
+          <rsb:else>
+            <rsb:set attr="orgname" value="[_httpheaders.AS2-From | replace('&quot;','')].[_httpheaders.AS2-To | replace('&quot;','')]"/>
+          </rsb:else>
+        </rsb:match>
+
+        <rsb:set attr="as2from" value="[_httpheaders.AS2-From | replace('&quot;','')]"/>
+        <rsb:set attr="as2to" value="[_httpheaders.AS2-To | replace('&quot;','')]"/>
+
+        <rsb:try>
+          <rsb:set attr="partner.messageid" value=""/>
+          <rsb:set attr="partner.encodedmessageid" value=""/>
+          <rsb:call op="as2connectorAs2ReceiveFile" output="out">
+            <rsb:set attr="partner.messageid" value="[out.messageid]"/>
+            <rsb:set attr="partner.encodedmessageid" value="[out.encodedmessageid]"/>
+            
+            <rsb:set attr="tmp.orgname" value="[orgname]"/>
+            <rsb:call op="[service.getPartner]" in="tmp" output="out2">
+              <rsb:set attr="tmp.friendlyname" value="[out2.a2p:friendlyname]"/>
+            </rsb:call>
+                  
+            <rsb:call op="[service.getLocalSettings]" output="out3">
+              <rsb:set item='local' copyfrom='out3'/>
+            </rsb:call>
+
+            <rsb:check attr="local.fa:errorcode">
+              <rsb:set attr="page.isPaid" value="[local.fa:errorcode | isless(1,'','paid')]" />
+            </rsb:check>
+            
+            <rsb:check attr="page.ispaid">
+              <rsb:try>
+                <rsb:set item="after" attr="AS2To" value="[self.a2p:orgname]"/>
+                <rsb:set item="after" attr="AS2From" value="[out.as2:as2from]"/>
+                <rsb:set item="after" attr="FileName" value="[out.as2:file]"/>
+                <rsb:set item="after" attr="Organization" value="[tmp.friendlyname]"/>
+                <rsb:set item="after" attr="MessageId" value="[partner.messageid]"/>
+                <rsb:set item="after" attr="ShortDate" value="[null | now('d')]"/>
+                <rsb:set item="after" attr="LongDate" value="[null | now('D')]"/>
+                <rsb:set item="after" attr="Status" value="SUCCESS"/>
+                <rsb:call op="[service.afterReceive]" in="after"/>
+                <rsb:catch code="*">
+                  <rsb:try>
+                    <rsb:set attr="_log.error" value="[_code] [_description] [_details | def]"/>
+                    <rsb:catch code="*"/>
+                  </rsb:try>
+                </rsb:catch>
+              </rsb:try>
+            </rsb:check>
+            
+            <rsb:set attr="cache.orgname" value="[orgname]"/>
+            <rsb:set attr="cache.logname" value="{[partner.encodedmessageid | match('\[^<>\]+')]}"/>
+            <rsb:call op="[service.addReceivedCache]" in="cache"/>
+          
+            <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+            
+          </rsb:call>
+          
+          <rsb:catch code="*">
+
+            <rsb:try>
+              <rsb:set item="after" attr="AS2To" value="[self.a2p:orgname]"/>
+              <rsb:set item="after" attr="AS2From" value=""/>
+              <rsb:set item="after" attr="FileName" value=""/>
+              <rsb:set item="after" attr="Organization" value=""/>
+              <rsb:set item="after" attr="MessageId" value=""/>
+              <rsb:set item="after" attr="ShortDate" value="[null | now('d')]"/>
+              <rsb:set item="after" attr="LongDate" value="[null | now('D')]"/>
+              <rsb:set item="after" attr="Status" value="FAIL"/>
+              <rsb:set item="after" attr="ErrorMessage" value="[_code]: [_description]"/>
+              <rsb:call op="[service.afterReceive]" in="after"/>
+              <rsb:catch code="*"/>
+            </rsb:try>
+     
+            <rsb:check attr="partner.messageid">
+              <rsb:set attr="cache.orgname" value="[orgname]"/>
+              <rsb:set attr="cache.logname" value="{[partner.encodedmessageid | match('\[^<>\]+')]}"/>
+              <rsb:call op="[service.addReceivedCache]" in="cache"/>
+            </rsb:check>
+            
+            <rsb:throw code="[_code]" description="[_description]"/>
+          </rsb:catch>
+        </rsb:try>
+
+        <rsb:else>
+          <rsb:throw code="ReceiveFile" description="Invalid http headers. Received headers: [_httpheaders.*]"/>
+        </rsb:else>
+      </rsb:check>
+    </rsb:else>
+  </rsb:equals>
+  
+</rsb:script>

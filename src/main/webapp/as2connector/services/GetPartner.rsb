@@ -1,0 +1,238 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="Get Partner" description="Get a specified trading partner's AS2 configuration. Subsequent calls may be used to view the partner&amp;apos;s certificates, received files, etc.">
+    <input  name="Name" desc="The organization name or AS2 Identifier of the trading partner." required="true" />
+    
+    <output name="AS2Identifier"                 group="Basic" desc="The AS2 Identifier of the trading partner." />    
+    <output name="Organization"                  group="Basic" desc="The organization name of the trading partner, to be used for display purposes." />
+    <output name="URL"                           group="Basic" desc="The trading partner's receiving URL." />
+    <output name="Certificate"                   group="Basic" desc="The trading partner's encryption certificate." />
+    <output name="SigningCertificate"            group="Additional Certificates" desc="The signing certificate of the trading partner, if different from the encryption certificate." />
+    <output name="SSLCertificate"                group="Additional Certificates" desc="The trading partner's SSL certificate, if SSL is used. A value of * means all certificates are accepted." />
+    <output name="IncomingDirectory"             group="Directories" desc="The directory in which incoming files are stored." />
+  	<output name="OutgoingDirectory"             group="Directories" desc="The directory in which outgoing files are stored." />
+  	<output name="PendingDirectory"              group="Directories" desc="The directory in which outgoing files that are waiting on an MDN receipt are stored." />
+  	<output name="PendingInfoDirectory"          group="Directories" desc="The directory in which information regarding pending files is stored." />
+  	<output name="SentDirectory"                 group="Directories" desc="The directory in which successfully sent files are stored." />
+    <output name="TempIncomingDirectory"         group="Directories" desc="The temporary directory for incoming files." />
+    <output name="TempOutgoingDirectory"         group="Directories" desc="The temporary directory for outgoing files." />
+  	<output name="LogDirectory"                  group="Directories" desc="The directory in which log files are stored." />
+
+    <output  name="UseSigning"                   group="Request Options" desc="Outgoing messages are securely signed." />
+    <output  name="UseEncryption"                group="Request Options" desc="Outgoing messages are encrypted." />
+    <output  name="UseCompression"               group="Request Options" desc="Outgoing messages are compressed." />
+    <output  name="UseAS2Restart"                group="Request Options" desc="The specified trading partner supports AS2 Restart for very large messages. Note that AS2 Restart is an optional profile in AS2, and some trading partners may not support it." />
+    <output  name="MDNDeliveryType"              group="Request Options" desc="Determines whether the MDN will be delivered synchronously (in the server reponse) or asynchronously (over a seperate connection)." />
+    <output  name="MDNRequested"                 group="Request Options" desc="The type of MDN that is requested." />
+    <output  name="ConnectionTimeout"            group="Request Options" desc="Timeout interval, in seconds, to wait for the server response." />
+    
+    <output  name="ForceFIPSCompliance"          group="Security Settings" desc="Force FIPS 140-2 compliance. Note that the default algorithms used by AS2 are already FIPS compliant." />
+    <output  name="RequireEncryption"            group="Security Settings" desc="Reject unencrypted incoming messages." />
+    <output  name="RequireSignature"             group="Security Settings" desc="Reject cryptographically unsigned messages." />
+    
+    <output  name="AutomationEnabled"            group="Automation Settings" desc="Automatically send outgoing files." />
+    <output  name="AutomationMaxAttempts"        group="Automation Settings" desc="Maximum number of attempts that an automated file will be sent." />
+    <output  name="AutomationRetryInterval"      group="Automation Settings" desc="The interval, in minutes, that an automated file will be retried in the event of a failure." />   
+    <output  name="AutomationFailureNotification" group="Automation Settings" desc="Notify the application administrator about automatic send errors." />
+    
+    <output  name="SSLClientCertificate"         group="SSL Client Authentication" desc="If SSL Client Authentication is required, the SSL Client certificate, in PFX format." />
+    <output  name="SSLClientCertificatePassword" group="SSL Client Authentication" desc="The password of the SSL Client certificate." />
+    <output  name="SSLClientCertificateSubject"  group="SSL Client Authentication" desc="The subject of the SSL Client certificate." />
+
+    <output  name="HTTPAuthenticationType"       group="HTTP Authentication" desc="Type of HTTP authentication to be used." />
+    <output  name="HTTPUser"                     group="HTTP Authentication" desc="HTTP authentication user name." />
+    <output  name="HTTPPassword"                 group="HTTP Authentication" desc="HTTP authentication password." />
+    
+    <output  name="AlternateAS2Identifier"       group="Alternate Local Profile" desc="An alternate local profile AS2 Identifier to be used for this trading partner." />
+    <output  name="AlternateCertificate"         group="Alternate Local Profile" desc="An alternate local profile private key certificate to be used for this trading partner." />
+    <output  name="AlternateCertificatePassword" group="Alternate Local Profile" desc="The alternate certificate password." />
+    <output  name="AlternateCertificateSubject"  group="Alternate Local Profile" desc="The alternate certificate subject." />
+ </rsb:info>
+
+  <rsb:set item="input" attr="orgname" value="[Name]" />
+  
+  <rsb:call op="[service.getPartner]" in="input">
+
+  	<rsb:set item="output" />
+  	<rsb:check attr="a2p:orgname">
+  		<rsb:set item="output" attr="AS2Identifier" value="[a2p:orgname]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:friendlyname">
+  		<rsb:set item="output" attr="Organization" value="[a2p:friendlyname]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:url">
+  		<rsb:set item="output" attr="URL" value="[a2p:url]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:encryptcert">
+  		<rsb:set item="output" attr="Certificate" value="[a2p:encryptcert]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:signcert">
+  		<rsb:set item="output" attr="SigningCertificate" value="[a2p:signcert]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:sslacceptcert">
+  		<rsb:set item="output" attr="SSLCertificate" value="[a2p:sslacceptcert]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:dirincoming">
+  		<rsb:set item="output" attr="IncomingDirectory" value="[a2p:dirincoming]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:diroutgoing">
+  		<rsb:set item="output" attr="OutgoingDirectory" value="[a2p:diroutgoing]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:dirpending">
+  		<rsb:set item="output" attr="PendingDirectory" value="[a2p:dirpending]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:dirpendinginfo">
+  		<rsb:set item="output" attr="PendingInfoDirectory" value="[a2p:dirpendinginfo]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:dirsent">
+  		<rsb:set item="output" attr="SentDirectory" value="[a2p:dirsent]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:dirdecodetemp">
+      <rsb:set item="output" attr="TempIncomingDirectory" value="[a2p:dirdecodetemp]" />
+    </rsb:check>
+    <rsb:check attr="a2p:direncodetemp">
+      <rsb:set item="output" attr="TempOutgoingDirectory" value="[a2p:direncodetemp]" />
+    </rsb:check>
+  	<rsb:check attr="a2p:dirlogs">
+  		<rsb:set item="output" attr="LogDirectory" value="[a2p:dirlogs]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:signoutgoing">
+  		<rsb:set item="output" attr="UseSigning" value="[a2p:signoutgoing]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:encryptoutgoing">
+  		<rsb:set item="output" attr="UseEncryption" value="[a2p:encryptoutgoing]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:compressoutgoing">
+  		<rsb:set item="output" attr="UseCompression" value="[a2p:compressoutgoing]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:supportrestart">
+  		<rsb:set item="output" attr="UseAS2Restart" value="[a2p:supportrestart]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:supportchunkedencoding">
+  		<rsb:set item="output" attr="UseChunkedTransferEncoding" value="[a2p:supportchunkedencoding]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:reqmdnsync">
+  		<rsb:equals attr="a2p:reqmdnsync" value="True">
+  			<rsb:set item="output" attr="MDNDeliveryType" value="Synchronous" />
+  		<rsb:else> 
+  			<rsb:set item="output" attr="MDNDeliveryType" value="Asynchronous" />
+  		</rsb:else>
+  		</rsb:equals>
+  	</rsb:check>
+  	<rsb:check attr="a2p:requestmdn">
+  		<rsb:equals attr="a2p:requestmdn" value="True">
+  			<rsb:check attr="a2p:reqmdnsigned">
+  				<rsb:equals attr="a2p:reqmdnsigned" value="True">
+  					<rsb:set item="output" attr="MDNRequested" value="Signed" />
+  				<rsb:else>
+  					<rsb:set item="output" attr="MDNRequested" value="Unsigned" />
+  				</rsb:else>
+  				</rsb:equals>
+  			</rsb:check>
+  		<rsb:else>
+  			<rsb:set item="output" attr="MDNRequested" value="None" />
+  		</rsb:else>
+  		</rsb:equals>
+  	</rsb:check>
+  	<rsb:check attr="a2p:connectiontimeout">
+  		<rsb:set item="output" attr="ConnectionTimeout" value="[a2p:connectiontimeout]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:forcefipscompliance">
+  		<rsb:set item="output" attr="ForceFIPSCompliance" value="[a2p:forcefipscompliance]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:encryptincoming">
+  		<rsb:set item="output" attr="RequireEncryption" value="[a2p:encryptincoming]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:signincoming">
+  		<rsb:set item="output" attr="RequireSignature" value="[a2p:signincoming]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:automationenabled">
+  		<rsb:set item="output" attr="AutomationEnabled" value="[a2p:automationenabled]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:maxattempts">
+  		<rsb:set item="output" attr="AutomationMaxAttempts" value="[a2p:maxattempts]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:retryinterval">
+  		<rsb:set item="output" attr="AutomationRetryInterval" value="[a2p:retryinterval]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:sendmailonautomationerror">
+  		<rsb:set item="output" attr="AutomationFailureNotification" value="[a2p:sendmailonautomationerror]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:sslclientcertfile">
+  		<rsb:set item="output" attr="SSLClientCertificate" value="[a2p:sslclientcertfile]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:sslclientcertpwd">
+  		<rsb:set item="output" attr="SSLClientCertificatePassword" value="[a2p:sslclientcertpwd]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:sslclientcertsubject">
+  		<rsb:set item="output" attr="SSLClientCertificateSubject" value="[a2p:sslclientcertsubject]" />
+  	</rsb:check> 
+  	<rsb:check attr="a2p:usehttpauth">
+  		<rsb:equals attr="a2p:usehttpauth" value="True">
+  			<rsb:check attr="a2p:httpauthtype">
+  				<rsb:equals attr="a2p:httpauthtype" value="Basic">
+  					<rsb:set item="output" attr="HTTPAuthenticationType" value="Basic" />
+  				<rsb:else> 
+  					<rsb:set item="output" attr="HTTPAuthenticationType" value="Digest" />
+  				</rsb:else>
+  				</rsb:equals>
+  			</rsb:check>
+  		<rsb:else>
+  			<rsb:set item="output" attr="HTTPAuthenticationType" value="None" />
+  		</rsb:else>
+  		</rsb:equals>
+  	</rsb:check>
+  	<rsb:check attr="a2p:httpauthuser">
+  		<rsb:set item="output" attr="HTTPUser" value="[a2p:httpauthuser]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:httpauthpwd">
+  		<rsb:set item="output" attr="HTTPPassword" value="[a2p:httpauthpwd]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:localas2identifier">
+  		<rsb:set item="output" attr="AlternateAS2Identifier" value="[a2p:localas2identifier]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:alternatecert">
+  		<rsb:set item="output" attr="AlternateCertificate" value="[a2p:alternatecert]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:alternatecertpassword">
+  		<rsb:set item="output" attr="AlternateCertificatePassword" value="[a2p:alternatecertpassword]" />
+  	</rsb:check>
+  	<rsb:check attr="a2p:alternatecertsubject">
+  		<rsb:set item="output" attr="AlternateCertificateSubject" value="[a2p:alternatecertsubject]" />
+  	</rsb:check>
+    
+    <!-- Hidden Configs -->
+  	<rsb:check attr="a2p:as2version">
+  		<rsb:set item="output" attr="AS2Version" value="[a2p:as2version]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:decodequotedprintable">
+  		<rsb:set item="output" attr="DecodeQuotedPrintable" value="[a2p:decodequotedprintable]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:encryptionalgorithm">
+  		<rsb:set item="output" attr="EncryptionAlgorithm" value="[a2p:encryptionalgorithm]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:mdnoptions">
+  		<rsb:set item="output" attr="MDNOptions" value="[a2p:mdnoptions]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:messageid">
+  		<rsb:set item="output" attr="MessageId" value="[a2p:messageid]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:sendfilenameincontenttype">
+  		<rsb:set item="output" attr="SendFilenameInContentType" value="[a2p:sendfilenameincontenttype]" />
+  	</rsb:check>
+    <rsb:check attr="a2p:allowsslv2protocol">
+      <rsb:set item="output" attr="AllowSSLv2Protocol" value="[a2p:allowsslv2protocol]" />
+    </rsb:check>
+    
+  	<rsb:push item="output" title="[rss:title | def('[input.orgname]')]" />
+
+  </rsb:call>
+</rsb:script>
+
+
+

@@ -1,0 +1,12 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="generateNewToken" description="Generate a new token.">
+    <output name="authtoken" description="A new authtoken."/>
+  </rsb:info>
+  
+  <rsb:set item="result" attr="authtoken" value="[foo | randomtext('20')]"/>
+  <rsb:push item="result"/>
+
+</rsb:script>

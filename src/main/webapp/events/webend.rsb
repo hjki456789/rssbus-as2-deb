@@ -1,0 +1,51 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:include file="[_about.approot]/shared/about.rst"/>
+  
+  <!-- Execute all webend for all apps -->
+  <rsb:set item="input1" attr="path" value=".."/>
+  <rsb:set item="input1" attr="fileordir" value="dirs"/>
+  <rsb:call op="fileListDir" in="input1" output="out1">
+    <rsb:set item="input2" attr="path" value="[out1.file:fullname | pathcombine('events')]"/>
+    <rsb:select value="[input2.path | fileexists() | tolower()]">
+      <rsb:case match="exact" value="true">
+        <rsb:call op="fileListDir" in="input2" output="out2">
+          <rsb:select value="[out2.file:name | tolower()]">
+            
+            <rsb:case match="exact" value="webend.rsb">
+              <rsb:try>
+                <rsb:call op="[out2.file:fullname]" />
+                <rsb:catch code="*">
+                  <rsb:try>
+                    <rsb:set attr="_log.error" value="[_code] [_description] [_details | def]"/>
+                    <rsb:catch code="*"/>
+                  </rsb:try>
+                </rsb:catch>
+              </rsb:try>
+            </rsb:case>
+            
+            <rsb:default />
+          </rsb:select>
+        </rsb:call>
+      </rsb:case>
+      <rsb:default />
+    </rsb:select>
+  </rsb:call>
+  
+  <!-- Stop all scheduled tasks -->
+  <rsb:check value="[site.java]">
+    <rsb:set item="site" attr="appdatadir" value="[_about.approot | pathcombine('WEB-INF')]"/>
+    <rsb:else>
+      <rsb:set item="site" attr="appdatadir" value="[_about.approot | pathcombine('app_data')]"/>
+    </rsb:else>
+  </rsb:check>
+  <rsb:set item="site" attr="profiledb" value="[site.appdatadir | pathcombine('Profile.db')]"/>
+  <rsb:set attr="tasks.database" value="[site.profiledb]"/>
+  <rsb:set attr="tasks.query" value="SELECT * FROM scheduled_tasks"/>
+  <rsb:call op="sqliteQuery" in="tasks" out="out">
+    <rsb:map from="out" to="task" map="* = sqlite:*"/>
+    <rsb:check attr="task.name">
+      <rsb:call op="schedulerStop" in="task"/>
+    </rsb:check>
+    <rsb:unset item="task"/>
+  </rsb:call>
+</rsb:script>

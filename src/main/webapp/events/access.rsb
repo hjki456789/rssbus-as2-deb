@@ -1,0 +1,72 @@
+<rsb:info>
+   <input name="url" description="The URL of the request."/>
+   <input name="script" description="The script that is being accessed."/>
+   <input name="method" description="The HTTP method."/>
+   <input name="user" description="The user."/>  
+   <input name="remoteip" description="The remote IP."/>
+   <input name="bytes" description="The size of the request."/>   
+</rsb:info>
+
+<rsb:set attr="dir.path" value="[_about.approot | pathcombine('events/logs')]"/>
+<rsb:match pattern="true" value="[dir.path | direxists | tolower]">
+  <rsb:else>
+    <rsb:call op="fileMakeDir" in="dir"/>
+  </rsb:else>
+</rsb:match>
+
+<rsb:set attr="filename" value="Access-[none | now | todate('MM-dd') | tolower()].txt"/>
+<rsb:set attr="write.file" value="[dir.path | pathcombine('[filename]')]"/>
+<rsb:set attr="write.data" value=""/>
+<rsb:match pattern="true" value="[write.file | fileexists | tolower]">
+  <rsb:else>
+    <rsb:set attr="list.path" value="[dir.path]"/>
+    <rsb:set attr="list.mask" value="Access-*-[none | now | todate('dd') | tolower() ].txt"/>
+    <rsb:call op="fileListDir" in="list">
+      <rsb:set attr="delete.file" value="[file:fullname]"/>
+      <rsb:call op="fileDelete" in="delete"/>
+    </rsb:call>
+    
+    <rsb:set attr="write.data" value="#Fields: datetime remoteip method uri-query user request-size\r\n"/>
+  </rsb:else>
+</rsb:match>
+
+<rsb:set attr="write.mode" value="append"/>
+<rsb:set attr="write.data">[write.data][none | now | todate('yyyy-MM-dd HH:mm:ss.fff')]\t[remoteip]\t[method]\t[url]\t[user | def('anonymous')]\t[bytes]\r\n</rsb:set>
+
+<rsb:call op="fileWrite" in="write"/>
+
+<!-- Log to database -->
+<rsb:include file="[_about.approot]/shared/about.rst"/>
+<rsb:check value="[site.java]">
+  <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('WEB-INF')]"/>
+  <rsb:else>
+  <rsb:set item="tmp" attr="appdatadir" value="[_about.approot | pathcombine('app_data')]"/>
+  </rsb:else>
+</rsb:check>
+<rsb:set item="db" attr="database" value="[tmp.appdatadir | pathcombine('Logs.db')]"/>
+
+<rsb:set attr="tmp.appfolder">[script | replace('[_about.approot]','')]</rsb:set>
+<rsb:set attr="tmp.appfolder" value="[tmp.appfolder | split('/','1')]"/>
+<rsb:set attr="tmp.appfolder" value="[tmp.appfolder | split('\\','1') | tolower]"/>
+
+<rsb:set item="adddb" attr="paramname#1" value="datetime"/>
+<rsb:set item="adddb" attr="paramvalue#1" value="[none | now | todate('yyyy-MM-dd HH:mm:ss.fff')]"/>
+<rsb:set item="adddb" attr="paramname#2" value="remoteip"/>
+<rsb:set item="adddb" attr="paramvalue#2" value="[remoteip]"/>
+<rsb:set item="adddb" attr="paramname#3" value="method"/>
+<rsb:set item="adddb" attr="paramvalue#3" value="[method]"/>
+<rsb:set item="adddb" attr="paramname#4" value="url"/>
+<rsb:set item="adddb" attr="paramvalue#4" value="[url]"/>
+<rsb:set item="adddb" attr="paramname#5" value="user"/>
+<rsb:set item="adddb" attr="paramvalue#5" value="[user | def('anonymous')]"/>
+<rsb:set item="adddb" attr="paramname#6" value="bytes"/>
+<rsb:set item="adddb" attr="paramvalue#6" value="[bytes]"/>
+<rsb:set item="adddb" attr="paramname#7" value="appfolder"/>
+<rsb:set item="adddb" attr="paramvalue#7" value="[tmp.appfolder]"/>
+<rsb:set item="adddb" attr="query">INSERT INTO access(datetime, remoteip, method, url, user, bytes, appfolder) VALUES (@datetime, @remoteip, @method, @url, @user, @bytes, @appfolder)</rsb:set>
+<rsb:call op="sqliteQuery" in="db,adddb"/>
+
+<rsb:set item="deletedb" attr="paramname#1" value="datetime"/>
+<rsb:set item="deletedb" attr="paramvalue#1" value="[now | now | dateadd('Day','-30') | todate('yyyy-MM-dd')]"/>
+<rsb:set item="deletedb" attr="query">DELETE FROM access WHERE datetime<@datetime</rsb:set>
+<rsb:call op="sqliteQuery" in="db,deletedb"/>

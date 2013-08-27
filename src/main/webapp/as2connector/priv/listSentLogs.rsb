@@ -1,0 +1,69 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <rsb:info title="listSentLogs" description="List Sent Logs.">
+    <input  name="orgname"          desc="The partner identifier." required="true"/>
+    <input  name="logType"          desc="the type of log" def="Sent"/>
+    <input  name="sort"             desc="The column to sort on." required="true" def="timestamp"/>
+    <input  name="desc"             desc="Whether or not the results should be descending." def="true"/>
+    <input  name="type"             desc="The type to sort on."/>
+    <input  name="filter"           desc="The filter for list logs." def="All"/>
+    <input  name="first"            desc="The first record index." def="0"/>
+    <input  name="last"             desc="The last record index." def="0"/>
+    <output name="id"               desc="the id of the file in the current entry."/>
+    <output name="filename"         desc="The name of the file in the current entry."/>
+    <output name="timestamp"        desc="The time at which the file in the current entry was written to."/>
+    <output name="filesize"         desc="The size of the file in the current entry."/>
+    <output name="status"           desc="The status of the entry."/>
+    <output name="etag"             desc="The etag of the entry."/>
+    <output name="count"            desc="The count of logs."/>
+    <output name="rss:mtime#"       desc="The time at which the log file in the current entry was written to."/>
+    <output name="rss:name#"        desc="The name of the log file in the current entry."/>
+    <output name="rss:fullname#"    desc="The fullname of the log file in the current entry."/>
+    <output name="rss:type#"        desc="The type of the log file in the current entry."/>
+    <output name="rss:isasync"      desc="Whether the entry has async log or not. Only for as2 partner."/>
+  </rsb:info>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <!-- Create database file -->
+  <rsb:select value="[site.statusdb | fileexists | tolower]">
+    <rsb:case match="exact" value="false">
+      <rsb:set item="filecreate" attr="file" value="[site.statusdb]"/>
+      <rsb:call op="fileCreate" in="filecreate" />
+    </rsb:case>
+   
+    <rsb:default/>
+  </rsb:select>
+  
+  <!-- Create partner table if not exists -->
+  <rsb:set item="page" attr="table" value="\[[orgname | replace('\[', '%5b') | replace('\]', '%5d') | tolower]_SENT\]"/>
+  <rsb:set item="database" attr="database" value="[site.statusdb]"/>
+  <rsb:set item="database" attr="query" value="CREATE TABLE IF NOT EXISTS [page.table](id TEXT NOT NULL PRIMARY KEY, timestamp TEXT NOT NULL, status TEXT NOT NULL, filename TEXT NOT NULL, fullname TEXT NOT NULL, filesize INT64 NOT NULL, etag TEXT, UNIQUE (id))"/>
+  <rsb:call op="sqliteQuery" in="database"/>
+  
+  <rsb:set attr="tmp.filter" value="WHERE id IS NOT NULL"/>
+  <rsb:notequals attr="filter" value="All">
+    <rsb:set attr="tmp.filter" value="[tmp.filter] AND status='[filter]'"/>
+  </rsb:notequals>
+  <rsb:set attr="tmp.limit" value=""/>
+  <rsb:check attr="first">
+    <rsb:check attr="last">
+      <rsb:set attr="tmp.limit" value=" LIMIT [first],[last | expr('[last] - [first] + 1')]"/>
+    </rsb:check>
+  </rsb:check>
+  <rsb:set item="database" attr="query" value="SELECT COUNT(*) FROM [page.table] [tmp.filter]"/>
+  <rsb:call op="sqliteQuery" in="database" out="out">
+    <rsb:set attr="tmp.count" value="[out.sqlite:count_]"/>
+  </rsb:call>
+  
+  <rsb:set item="database" attr="query" value="SELECT * FROM [page.table] [tmp.filter] ORDER BY [sort] [desc | def('true') | equals('true','DESC','ASC')][tmp.limit]"/>
+  <rsb:call op="sqliteQuery" in="database" out="out">
+    <rsb:map from="out" to="fixed" map="* = sqlite:*"/>
+    <rsb:set attr="fixed.timestamp" value="[out.timestamp | todate('s')]"/>
+    <rsb:set attr="fixed.count" value="[tmp.count | def('0')]"/>
+    <rsb:push item="fixed"/>
+  </rsb:call>
+
+</rsb:script>
+
+

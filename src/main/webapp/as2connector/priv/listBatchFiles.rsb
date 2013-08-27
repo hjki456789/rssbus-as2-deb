@@ -1,0 +1,32 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="listBatchFile" description="List batch files.">
+    <output name="file:fullname"    desc="The full path of the file or directory in the current entry."/>
+    <output name="file:name"        desc="The name of the file or directory in the current entry."/>
+    <output name="file:ctime"       desc="The time at which the file or directory in the current entry was created."/>
+    <output name="file:atime"       desc="The time at which the file or directory in the current entry was last read from or written to."/>
+    <output name="file:mtime"       desc="The time at which the file or directory in the current entry was written to."/>
+    <output name="file:attributes"  desc="A list of attributes of the file or directory in the current entry."/>
+    <output name="file:extension"   desc="The extension of the entry."/>
+    <output name="file:size"        desc="The size of the file in the current entry."/>
+    <output name="file:isdir"       desc="Whether the entry is a file or directory."/>
+  </rsb:info>
+
+  <rsb:equals attr="site.os" value="windows" case="ignore">
+    <rsb:set attr="mask" value="*.bat"/>
+    <rsb:else>
+      <rsb:set attr="mask" value="*.sh"/>
+    </rsb:else>
+  </rsb:equals>
+  <rsb:set attr="fileordir" value="files"/>
+
+  <rsb:call op="fileListDir" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+

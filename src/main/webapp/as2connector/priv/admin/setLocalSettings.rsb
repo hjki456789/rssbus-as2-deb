@@ -1,0 +1,40 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+  
+  <rsb:info title="setLocalSettings" description="Sets configuration of the local settings.">
+    <input  name="propc:*" desc="Sets configuration of the local settings."/>
+    <input  name="prop:*"  desc="Sets configuration of the local settings."/>
+    <input  name="task:*"  desc="Sets task of the local settings."/>
+    <output name="fa:*"    desc="properties and tasks of local setting."/>
+  </rsb:info>
+
+  <rsb:check attr="propc:NotifyCertExpiry">
+    <rsb:set attr="prop:NotifyCertExpiry" value="True"/>
+    <rsb:else>
+      <rsb:set attr="prop:NotifyCertExpiry" value="False"/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="propc:WriteToEventLog">
+    <rsb:set attr="prop:WriteToEventLog" value="True"/>
+    <rsb:else>
+      <rsb:set attr="prop:WriteToEventLog" value="False"/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="propc:AutodetectAutomationURL">
+    <rsb:set attr="prop:AutodetectAutomationURL" value="True"/>
+    <rsb:else>
+      <rsb:set attr="prop:AutodetectAutomationURL" value="False"/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:call op="[site.supportPartnerType | tolower]connectorLocalSettings" output="out">
+		<rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+	</rsb:call>
+
+</rsb:script>
+
+

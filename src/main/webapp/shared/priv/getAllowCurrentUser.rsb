@@ -1,0 +1,33 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+
+  <rsb:info title="getAllowedUsers" description="Return true if the current user has access to the specified script.">
+    <input name="script" description="The script name." required="true"/>
+    <output name="allow" description="If the current user has access." />
+    <output name="authtoken" description="The user's authtoken." />
+  </rsb:info>
+  
+  <rsb:check value="[script | startswith('~/')]">
+    <rsb:set attr="script" value="[script | substring('2')]"/>
+  </rsb:check>
+  
+  <rsb:set item="return" attr="allow" value="false"/>
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="token" attr="database" value="[site.userdb]"/>
+    <rsb:set item="token" attr="paramname#1" value="username"/>
+    <rsb:set item="token" attr="paramvalue#1" value="[_request.server:AUTH_USER]"/>
+    <rsb:set item="token" attr="query" value="SELECT user_token FROM users WHERE user_name=@username"/> 
+    <rsb:call op="sqliteQuery" in="token">
+      <rsb:set item="return" attr="authtoken" value="[sqlite:user_token]"/>
+    </rsb:call>
+
+    <rsb:set attr="in.user" value="[_request.server:AUTH_USER]" />
+    <rsb:set attr="in.script" value="[script]" />
+    <rsb:call op="../../events/auth.rsb" input="in" out="out">
+      <rsb:set item="return" attr="allow" value="[out.allow]"/>
+    </rsb:call>
+  </rsb:check>
+  
+  <rsb:push item="return"/>
+</rsb:script>

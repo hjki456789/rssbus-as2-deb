@@ -1,0 +1,60 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="addAccess" description="Adds script access for a user.">
+    <input name="username" description="The username." required="true"/>
+    <input name="script" description="The script to allow access for a user." required="true"/>
+    <input name="method" description="The http allowed verbs." required="true" default="*"/>
+  </rsb:info>
+  
+  <rsb:check attr="username">
+    <rsb:else>
+      <rsb:throw code="rsb:access" description="No username specified."/>
+    </rsb:else>
+  </rsb:check>
+
+  <rsb:check attr="script">
+    <rsb:else>
+      <rsb:throw code="rsb:access" description="No script specified."/>
+    </rsb:else>
+  </rsb:check>
+  
+  <rsb:check value="[script | startswith('~/')]">
+    <rsb:set attr="script" value="[script | substring('2')]"/>
+  </rsb:check>
+  
+  <!-- add the method column -->
+  <rsb:try>
+    <rsb:set item="addcolumn" attr="database" value="[site.userdb]"/>
+    <rsb:set item="addcolumn" attr="query" value="ALTER TABLE user_scripts ADD COLUMN method TEXT NOT NULL DEFAULT '*'"/>
+    <rsb:set attr="tmp.found" value="false"/>
+    <rsb:call op="sqliteQuery" in="addcolumn"/>
+  
+    <rsb:catch code="*">
+      <rsb:set attr="tmp.found" value="false"/>
+    </rsb:catch>
+  </rsb:try>
+  
+  <!-- add the script -->
+  <rsb:try>
+    <rsb:set item="add" attr="database" value="[site.userdb]"/>
+    <rsb:set item="add" attr="paramname#1" value="username"/>
+    <rsb:set item="add" attr="paramvalue#1" value="[_input.username]"/>
+    <rsb:set item="add" attr="paramname#2" value="script"/>
+    <rsb:set item="add" attr="paramvalue#2" value="[script]"/>
+    <rsb:set item="add" attr="paramname#3" value="method"/>
+    <rsb:set item="add" attr="paramvalue#3" value="[method]"/>
+    <rsb:set item="add" attr="query">INSERT INTO user_scripts (user_id, script, method) VALUES ((SELECT id FROM users WHERE user_name=@username), @script, @method)</rsb:set>
+    <rsb:call op="sqliteQuery" in="add">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:access" description="Invalid username or script."/>
+      </rsb:equals>
+    </rsb:call>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:access" description="Invalid username or script."/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

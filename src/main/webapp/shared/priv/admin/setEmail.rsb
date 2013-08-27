@@ -1,0 +1,28 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="setEmail" description="Sets the user's email address.">
+    <input name="username" description="The username."/>
+    <input name="email" description="The user's email address."/>
+  </rsb:info>
+  
+  <rsb:try>
+    <rsb:set item="updateemail" attr="database" value="[site.userdb]"/>
+    <rsb:set item="updateemail" attr="paramname#1" value="email"/>
+    <rsb:set item="updateemail" attr="paramvalue#1" value="[_input.email]"/>
+    <rsb:set item="updateemail" attr="paramname#2" value="username"/>
+    <rsb:set item="updateemail" attr="paramvalue#2" value="[_input.username]"/>
+    <rsb:set item="updateemail" attr="query">UPDATE users SET user_email=@email WHERE user_name=@username</rsb:set>
+    <rsb:call op="sqliteQuery" in="updateemail">
+      <rsb:equals attr="sqlite:affectedrows" value="0">
+        <rsb:throw code="rsb:user" description="Invalid username or email."/>
+      </rsb:equals>
+    </rsb:call>
+
+    <rsb:catch code="*">
+      <rsb:throw code="rsb:user" description="Invalid username or email."/>
+    </rsb:catch>
+  </rsb:try>
+</rsb:script>

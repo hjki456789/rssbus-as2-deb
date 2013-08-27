@@ -1,0 +1,35 @@
+<!--$Name$-->
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:include file="../../config.rst"/>
+  
+  <rsb:info title="read file" description="load file data">
+    <input name="id" required="true"/>
+    <input name="storage" required="true"/>
+    <output name="data"/>
+  </rsb:info>
+
+  <rsb:equals attr="storage" value="gae">
+    <rsb:set attr="kind" value="[site.gae:filekind]"/>
+    <rsb:set attr="prop:__key__" value="[id]"/>
+    <rsb:call op="gaeDsQuery">
+      <rsb:set item="out" attr="data" value="[gapds:data]"/>
+      <rsb:push item="out"/>
+    </rsb:call>
+
+    <rsb:else>
+      <rsb:set attr="file" value="[id]"/>
+      <rsb:call op="fileRead">
+        <rsb:set item="out" attr="data" value="[file:data]"/>
+        <rsb:push item="out"/>
+      </rsb:call>
+    </rsb:else>
+  </rsb:equals>
+  <!--mock-->
+  <!--<rsb:set attr="file" value="readFile.rsb"/>
+  <rsb:call op="fileRead">
+    <rsb:set item="temp" attr="data" value="[file:data | replace('$Name$','[id]')]"/>
+    <rsb:push item="temp"/>
+  </rsb:call>-->
+
+</rsb:script>

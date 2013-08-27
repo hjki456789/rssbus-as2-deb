@@ -1,0 +1,72 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="RenameConnector" desc="Renames a duplicated connector.">
+    <input name="origconnector" desc="The original connector name."/>
+    <input name="renaconnector" desc="The new connector name."/>
+     <input name="updateurlonly" required="true" values="true,false" def="false"/>
+  </rsb:info>
+
+  <rsb:notequals attr="_input.origconnector" value="[renaconnector]">
+
+    <rsb:set attr="app" value="[origconnector]"/>
+    <rsb:set attr="tmp.cachedb" value="[_profile.default_datadir_global | pathcombine(settings.db)]"/>
+    <rsb:equals attr="_about.env" value="net" case="ignore">
+      <rsb:set attr="conn" value="Version=3,uri=file:[tmp.cachedb]" />
+      <rsb:else>
+        <rsb:set attr="conn" value="jdbc:sqlite:[tmp.cachedb]" />
+      </rsb:else>
+    </rsb:equals>
+    <rsb:set attr="tmp.success" value="true"/>
+    <rsb:call op="appGetSettings" output="out"> 
+      <rsb:check attr="out.app:warning">
+        <rsb:set attr="tmp.success" value="false"/>
+        <rsb:else>
+          <rsb:map to="renaconnector" from="out" map="rec:* = *"/>
+        </rsb:else>
+      </rsb:check>
+    </rsb:call>  
+
+    <rsb:check attr="tmp.success">
+
+      <rsb:equals attr="_input.updateurlonly" value="false">
+        <rsb:set attr="file.source" value="~/[origconnector]"/>
+        <rsb:set attr="file.destination" value="~/[renaconnector]"/>
+        <rsb:set attr="file.recurse" value="true"/>
+        <rsb:call op="fileMove" input="file"/>
+      </rsb:equals>
+      
+      <rsb:map to="renaconnector" from="out" map="rec:* = *"/>
+      <rsb:set attr="renaconnector.app" value="[renaconnector]"/>
+      <rsb:set attr="renaconnector.conn" value="[conn]"/>
+      <rsb:check attr="renaconnector.rec:cachesqlitefile">
+        <rsb:match pattern="[_profile.default_datadir_global | pathcombine('[origconnector]')]" value="[renaconnector.rec:cachesqlitefile | getdirname]">
+          <rsb:set attr="renaconnector.rec:cachesqlitefile" value="[_profile.default_datadir_global | pathcombine('[renaconnector]') | pathcombine([renaconnector.rec:cachesqlitefile | getfilename])]"/> 
+        </rsb:match>
+      </rsb:check>
+      <rsb:set attr="renaconnector.rec:location" value="[_about.approot | pathcombine('[renaconnector]') | pathcombine('schemas')]"/>
+      <rsb:check attr="renaconnector.rec:dbtype">
+        <rsb:match pattern="[renaconnector.rec:dbtype | tolower]" value="sqlite" type="exact">
+          <rsb:equals attr="site.java" value="true">
+            <rsb:set attr="renaconnector.rec:cacheconnection" value="jdbc:sqlite:[renaconnector.rec:cachesqlitefile]" />
+            <rsb:else>
+              <rsb:set attr="renaconnector.rec:cacheconnection" value="data source=file:[renaconnector.rec:cachesqlitefile]" />
+            </rsb:else>
+          </rsb:equals>
+        </rsb:match>
+      </rsb:check>
+
+      <rsb:call op="appSetSettings" in="renaconnector"/>     
+
+      <rsb:equals attr="_input.updateurlonly" value="false">
+        <rsb:set attr="tmp.app" value="[origconnector]"/>
+        <rsb:set attr="tmp.conn" value="[conn]"/>
+        <rsb:call op="appDeleteSettings" in="tmp"/> 
+      </rsb:equals>
+    </rsb:check>
+
+  </rsb:notequals>  
+
+</rsb:script>

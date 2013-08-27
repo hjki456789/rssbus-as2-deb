@@ -1,0 +1,18 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <rsb:info title="Profile" description="Gets or sets profile settings.">
+    <input name="profile:*" description="The profile values to set."/>
+    <output name="*" description="The profile settings for a user."/>
+  </rsb:info>
+  
+  <rsb:enum attr="_input.profile:*">
+    <rsb:set attr="_profile.[_attr | replace('profile:','')]" value="[_value]"/>
+  </rsb:enum>
+  
+  <rsb:enum item="_profile">
+    <rsb:set attr="push.[_attr]" value="[_value]"/>
+  </rsb:enum>
+  
+  <rsb:push item="push"/>
+  
+</rsb:script>

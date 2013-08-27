@@ -1,0 +1,13 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  <!--include config-->
+  <rsb:include file="../config.rst"/>
+  
+  <rsb:info title="checkCertExsit" description="Check cert file exsit.">
+    <input name="certfile" desc="The path of the certificate file." required="true"/>    
+  </rsb:info>
+  
+  <rsb:set attr="in.name" value="[certfile | filename()]"/>
+  <rsb:set attr="out.result" value="[site.profilesPath | pathcombine([in.name]) | fileexists()]"/>
+  
+  <rsb:push item="out"/>
+</rsb:script>

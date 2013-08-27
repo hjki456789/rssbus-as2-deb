@@ -1,0 +1,72 @@
+<rsb:info>
+  <input name="user" description="The script that is being accessed." />
+  <input name="password" description="The script that is being accessed." />
+  <input name="authtoken" description="The script that is being accessed." />
+  <input name="authmethod" description="The script that is being accessed." />
+  <output name="user" description="The user that was authenticated."/>
+  <output name="allow" description="Whether or not the request should be allowed."/>
+  <output name="errorcode" description="Error code."/>
+  <output name="errormessage" description="Error message."/>
+</rsb:info>
+
+<rsb:include file="../shared/config.rst"/>
+
+<rsb:set attr="result.allow" value="false"/>
+<rsb:set attr="sql.database" value="[site.userdb]"/> 
+
+<rsb:check attr="_input.authtoken">
+  <rsb:set attr="check2.paramname#1" value="authtoken"/>
+  <rsb:set attr="check2.paramvalue#1" value="[_input.authtoken]"/>
+  <rsb:set attr="check2.query" value="SELECT COUNT(*) AS count,user_name FROM users WHERE user_token=@authtoken"/> 
+  <rsb:call op="sqliteQuery" in="sql,check2" out="out1">
+    <rsb:equals attr="sqlite:count" value="1">
+      <rsb:set attr="result.user" value="[out1.sqlite:user_name]"/>
+      <rsb:set attr="result.allow" value="true"/>
+    </rsb:equals>
+  </rsb:call>
+  
+  <rsb:equals attr="result.allow" value="false">
+    <rsb:set attr="result.errorcode" value="401"/>
+    <rsb:set attr="result.errormessage" value="Authtoken not found."/>
+  </rsb:equals>
+</rsb:check>
+
+<!-- Check basic auth -->
+<rsb:check attr="_input.authmethod">
+  <rsb:equals attr="_input.authmethod" value="Basic" case="ignore">
+    <rsb:equals attr="_about.env" value="net" case="ignore">
+      <rsb:set attr="check3.paramname#1" value="user"/>
+      <rsb:set attr="check3.paramvalue#1" value="[_input.user]"/>
+      <rsb:set attr="check3.query" value="SELECT user_password FROM users WHERE users.\[user_name\]=@user"/> 
+      <rsb:call op="sqliteQuery" in="sql,check3" out="out3">
+        <rsb:check attr="out3.sqlite:user_password">
+          <rsb:equals attr="out3.sqlite:user_password" value="[_input.password]">
+            <rsb:set attr="result.user" value="[_input.user]"/>
+            <rsb:set attr="result.allow" value="true"/>
+          </rsb:equals>
+        </rsb:check>
+      </rsb:call>
+
+      <rsb:else>
+        <rsb:try>
+          <rsb:set attr="authenticate3.username" value="[_input.user]"/>
+          <rsb:set attr="authenticate3.password" value="[_input.password]"/>
+          <rsb:call op="rsbAuthenticateUser" in="authenticate3"/>
+          <rsb:set attr="result.allow" value="true"/>
+          
+          <rsb:catch code="*">
+            <rsb:set attr="result.allow" value="false"/>
+          </rsb:catch>
+        </rsb:try>
+      </rsb:else>
+    </rsb:equals>
+
+    <rsb:equals attr="result.allow" value="false">
+      <rsb:set attr="result.errorcode" value="401"/>
+      <rsb:set attr="result.errormessage" value="User not found."/>
+    </rsb:equals>
+
+  </rsb:equals>
+</rsb:check>
+
+<rsb:push item="result"/>

@@ -1,0 +1,320 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="SetPartner" desc="Sets the configuration information for a trading partner">
+    <input  name="orgname"                   desc="The organization Name."/>
+    <input  name="neworgname"                desc="The new organization Name." />
+    <input  name="as2identifier"             desc="The AS2 Identifier." />
+    <input  name="maxattempts"               desc="Maximum number of retries" />
+    <input  name="sslclientcertfile"         desc="Path to PFX file containing the certificate" />
+    <input  name="automationenabled"         desc="If true, enable automation" />
+    <input  name="ftpremotehost"             desc="FTP remote host name" />
+    <input  name="sslclientcertpwd"          desc="Password for client cert" />
+    <input  name="sslclientcertsubject"      desc="Subject for client cert" />
+    <input  name="signincoming"              desc="If true, incoming messages must be signed" />
+    <input  name="cmdbeforesendargs"         desc="Arguments to before-send command" />
+    <input  name="cmdafterrecv"              desc="Command to execute after receive" />
+    <input  name="cmdafterrecvfailure"       desc="Command to execute after receive failure" />
+    <input  name="cmdafterrecvfailureargs"   desc="Arguments to after receive failure" />
+    <input  name="usehttpauth"               desc="If true, use HTTP authentication" />
+    <input  name="ftpuploaddir"              desc="Folder where files in the outgoing dir should be uploaded" />
+    <input  name="ftpdownloadfiles"          desc="If true, download files from the remote server to the incoming directory" />
+    <input  name="cmdbeforesend"             desc="Command to execute before send" />
+    <input  name="encryptcert"               desc="Encryption certificate" />
+    <input  name="encryptcertmatchpattern"   desc="The match pattern for encryption certificate, this value is used for exchange certificate." default="*"/>
+    <input  name="ftpsslservercert"          desc="FTP SSL Server Certificate" />
+    <input  name="type"                      desc="Partner type" default="[site.supportPartnerType]" />
+    <input  name="encryptincoming"           desc="If true, incoming messages must be encrypted" />
+    <input  name="signcert"                  desc="Signing certificate" />
+    <input  name="ftpport"                   desc="FTP remote Port" />
+    <input  name="reqmdnsigned"              desc="Should MDNs be signed or unsigned?" />
+    <input  name="ftpoverwritelocal"         desc="If true, overwrite local files" />
+    <input  name="ftppollinginterval"        desc="FTP Polling interval (minutes)" />
+    <input  name="ftpdeldownloaded"          desc="If true, delete downloaded files" />
+    <input  name="ftpssltype"                desc="Type of SSL to use for FTP connections" />
+    <input  name="ftpuser"                   desc="FTP user name" />
+    <input  name="ftppassword"               desc="FTP password" />
+    <input  name="requestmdn"                desc="If true, request an MDN receipt" />
+    <input  name="ftpuploadfiles"            desc="If true, upload files from the outgoing dir to the remote server" />
+    <input  name="retryinterval"             desc="The retry interval, in minutes" />
+    <input  name='safeinterval'              desc='The safe interval for sending or uploading, in seconds'/>
+    <input  name="sendmailonautomationerror" desc="If true, send an email to administration if an error is encountered during automation" />
+    <input  name='localas2identifier'        desc='Local as2 identifier'/>
+    <input  name='alternatecert'             desc='Alternate cert'/>
+    <input  name='alternatecertsubject'      desc='Alternate cert subject'/>
+    <input  name='alternatecertpassword'     desc='Alternate cert password'/>
+    <input  name="cmdaftersend"              desc="Command to execute after send" />
+    <input  name="cmdaftersendfailure"       desc="Command to execute after send failure" />
+    <input  name="cmdaftersendfailureargs"   desc="Arguments to after send failure" />
+    <input  name="friendlyname"              desc="The friendly name" />
+    <input  name="httpauthtype"              desc="HTTP authentication type (basic, digest)" />
+    <input  name="compressoutgoing"          desc="If true, outgoing messages are compressed" />
+    <input  name="connectiontimeout"         desc="Connection Timeout in seconds" />
+    <input  name='forcefipscompliance'       desc='If true, force FIPS compliance'/>
+    <input  name='supportrestart'            desc='If true, the partner will support the restart feature of AS2.'/>
+    <input  name='supportchunkedencoding'    desc='If true, the partner will support the chunked encoding feature of AS2.'/>
+    <input  name='logchunkedrequest'         desc='If true, the partner will log the chunked tranfer request of AS2.'/>
+    <input  name="reqmdnsync"                desc="Should MDNs be synchronous or asynchronous?" />
+    <input  name="httpauthuser"              desc="HTTP authentication user name" />
+    <input  name="cmdafterrecvargs"          desc="Arguments to after-receive command" />
+    <input  name="signoutgoing"              desc="If true, outgoing messages are signed" />
+    <input  name="httpauthpwd"               desc="HTTP authentication password" />
+    <input  name="url"                       desc="Partner URL" />
+    <input  name="encryptoutgoing"           desc="If true, outgoing messages are encrypted" />
+    <input  name="cmdaftersendargs"          desc="Arguments to after-send command" />
+    <input  name="ftpdownloaddir"            desc="Path to the download folder on the remote server" />
+    <input  name='ftpdownloadfilemask'       desc='File mask for downloaded files from the remote server.'/>
+    <input  name="sslacceptcert"             desc="The SSL certificate accept mode. Supported values are * (Accepts all certificates), TRUSTED (Accepts certificates trusted by the server machine), [Certificate Filename] and [Certificate Base64 Encoded String]." />
+    <input  name="sslacceptcertmatchpattern" desc="The match pattern for ssl certificate, this value is used for exchange certificate." default="*"/>
+    <input  name="lastpoll"                  desc="FTP last poll." />
+    <input  name="save"                      desc="Save." />
+    <input  name='authmode'                  desc='SFTP Authentication Mode'/>
+    <input  name='sshclientcert'             desc='SFTP ssh client private key file. (PEM format)'/>
+    <input  name='sshclientcertpassword'     desc='Password of SFTP ssh client private key file'/>
+    <input  name='serverhostkey'             desc='Public key of the SFTP server which are connecting to.'/>
+    <input  name='alternatessidcode'         desc='The identification code of the client. ' />
+    <input  name='alternatepassword'         desc='The password assigned to the client in the bilateral agreement.' />
+    <input  name='serverssidcode'            desc='The identification code of the server.' />
+    <input  name='serverpassword'            desc='The password assigned to the server in the bilateral agreement.' />
+    <input  name='oftpversion'               desc='Specify which version of the oftp protocol the component is using. (Ver1.2 is 0, Ver 1.3 is 1, Ver 1.4 is 2, Ver 2.0 is 3)' default='3' />
+    <input  name='usessl'                    desc='Use this property to determine whether the application uses SSL to connect with the RemoteHost. This property is only valid when using version 2.0 of the protocol.'/>
+    <input  name='secureauthentication'      desc='If true, the application will perform secure authentication when connecting to the server. This property is only valid when using version 2.0 of the protocol.'/>
+    <input  name='signedreceipt'             desc='Whether or not to require signed receipts.'/>
+    <input  name='virtualfileformat'         desc='The structure of the outgoing file.'/>
+    <input  name="as2version"                desc="AS2-Version header to send in requests."/>
+    <input  name="decodequotedprintable"     desc="Used to support Quoted-Prinatable decoding of messages."/>
+    <input  name="signaturealgorithm"        desc="The signature algorithm to use." default="SHA1"/>
+    <input  name="encryptionalgorithm"       desc="The encryption algorithm to use." default="3DES"/>
+    <input  name="mdnoptions"                desc="Used to overwrite MDNOptions."/>
+    <input  name="messageid"                 desc="Used to overwrite the message Id."/>
+    <input  name="sendfilenameincontenttype" desc="If true, a name parameter is added to the content-type header of the EDI data, containing the filename." />
+    <input  name="allowsslv2protocol"        desc="Allows the application to use use SSL2 protocol."/>
+    <input  name="active"                    desc="Uses Active mode FTP." />
+    <input  name="activemodeportaddress"     desc="Address to use in PORT command." />
+    <input  name="afterconnect"              desc="Executes custom commands after logon." />
+    <input  name="afterget"                  desc="Commands to execute after each download." />
+    <input  name="afterput"                  desc="Commands to execute after each upload." />
+    <input  name="beforeget"                 desc="Commands to execute before each download." />
+    <input  name="beforeput"                 desc="Commands to execute before each upload." />
+    <input  name="localfilescheme"           desc="Acts as filemask for saving local files. An example is: %name%%dateformat:{0:MM-dd-yyyy-hh-mm-ss}%%ext%, where %name% is the filename without the extension, %dateformat:{?????}% is the datetime string of when the file was received, and %ext% is the file extension." />
+    <input  name="portrange"                 desc="Range of ports to open for PORT command." />
+    <input  name="tempdownloadextension"     desc="Temporary download extension to append to file uploads." />
+    <input  name="tempdownloadpath"          desc="Temporary download path for uploading the file." />
+    <input  name="tempextension"             desc="Temporary extension to append to file uploads." />
+    <input  name="temppath"                  desc="Temporary path for uploading the file." />
+    <input  name="usecleardatachannel"       desc="Uses a clear data channel." />
+    <input  name="useclearchannel"           desc="Uses a clear command channel." />
+    <input  name="useepsv"                   desc="Uses EPSV mode." />
+    <input  name="usefswitch"                desc="When UseSimpleDirList is True this may be set to False so the application will issue the (NLST) command instead of (NLST -F)." />
+    <input  name="useoldauthssl"             desc="Uses (AUTH SSL) instead of (AUTH TLS)." />
+    <input  name="useprotwhenimplicit"       desc="Uses PROT command on implicit SSL connections." />
+    <input  name="useremotehostaddressforpassive" desc="Establishes PASV connections to remote host connection was initiated against, ignoring PASV reply." />
+    <input  name="usesimpledirlist"          desc="Used a simple directory listing command for servers that send back unparseable long responses." />
+    <input  name="dirincoming"               desc="The directory for incoming files."/>
+    <input  name="diroutgoing"               desc="The directory for outgoing files."/>
+    <input  name="dirsent"                   desc="The directory for sent files."/>
+    <input  name="dirdecodetemp"             desc="The directory for temp decode incoming files."/>
+    <input  name="direncodetemp"             desc="The directory for temp encode outgoing files."/>
+    <input  name="serverdownloadfiles"       desc="If true, incoming requests can download files." />
+    <input  name="serveruploadfiles"         desc="If true, incoming requests will attempt to upload files." />
+    <input  name="recursesubdirectories"     desc="Use recursive download model, this config will allow user to download files in each sub-directories in remote path." />
+    <input  name="sshencryptionalgorithms"   desc="Set the encryption algorithm to be used between client and server."/>
+    <input  name="syncdownloadmodel"         desc="Sync from server model."/>
+    <input  name="syncuploadmodel"           desc="Sync to server model."/>
+    <input  name="asynceerp"                 desc="Tells the application to send acknowledgement EERPs asynchronously." />
+    <input  name='authchallengecert'         desc='Certificate used for the OFTP authentication challenge.'/>
+    <input  name='authchallengecertmatchpattern'  desc='The match pattern for auth challenge certificate, this value is used for exchange certificate.' default="*"/>
+    <input  name='signcert'                  desc='OFTP data verification certificate.'/>
+    <input  name='signcertmatchpattern'      desc='The match pattern for signature challenge certificate, this value is used for exchange certificate.' default="*"/>
+    <input  name='receiptsigncert'           desc='OFTP receipt verification certificate.'/>
+    <input  name='receiptsigncertmatchpattern'    desc='The match pattern for receipt verification certificate, this value is used for exchange certificate.' default="*"/>
+    <input  name='rollovercert'              desc='OFTP rollover encryption certificate.'/>
+    <input  name='rolloververifycert'        desc='OFTP rollover verify certificate.'/>
+    <input  name="userouting"                desc="Use routing to connect destination partner." />
+    <input  name="routingpartner"            desc="The partner via routing gateway". />
+    <input  name="maxrecordsize"             desc="Length in octets of the longest logical record which may be transferred." default="128"/>
+    <input  name="filedescriptionmap"        desc="The map to set virtual file description in oftp transmission."/>
+    <input  name="virtualfilenamemap"        desc="The map to set virtual file name in oftp transmission."/>
+    <input  name="enforceprotocolversion"    desc="Enforce the specified protocol version." default="True"/>
+    <input  name="connecttoreceive"          desc="Connect to remote server to receive as a client." default="False"/>
+    
+    <output name="a2p:orgname"               desc="Any warning messages during an update"/>
+    <output name="a2p:warning#"              desc="Any warning messages during an update"/>
+    <output name="a2p:certExpMsg"            desc="Any Certificate expiration messages"/>
+    <output name="a2p:certWarning"           desc="Any Certificate Warnings"/>
+  </rsb:info>
+
+  <rsb:check attr="save">
+    <!--convert check boxes-->
+    <rsb:check attr="signoutgoing">
+      <rsb:set attr="signoutgoing" value="True"/>
+      <rsb:else>
+        <rsb:set attr="signoutgoing" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="encryptoutgoing">
+      <rsb:set attr="encryptoutgoing" value="True"/>
+      <rsb:else>
+        <rsb:set attr="encryptoutgoing" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="signincoming">
+      <rsb:set attr="signincoming" value="True"/>
+      <rsb:else>
+        <rsb:set attr="signincoming" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="encryptincoming">
+      <rsb:set attr="encryptincoming" value="True"/>
+      <rsb:else>
+        <rsb:set attr="encryptincoming" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="compressoutgoing">
+      <rsb:set attr="compressoutgoing" value="True"/>
+      <rsb:else>
+        <rsb:set attr="compressoutgoing" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="requestmdn">
+      <rsb:set attr="requestmdn" value="True"/>
+      <rsb:else>
+        <rsb:set attr="requestmdn" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="automationenabled">
+      <rsb:set attr="automationenabled" value="True"/>
+      <rsb:else>
+        <rsb:set attr="automationenabled" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="sendmailonautomationerror">
+      <rsb:set attr="sendmailonautomationerror" value="True"/>
+      <rsb:else>
+        <rsb:set attr="sendmailonautomationerror" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="usehttpauth">
+      <rsb:set attr="usehttpauth" value="True"/>
+      <rsb:else>
+        <rsb:set attr="usehttpauth" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="ftpuploadfiles">
+      <rsb:set attr="ftpuploadfiles" value="True"/>
+      <rsb:else>
+        <rsb:set attr="ftpuploadfiles" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="ftpdownloadfiles">
+      <rsb:set attr="ftpdownloadfiles" value="True"/>
+      <rsb:else>
+        <rsb:set attr="ftpdownloadfiles" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="ftpoverwritelocal">
+      <rsb:set attr="ftpoverwritelocal" value="True"/>
+      <rsb:else>
+        <rsb:set attr="ftpoverwritelocal" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="ftpdeldownloaded">
+      <rsb:set attr="ftpdeldownloaded" value="True"/>
+      <rsb:else>
+        <rsb:set attr="ftpdeldownloaded" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="forcefipscompliance">
+      <rsb:set attr="forcefipscompliance" value="True"/>
+      <rsb:else>
+        <rsb:set attr="forcefipscompliance" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="usessl">
+      <rsb:set attr="usessl" value="True"/>
+      <rsb:else>
+        <rsb:set attr="usessl" value="False"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:check attr="secureauthentication">
+      <rsb:set attr="secureauthentication" value="True"/>
+      <rsb:else>
+        <rsb:set attr="secureauthentication" value="False"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:check attr="signedreceipt">
+      <rsb:set attr="signedreceipt" value="True"/>
+      <rsb:else>
+        <rsb:set attr="signedreceipt" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="supportrestart">
+      <rsb:set attr="supportrestart" value="True"/>
+      <rsb:else>
+        <rsb:set attr="supportrestart" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="supportchunkedencoding">
+      <rsb:set attr="supportchunkedencoding" value="True"/>
+      <rsb:else>
+        <rsb:set attr="supportchunkedencoding" value="False"/>
+      </rsb:else>
+    </rsb:check>
+
+    <rsb:check attr="logchunkedrequest">
+      <rsb:set attr="logchunkedrequest" value="True"/>
+      <rsb:else>
+        <rsb:set attr="logchunkedrequest" value="False"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:check attr="serveruploadfiles">
+      <rsb:set attr="serveruploadfiles" value="True"/>
+      <rsb:else>
+        <rsb:set attr="serveruploadfiles" value="False"/>
+      </rsb:else>
+    </rsb:check>
+    
+    <rsb:check attr="serverdownloadfiles">
+      <rsb:set attr="serverdownloadfiles" value="True"/>
+      <rsb:else>
+        <rsb:set attr="serverdownloadfiles" value="False"/>
+      </rsb:else>
+    </rsb:check>
+    
+  </rsb:check>
+  
+  <rsb:equals attr="_about.env" value="net" case="ignore">
+    <rsb:set attr="conn" value="Version=3,uri=file:[site.statusdb]" />
+    <rsb:else>
+      <rsb:set attr="conn" value="jdbc:sqlite:[site.statusdb]" />
+    </rsb:else>
+  </rsb:equals>
+  <rsb:call op="[site.supportPartnerType | tolower]connectorAs2profileSetPartner" output="out">
+    <rsb:push title="[rss:title | def('untitled item')]" description="[out.*]"/>
+  </rsb:call>
+
+</rsb:script>
+
+
+

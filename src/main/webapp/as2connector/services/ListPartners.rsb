@@ -1,0 +1,30 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+
+  <rsb:restrict role="rssbus_admin,admin"/>
+  
+  <!--include config-->
+  <rsb:include file="../config.rst" />
+
+  <rsb:info title="List Partners" description="List all trading partners in the application.">
+    <output name='AS2Identifier'     desc='The AS2 Identifier of the trading partner.' />
+    <output name='Organization'      desc='The organization name of the trading partner.' />
+    <output name='AutomationEnabled' desc='Enable automation.' />
+  </rsb:info>
+
+  <rsb:call op="[service.listPartners]" output="out">
+    <rsb:set item="out1" />
+    <rsb:check attr="a2p:orgname">
+      <rsb:set item="out1" attr="AS2Identifier" value="[a2p:orgname]" />
+    </rsb:check>
+    <rsb:check attr="a2p:friendlyname">
+      <rsb:set item="out1" attr="Organization" value="[a2p:friendlyname]" />
+    </rsb:check>
+    <rsb:check attr="a2p:automationenabled">
+      <rsb:set item="out1" attr="AutomationEnabled" value="[a2p:automationenabled]" />
+    </rsb:check>
+    <rsb:push title="[rss:title]" item="out1" />
+  </rsb:call>
+
+</rsb:script>
+
+

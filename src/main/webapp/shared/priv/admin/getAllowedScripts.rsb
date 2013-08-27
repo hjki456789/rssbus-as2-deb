@@ -1,0 +1,54 @@
+<rsb:script xmlns:rsb="http://www.rssbus.com/ns/rsbscript/2">
+  
+  <!--include config-->
+  <rsb:include file="../../config.rst"/>
+
+  <rsb:info title="getAllowedScripts" description="Get the scripts that the user has been given access to.">
+    <input name="user" description="The user's name." required="true"/>
+    <input name="app" description="The app name. If not specified, all scripts will be returned."/>
+    <output name="script" description="A script which the user has access to." />
+  </rsb:info>
+  
+  <rsb:set attr="input.appname" value="[app | def('')]"/>
+  
+  <rsb:call op="fileListDir?path=../..&fileordir=dirs">
+    <rsb:try>
+      <rsb:set attr="tmp.filename" value="[file:name]"/>
+      
+      <rsb:call op="../../[file:name]/about.rsb" out="out">
+        <rsb:equals attr="name" value="[input.appname]">
+          <rsb:set attr="input.appname" value="[tmp.filename]"/>
+        </rsb:equals>
+      </rsb:call>
+      
+      <rsb:catch code="*"/>
+    </rsb:try>
+  </rsb:call>
+  
+  <rsb:check value="[site.userdb | fileexists()]">
+    <rsb:set item="users" attr="database" value="[site.userdb]"/>
+    <rsb:set item="users" attr="paramname#1" value="user"/>
+    <rsb:set item="users" attr="paramvalue#1" value="[user]"/>
+    <rsb:set item="users" attr="query" value="SELECT script FROM user_scripts,users WHERE users.\[user_name\]=@user AND user_scripts.\[user_id\]=users.\[id\]"/> 
+    <rsb:call op="sqliteQuery" in="users">
+      
+      <rsb:set attr="return.script" value="[sqlite:script]"/>
+      <rsb:check value="[return.script | startswith('~/')]">
+        <rsb:set attr="return.script" value="[return.script | substring('2')]"/>
+      </rsb:check>
+      
+      <rsb:set attr="return.scriptURL" value="../[return.script | replace('services/', 'services.rst?svc=')]" />
+      
+      <rsb:check attr="input.appname">
+        <rsb:match pattern="[return.script | startswith('[input.appname]') | tolower]" value="true">
+          <rsb:push item="return"/>
+        </rsb:match>
+        
+        <rsb:else>
+          <rsb:push item="return"/>
+        </rsb:else>
+      </rsb:check>
+      
+    </rsb:call>
+  </rsb:check>
+</rsb:script>
