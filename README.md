@@ -25,6 +25,15 @@ RSSBus AS2 Web Application with Debian packager.
 
 ###Build and Install###
 
+You will need to install the application with tomcat7 and add a tomcat user with roles specified in the documentation.
+
+Something like this in **tomcat-users.xml** will do:
+~~~
+  <user username="admin" password="admin" roles="rssbus_appuser,rssbus_admin,admin-gui,
+  manager-gui,manager-status,manager-script,manager-jmx" />
+~~~
+
+To install run:
 ~~~
 $ mvn clean install
 $ sudo dpkg -i target/as2portal_0.0.1+SNAPSHOT_all.deb
